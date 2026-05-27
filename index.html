@@ -1,0 +1,1907 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>HuntID — Never lose a track again.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="HuntID instantly finds the tracklist for any DJ mix on SoundCloud — with clickable timecodes that jump right to that moment." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ============================== tokens (dark default) */
+  :root {
+    --bg:        #0f0f0f;
+    --surface:   #1a1a1a;
+    --surface-2: #1f1f1f;
+    --surface-3: #252525;
+    --accent:    #ff5500;
+    --accent-soft: rgba(255, 85, 0, 0.10);
+    --accent-strong: #ff6a1f;
+    --text:      #ffffff;
+    --text-dim:  #b3b3b3;
+    --text-faint:#888888;
+    --border:    #2a2a2a;
+    --border-strong: #3a3a3a;
+    --ink:       #0f0f0f;   /* always-dark (for inverse card) */
+    --paper:     #f5f0e8;   /* warm "paper" for inverse card text */
+    --shadow-card: 0 1px 0 rgba(255,255,255,0.04) inset, 0 30px 80px -30px rgba(0,0,0,0.6);
+    --shadow-popup: 0 1px 0 rgba(255,255,255,0.06) inset, 0 40px 100px -20px rgba(0,0,0,0.7), 0 14px 30px -12px rgba(0,0,0,0.5);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg:        #f3efe9;
+      --surface:   #ffffff;
+      --surface-2: #faf7f1;
+      --surface-3: #ece7dc;
+      --accent:    #ff5500;
+      --accent-soft: rgba(255, 85, 0, 0.10);
+      --accent-strong: #ff6a1f;
+      --text:      #111111;
+      --text-dim:  #555555;
+      --text-faint:#8a8a8a;
+      --border:    #e7e2d6;
+      --border-strong: #d6d0c1;
+      --ink:       #0f0f0f;
+      --paper:     #f5f0e8;
+      --shadow-card: 0 1px 0 rgba(255,255,255,0.7) inset, 0 30px 80px -30px rgba(40,30,10,0.18);
+      --shadow-popup: 0 1px 0 rgba(255,255,255,0.9) inset, 0 40px 100px -20px rgba(40,30,10,0.22), 0 14px 30px -12px rgba(40,30,10,0.12);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+  .display { font-family: "Bricolage Grotesque", "Geist", sans-serif; font-weight: 600; letter-spacing: -0.025em; line-height: 1.02; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-feature-settings: "tnum" 1; }
+
+  /* ============================== layout */
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============================== nav */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in oklab, var(--bg) 85%, transparent);
+    backdrop-filter: saturate(160%) blur(16px);
+    -webkit-backdrop-filter: saturate(160%) blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-row {
+    display: flex; align-items: center; gap: 32px;
+    height: 72px;
+  }
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+  }
+  .brand-mark {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .brand .id { color: var(--accent); }
+  .nav-links {
+    display: flex; align-items: center; gap: 28px;
+    font-size: 14px; font-weight: 500;
+    color: var(--text-dim);
+  }
+  .nav-links a { transition: color 200ms; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-spacer { flex: 1; }
+  .nav-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .nav-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.55; transform: scale(0.8); } }
+
+  /* ============================== buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 48px; padding: 0 24px;
+    border-radius: 999px;
+    font-size: 14px; font-weight: 600;
+    transition: transform 220ms cubic-bezier(.2,.9,.3,1.4), background 220ms, color 220ms, box-shadow 220ms, border-color 220ms;
+    white-space: nowrap;
+    cursor: pointer;
+    will-change: transform;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 8px 22px -8px rgba(255,85,0,0.55);
+  }
+  .btn-primary:hover {
+    background: var(--accent-strong);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 14px 32px -8px rgba(255,85,0,0.6), 0 0 0 6px rgba(255,85,0,0.12);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-outline:hover { background: var(--surface); border-color: var(--text-dim); }
+  .btn-on-dark.btn-outline {
+    color: #fff;
+    border-color: rgba(255,255,255,0.25);
+  }
+  .btn-on-dark.btn-outline:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.4);
+  }
+  .btn-lg { height: 56px; padding: 0 28px; font-size: 15px; }
+  .btn .arr {
+    display: inline-block;
+    transition: transform 240ms ease;
+  }
+  .btn:hover .arr { transform: translateX(4px); }
+
+  /* ============================== eyebrow */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .eyebrow .chip-new {
+    background: var(--accent);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+
+  /* ============================== sections */
+  section { padding: 56px 0; }
+
+  /* ============================== hero */
+  .hero {
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .hero-card-left {
+    background: var(--surface);
+    border-radius: 32px;
+    padding: 56px 56px 48px;
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .hero-card-left h1 {
+    margin: 24px 0 0;
+    font-size: clamp(40px, 5.8vw, 76px);
+    font-weight: 700;
+  }
+  .hero-card-left h1 .accent { color: var(--accent); }
+  .hero-sub {
+    margin-top: 28px;
+    font-size: 17px; line-height: 1.55;
+    color: var(--text-dim);
+    max-width: 520px;
+  }
+  .hero-cta-row {
+    margin-top: 40px;
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .hero-meta {
+    margin-top: 40px;
+    display: flex; align-items: center; gap: 24px;
+    flex-wrap: wrap;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+  .hero-meta .item {
+    font-size: 12px; color: var(--text-faint);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .hero-meta .item .ck {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .hero-meta .item .ck svg { width: 8px; height: 8px; }
+
+  /* hero right — dark card with popup demo */
+  .hero-card-right {
+    background: #0a0a0a;
+    border-radius: 32px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #1a1a1a;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 560px;
+  }
+  .hero-card-right::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 60% at 50% 50%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%);
+    opacity: 0.7;
+  }
+  .hero-card-right::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    opacity: 0.6;
+  }
+  .hero-waves {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 50%;
+    display: flex; align-items: flex-end; gap: 3px;
+    padding: 0 32px;
+    pointer-events: none;
+    opacity: 0.18;
+  }
+  .hero-waves i {
+    flex: 1;
+    background: linear-gradient(to top, var(--accent), transparent);
+    border-radius: 2px;
+    animation: wave 1.4s ease-in-out infinite;
+  }
+  @keyframes wave {
+    0%, 100% { transform: scaleY(0.5); }
+    50%      { transform: scaleY(1); }
+  }
+
+  /* state badge floating */
+  .state-badge {
+    position: absolute; top: 24px; left: 24px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(8px);
+    border-radius: 999px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    z-index: 3;
+    transition: opacity 300ms;
+  }
+  .state-badge .num {
+    color: var(--accent);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+  }
+
+  /* popup */
+  .popup-stage {
+    position: relative; z-index: 2;
+    width: 360px; max-width: 100%;
+  }
+  .popup {
+    width: 360px;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    overflow: hidden;
+    color: #fff;
+    box-shadow: var(--shadow-popup);
+    transition: height 480ms cubic-bezier(.22,1,.36,1);
+  }
+  .pop-head {
+    height: 44px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 14px;
+    border-bottom: 1px solid #232323;
+    background: #0a0a0a;
+  }
+  .pop-mark {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .pop-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 14px;
+    letter-spacing: -0.01em;
+  }
+  .pop-title .id { color: var(--accent); }
+  .pop-sep { width: 1px; height: 12px; background: #2a2a2a; }
+  .pop-mix {
+    flex: 1; min-width: 0;
+    font-size: 11px; color: #888;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  /* popup body — variable per state */
+  .popup-body { position: relative; overflow: hidden; }
+
+  .state-view {
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity 380ms ease, transform 380ms ease;
+    transform: translateY(8px);
+    pointer-events: none;
+  }
+  .state-view.show {
+    position: relative;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .state-find {
+    height: 140px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    padding: 0 22px;
+  }
+  .find-btn {
+    width: 100%; height: 44px; border-radius: 8px;
+    background: var(--accent);
+    color: #fff; font-weight: 600; font-size: 14px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 8px 22px -8px rgba(255,85,0,0.5);
+  }
+  .find-btn .ic { display: inline-block; }
+  .find-status {
+    font-size: 11px; color: #888;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .find-status .ok {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.6);
+  }
+
+  .state-loading {
+    height: 140px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    padding: 0 22px;
+  }
+  .eyes { display: inline-flex; gap: 12px; animation: scan 2.4s ease-in-out infinite; }
+  .eye { width: 14px; height: 14px; border-radius: 999px; background: #fff; position: relative; overflow: hidden; }
+  .eye::after {
+    content: ""; position: absolute; inset: 0;
+    background: #141414;
+    transform: scaleY(0);
+    animation: blink 3.6s ease-in-out infinite;
+  }
+  @keyframes scan { 0%, 100% { transform: translateX(-6px); } 50% { transform: translateX(6px); } }
+  @keyframes blink { 0%, 92%, 100% { transform: scaleY(0); } 94%, 97% { transform: scaleY(1); } }
+  .looking { font-size: 13px; color: #fff; }
+  .dots span { opacity: 0; animation: dotp 1.4s infinite; }
+  .dots span:nth-child(1) { animation-delay: 0s; }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotp { 0%, 80%, 100% { opacity: 0; } 30%, 60% { opacity: 1; } }
+
+  .state-tracklist {
+    height: 420px;
+  }
+  .tl-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 14px;
+    border-bottom: 1px solid #232323;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px; color: #666;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    background: #1a1a1a;
+  }
+  .tl-bar .ct { color: var(--accent); background: var(--accent-soft); padding: 2px 6px; border-radius: 4px; font-size: 9px; }
+  .tl-rows { max-height: 380px; overflow: hidden; position: relative; }
+  .tl-rows-inner { animation: tl-scroll 18s linear infinite; }
+  @keyframes tl-scroll {
+    0%, 8% { transform: translateY(0); }
+    100%   { transform: translateY(-50%); }
+  }
+  .tl-row {
+    display: grid;
+    grid-template-columns: 22px 50px 1fr auto;
+    align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #232323;
+    font-size: 12px;
+  }
+  .tl-row.active { background: var(--accent-soft); }
+  .tl-row.unknown { opacity: 0.5; }
+  .tl-row .n { font-family: "JetBrains Mono", monospace; font-size: 9.5px; color: #666; text-align: right; }
+  .tl-row.active .n { color: var(--accent); }
+  .tl-row .tc { font-family: "JetBrains Mono", monospace; font-size: 10.5px; color: var(--accent); }
+  .tl-row .tc.empty { color: #666; }
+  .tl-row .meta { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #b3b3b3; }
+  .tl-row .meta .ar { color: #b3b3b3; }
+  .tl-row .meta .ti { color: #fff; }
+  .tl-row .meta .em { color: #666; margin: 0 6px; }
+  .tl-row.active .meta .ar, .tl-row.active .meta .ti { color: #fff; font-weight: 600; }
+  .eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+  .eq i {
+    width: 2px; background: var(--accent); border-radius: 1px;
+    animation: eq 1s ease-in-out infinite;
+  }
+  .eq i:nth-child(1) { animation-delay: -0.4s; }
+  .eq i:nth-child(2) { animation-delay: -0.2s; }
+  .eq i:nth-child(3) { animation-delay: -0.6s; }
+  .eq i:nth-child(4) { animation-delay: -0.1s; }
+  @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 12px; } }
+
+  .state-now {
+    height: 140px;
+    display: flex; align-items: center;
+    padding: 0 18px;
+    gap: 14px;
+  }
+  .now-main { flex: 1; min-width: 0; }
+  .now-eyebrow {
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.14em;
+    font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .now-title {
+    font-size: 15px; font-weight: 600; margin-top: 6px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .now-title .ar { color: #b3b3b3; font-weight: 500; }
+  .now-title .em { color: #666; margin: 0 6px; }
+  .now-meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; color: var(--accent);
+    margin-top: 4px;
+  }
+  .now-meta .faint { color: #666; }
+  .now-expand {
+    width: 36px; height: 36px; border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff;
+  }
+
+  /* ============================== ticker */
+  .ticker {
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 28px 0;
+  }
+  .ticker-track {
+    display: flex; gap: 64px;
+    animation: ticker 36s linear infinite;
+    width: max-content;
+  }
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .ticker-item {
+    display: inline-flex; align-items: center; gap: 16px;
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--text-dim);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .ticker-item .tc {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+
+  /* ============================== section head */
+  .sec-head {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 64px;
+  }
+  .sec-head .eyebrow { margin-bottom: 20px; }
+  .sec-head h2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: clamp(36px, 4.5vw, 60px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin: 0;
+  }
+  .sec-head h2 .accent { color: var(--accent); }
+  .sec-head p { font-size: 17px; color: var(--text-dim); margin-top: 18px; }
+
+  /* ============================== problem — dark inverse card */
+  .problem-card {
+    background: #0a0a0a;
+    border-radius: 32px;
+    padding: 80px 56px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .problem-card::before {
+    content: ""; position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, color-mix(in oklab, var(--accent) 30%, transparent), transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+  }
+  .problem-card .sec-head h2 { color: #fff; }
+  .problem-card .sec-head h2 .accent { color: var(--accent); }
+  .problem-card .sec-head .eyebrow { color: rgba(255,255,255,0.7); }
+  .problem-grid {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .pain {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 32px;
+    transition: transform 320ms ease, background 320ms, border-color 320ms;
+  }
+  .pain:hover {
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,85,0,0.4);
+  }
+  .pain .pain-num {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .pain h3 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    color: #fff;
+  }
+  .pain p { font-size: 14.5px; color: rgba(255,255,255,0.6); line-height: 1.55; }
+
+  /* ============================== how — sticky 3-step */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 320ms, border-color 320ms, box-shadow 320ms;
+  }
+  .step-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-card);
+  }
+  .step-card .num-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 999px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    margin-bottom: 24px;
+  }
+  .step-card h3 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+  .step-card p { font-size: 14.5px; color: var(--text-dim); line-height: 1.55; }
+  .step-mock {
+    margin-top: 28px;
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 14px;
+    padding: 20px;
+    height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+  }
+  .step-mock.s1 .find-btn { width: 100%; max-width: 220px; }
+  .step-mock.s3 { padding: 0; align-items: stretch; flex-direction: column; }
+  .step-mini {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    align-items: center; gap: 10px;
+    padding: 9px 14px;
+    border-bottom: 1px solid #1a1a1a;
+    font-size: 11px;
+  }
+  .step-mini:last-child { border-bottom: 0; }
+  .step-mini.active { background: var(--accent-soft); }
+  .step-mini .tc { font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--accent); }
+  .step-mini .label { color: #b3b3b3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .step-mini.active .label { color: #fff; font-weight: 600; }
+  .step-mini .cursor {
+    position: absolute;
+    width: 16px; height: 16px;
+    pointer-events: none;
+    transition: opacity 200ms;
+  }
+  /* cursor anim */
+  .s3-cursor {
+    position: absolute;
+    top: 0; left: 0;
+    width: 18px; height: 18px;
+    z-index: 2;
+    animation: cursor-fly 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes cursor-fly {
+    0%   { transform: translate(180px, 16px); opacity: 0; }
+    8%   { opacity: 1; }
+    35%  { transform: translate(50px, 16px) scale(1); }
+    40%  { transform: translate(50px, 16px) scale(0.85); }
+    45%  { transform: translate(50px, 16px) scale(1); }
+    75%  { transform: translate(50px, 78px) scale(1); }
+    80%  { transform: translate(50px, 78px) scale(0.85); }
+    85%  { transform: translate(50px, 78px) scale(1); }
+    100% { transform: translate(50px, 78px); opacity: 1; }
+  }
+
+  /* ============================== features */
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .feat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 320ms, transform 320ms, box-shadow 320ms;
+  }
+  .feat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-card);
+  }
+  .feat-card .ico {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+  }
+  .feat-card h3 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .feat-card p { font-size: 15px; color: var(--text-dim); line-height: 1.55; }
+
+  /* ============================== comparison */
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  .compare {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+  }
+  .compare th, .compare td {
+    padding: 22px 32px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+  }
+  .compare thead th {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    font-weight: 600;
+    background: var(--surface-2);
+  }
+  .compare thead th.huntid {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .compare tbody tr:last-child td { border-bottom: 0; }
+  .compare td.col-h { color: var(--text); font-weight: 500; }
+  .compare td.col-o { color: var(--text-dim); width: 25%; text-align: center; }
+  .compare td.col-y { width: 25%; text-align: center; background: color-mix(in oklab, var(--accent) 6%, transparent); }
+  .check, .cross {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 999px;
+  }
+  .check { background: var(--accent); color: #fff; }
+  .cross { border: 1px solid var(--border-strong); color: var(--text-faint); }
+
+  /* ============================== pricing */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .price-card {
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: 28px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 0 6px var(--accent-soft), 0 30px 60px -20px rgba(255,85,0,0.3);
+  }
+  .price-card .pill-badge {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--accent);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .price-card .price-big {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 88px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin: 16px 0 4px;
+  }
+  .price-card .price-sub {
+    font-size: 14px; color: var(--text-dim);
+  }
+  .price-list {
+    margin: 32px 0; padding: 0;
+    list-style: none;
+    text-align: left;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .price-list li {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14.5px;
+    color: var(--text);
+  }
+  .price-list li .ck {
+    flex-shrink: 0;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .price-divider { height: 1px; background: var(--border); margin: 28px 0 20px; }
+  .price-after-lbl {
+    font-size: 11px; font-weight: 600;
+    color: var(--text-faint);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .price-after {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 24px; font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .price-after .per { font-size: 14px; color: var(--text-faint); font-weight: 400; }
+  .price-after-note { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+  .price-card .btn { width: 100%; margin-top: 28px; }
+  .pricing-note {
+    margin-top: 24px;
+    font-size: 13px; color: var(--text-faint);
+    text-align: center;
+    max-width: 480px; margin-left: auto; margin-right: auto;
+  }
+
+  /* ============================== quotes */
+  .quotes-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .qcard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 36px;
+    transition: transform 320ms, border-color 320ms;
+  }
+  .qcard:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+  }
+  .qcard .q-stars { color: var(--accent); display: inline-flex; gap: 2px; margin-bottom: 18px; font-size: 14px; }
+  .qcard blockquote {
+    margin: 0;
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .qcard .by {
+    margin-top: 20px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px;
+  }
+  .qcard .by .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--surface-3);
+    color: var(--text-dim);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 12px;
+  }
+  .qcard .by .who { color: var(--text); font-weight: 500; }
+  .qcard .by .loc { color: var(--text-faint); }
+  .illustrative-note { text-align: center; margin-top: 32px; font-size: 12px; color: var(--text-faint); font-style: italic; }
+
+  /* ============================== final CTA dark band */
+  .final-card {
+    background: #0a0a0a;
+    border-radius: 32px;
+    padding: 96px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+  }
+  .final-card::before {
+    content: ""; position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, color-mix(in oklab, var(--accent) 35%, transparent), transparent 60%);
+    pointer-events: none;
+  }
+  .final-card::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .final-card > * { position: relative; z-index: 1; }
+  .final-card h2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: clamp(44px, 6vw, 84px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    margin: 0 auto;
+    max-width: 900px;
+  }
+  .final-card h2 .accent { color: var(--accent); }
+  .final-card p {
+    margin: 24px auto 0;
+    max-width: 560px;
+    font-size: 18px;
+    color: rgba(255,255,255,0.75);
+  }
+  .final-card .ctas { margin-top: 40px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .final-card .cta-meta {
+    margin-top: 28px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ============================== footer */
+  footer {
+    padding: 56px 0 40px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text-faint);
+    margin-top: 24px;
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .foot-col h4 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 16px;
+    letter-spacing: -0.005em;
+  }
+  .foot-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .foot-col a { color: var(--text-dim); transition: color 200ms; }
+  .foot-col a:hover { color: var(--accent); }
+  .foot-brand .brand { font-size: 22px; margin-bottom: 16px; }
+  .foot-brand p { color: var(--text-dim); max-width: 280px; font-size: 14px; line-height: 1.55; margin: 0 0 20px; }
+  .foot-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    display: flex; align-items: center; gap: 24px;
+    flex-wrap: wrap;
+    font-size: 12px;
+  }
+  .foot-fineprint { flex: 1; min-width: 240px; line-height: 1.6; color: var(--text-faint); font-size: 11px; }
+
+  /* ============================== reveal */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 800ms cubic-bezier(.2,.6,.2,1), transform 800ms cubic-bezier(.2,.6,.2,1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal[data-delay="1"] { transition-delay: 80ms; }
+  .reveal[data-delay="2"] { transition-delay: 160ms; }
+  .reveal[data-delay="3"] { transition-delay: 240ms; }
+  .reveal[data-delay="4"] { transition-delay: 320ms; }
+
+  /* count-up */
+  .stat-num {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: clamp(48px, 6vw, 84px);
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  /* ============================== subpages */
+  .subpage { padding: 64px 0 120px; }
+  .subpage h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: clamp(48px, 6vw, 76px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    margin: 0;
+  }
+  .subpage h1 .accent { color: var(--accent); }
+  .subpage .subtitle {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-faint);
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .subpage-content {
+    margin-top: 64px;
+    max-width: 760px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  .subpage-content article {
+    padding: 32px 40px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 24px;
+    align-items: baseline;
+  }
+  .subpage-content article:last-child { border-bottom: 0; }
+  .subpage-content article .n {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .subpage-content article h2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+  }
+  .subpage-content article p {
+    font-size: 14px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 40px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    transition: all 200ms;
+  }
+  .back-link:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ============================== legal body content */
+  .subpage-content article .body p { font-size: 14px; color: var(--text-dim); font-style: normal; margin: 0 0 10px; }
+  .subpage-content article .body p:last-child { margin-bottom: 0; }
+  .subpage-content article .body ul { margin: 0 0 10px; padding-left: 20px; }
+  .subpage-content article .body ul:last-child { margin-bottom: 0; }
+  .subpage-content article .body li { font-size: 14px; color: var(--text-dim); margin-bottom: 4px; line-height: 1.55; }
+  .subpage-content article .body strong { color: var(--text); font-weight: 600; font-style: normal; }
+
+  /* ============================== mobile */
+  @media (max-width: 1000px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-card-left { padding: 40px 32px; }
+    .hero-card-right { min-height: 480px; padding: 32px; }
+    .problem-grid, .how-grid, .quotes-grid { grid-template-columns: 1fr; }
+    .feat-grid { grid-template-columns: 1fr; }
+    .problem-card { padding: 56px 32px; }
+    .final-card { padding: 72px 32px; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 0 16px; }
+    section { padding: 32px 0; }
+    .hero-card-left { padding: 32px 24px; border-radius: 24px; }
+    .hero-card-right { padding: 24px; border-radius: 24px; min-height: 540px; }
+    .problem-card, .final-card { border-radius: 24px; padding: 56px 24px; }
+    .popup-stage, .popup { width: 320px; }
+    .nav-links { display: none; }
+    .nav-pill { display: none; }
+    .compare th, .compare td { padding: 16px 18px; font-size: 13.5px; }
+    .price-card { padding: 32px 24px; }
+    .foot-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ MAIN -->
+<div id="page-main">
+
+  <!-- NAV -->
+  <nav class="top">
+    <div class="wrap nav-row">
+      <a href="#home" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
+            <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="7" cy="7" r="1.2" fill="white"/>
+          </svg>
+        </span>
+        Hunt<span class="id">ID</span>
+      </a>
+      <div class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="nav-spacer"></div>
+      <span class="nav-pill"><span class="dot"></span> Beta · Free until July 31</span>
+      <a href="#install" class="btn btn-primary" style="height: 40px; padding: 0 18px; font-size: 13px;">
+        Add to Chrome
+        <span class="arr">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-card-left reveal">
+          <div class="eyebrow">
+            HuntID for SoundCloud
+            <span class="chip-new">NEW</span>
+          </div>
+          <h1 class="display">Never lose a <span class="accent">track</span> again.</h1>
+          <p class="hero-sub">
+            HuntID instantly finds the tracklist for any DJ mix on SoundCloud —
+            with clickable timecodes that jump right to that moment.
+          </p>
+          <div class="hero-cta-row">
+            <a href="#install" class="btn btn-primary btn-lg">
+              Add to Chrome — Free
+              <span class="arr">→</span>
+            </a>
+            <a href="#how" class="btn btn-outline btn-lg">See how it works</a>
+          </div>
+          <div class="hero-meta">
+            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Free during beta</span>
+            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> $4.99/mo after July 31</span>
+            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> No credit card</span>
+          </div>
+        </div>
+
+        <div class="hero-card-right reveal" data-delay="1">
+          <div class="hero-waves" id="hero-waves" aria-hidden="true"></div>
+          <div class="state-badge" id="state-badge">
+            <span class="num" id="state-num">01</span>
+            <span id="state-label">Idle on a mix</span>
+          </div>
+          <div class="popup-stage">
+            <div class="popup" id="popup-shell">
+              <div class="pop-head">
+                <span class="pop-mark" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                    <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
+                    <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+                    <circle cx="7" cy="7" r="1.2" fill="white"/>
+                  </svg>
+                </span>
+                <span class="pop-title">Hunt<span class="id">ID</span></span>
+                <span class="pop-sep"></span>
+                <span class="pop-mix">Boiler Room · Palms Trax @ Hï Ibiza</span>
+              </div>
+              <div class="popup-body" id="popup-body">
+                <!-- find -->
+                <div class="state-view state-find" data-state="find">
+                  <button class="find-btn" type="button">
+                    <span class="ic">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>
+                    </span>
+                    Find Tracklist
+                  </button>
+                  <div class="find-status"><span class="ok"></span> System available</div>
+                </div>
+                <!-- loading -->
+                <div class="state-view state-loading" data-state="loading">
+                  <div class="eyes" aria-hidden="true">
+                    <span class="eye"></span><span class="eye"></span>
+                  </div>
+                  <div class="looking">Looking<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+                </div>
+                <!-- tracklist -->
+                <div class="state-view state-tracklist" data-state="tracklist">
+                  <div class="tl-bar">
+                    <span>Tracklist</span>
+                    <span class="ct">15 TRACKS</span>
+                  </div>
+                  <div class="tl-rows">
+                    <div class="tl-rows-inner" id="tl-rows-inner"></div>
+                  </div>
+                </div>
+                <!-- now playing -->
+                <div class="state-view state-now" data-state="now">
+                  <div class="now-main">
+                    <div class="now-eyebrow">
+                      <span class="eq"><i></i><i></i><i></i></span>
+                      Now Playing
+                    </div>
+                    <div class="now-title"><span class="ar">Anz</span><span class="em">—</span><span class="ti">Last Before Lights</span></div>
+                    <div class="now-meta">19:55 <span class="faint">· track 05/15</span></div>
+                  </div>
+                  <button class="now-expand">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 5.5 3.5 3.5 3.5-3.5"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER — bonus dynamic element -->
+  <div class="ticker reveal">
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
+
+  <!-- PROBLEM — dark inverse card -->
+  <section id="problem">
+    <div class="wrap">
+      <div class="problem-card reveal">
+        <div class="sec-head">
+          <span class="eyebrow">The problem</span>
+          <h2 class="display">You hear it.<br/>Then it's <span class="accent">gone</span>.</h2>
+        </div>
+        <div class="problem-grid">
+          <div class="pain reveal" data-delay="1">
+            <div class="pain-num">01</div>
+            <h3>Shazam can't hear it</h3>
+            <p>DJ mixes layer tracks on top of each other. Audio recognition fails. Every time.</p>
+          </div>
+          <div class="pain reveal" data-delay="2">
+            <div class="pain-num">02</div>
+            <h3>Manual search kills the flow</h3>
+            <p>Tab switching, scrolling, matching timecodes by hand — five minutes gone, mix still playing.</p>
+          </div>
+          <div class="pain reveal" data-delay="3">
+            <div class="pain-num">03</div>
+            <h3>Comments? Maybe not</h3>
+            <p>Tracklists in comments appear 30% of the time, in random formats, with no timecodes to click.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">How it works</span>
+        <h2 class="display">Three clicks. <span class="accent">Done.</span></h2>
+        <p>From a silent track ID to a clickable timecode in under three seconds.</p>
+      </div>
+      <div class="how-grid">
+        <div class="step-card reveal" data-delay="1">
+          <div class="num-pill"><span>STEP 01</span></div>
+          <h3>Open any DJ mix on SoundCloud</h3>
+          <p>HuntID detects mixes automatically. No setup.</p>
+          <div class="step-mock s1">
+            <button class="find-btn" type="button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>
+              Find Tracklist
+            </button>
+          </div>
+        </div>
+        <div class="step-card reveal" data-delay="2">
+          <div class="num-pill"><span>STEP 02</span></div>
+          <h3>Hit Find Tracklist</h3>
+          <p>HuntID searches tracklist databases instantly.</p>
+          <div class="step-mock">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
+              <div class="eyes" aria-hidden="true"><span class="eye"></span><span class="eye"></span></div>
+              <div class="looking" style="font-size: 13px;">Looking<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="step-card reveal" data-delay="3">
+          <div class="num-pill"><span>STEP 03</span></div>
+          <h3>Click any timecode</h3>
+          <p>Jump directly to that moment in the mix.</p>
+          <div class="step-mock s3">
+            <svg class="s3-cursor" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 3l14 9-7 1-3 7-4-17z" fill="#fff" stroke="#0a0a0a" stroke-width="1.2" stroke-linejoin="round"/>
+            </svg>
+            <div class="step-mini"><span class="tc">04:12</span><span class="label">DJ Boring — Sunday Avenue</span></div>
+            <div class="step-mini active"><span class="tc">09:48</span><span class="label">Avalon Emerson — Fluorescent Rush</span><span class="eq"><i></i><i></i><i></i></span></div>
+            <div class="step-mini"><span class="tc">14:30</span><span class="label">Skee Mask — VLI</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">What's inside</span>
+        <h2 class="display">Everything you need.<br/><span style="color: var(--text-faint);">Nothing you don't.</span></h2>
+      </div>
+      <div class="feat-grid">
+        <div class="feat-card reveal" data-delay="1">
+          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <h3>Instant Tracklist</h3>
+          <p>Full tracklist found in seconds. No tab switching, no manual search. Searches across tracklist databases the moment you press the button.</p>
+        </div>
+        <div class="feat-card reveal" data-delay="2">
+          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <h3>Clickable Timecodes</h3>
+          <p>Every timecode is a button. Click — the mix jumps right there. No copying, no math, no manual seeking through a two-hour set.</p>
+        </div>
+        <div class="feat-card reveal" data-delay="3">
+          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg></div>
+          <h3>Now Playing</h3>
+          <p>Always know what's on right now. Current track highlighted automatically, synced to your playhead in real time.</p>
+        </div>
+        <div class="feat-card reveal" data-delay="4">
+          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/></svg></div>
+          <h3>One-click Copy</h3>
+          <p>Copy any track name instantly. Paste it anywhere to find it — your favourite store, library or DAW.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section id="compare">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">vs. the rest</span>
+        <h2 class="display">Not Shazam. Not comments.<br/><span class="accent">Not another tab.</span></h2>
+      </div>
+      <div class="compare-card reveal">
+        <table class="compare">
+          <thead>
+            <tr>
+              <th></th>
+              <th style="text-align: center;">Others</th>
+              <th class="huntid" style="text-align: center;">HuntID</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-h">Works on DJ mixes</td>
+              <td class="col-o"><span class="cross">✕</span></td>
+              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="col-h">No tab switching</td>
+              <td class="col-o"><span class="cross">✕</span></td>
+              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="col-h">Clickable timecodes</td>
+              <td class="col-o"><span class="cross">✕</span></td>
+              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="col-h">Auto-detects mixes</td>
+              <td class="col-o"><span class="cross">✕</span></td>
+              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="col-h">Free to start</td>
+              <td class="col-o">varies</td>
+              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Pricing</span>
+        <h2 class="display">Simple <span class="accent">pricing</span>.</h2>
+        <p>One product. One price. No tiers.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card reveal">
+          <div class="pill-badge">Beta</div>
+          <div class="price-big">Free</div>
+          <div class="price-sub">Until July 31, 2026</div>
+          <ul class="price-list">
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Full tracklist search</li>
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Clickable timecodes</li>
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Now Playing view</li>
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> One-click copy</li>
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Unlimited searches during beta</li>
+          </ul>
+          <div class="price-divider"></div>
+          <div class="price-after-lbl">After beta</div>
+          <div class="price-after">$4.99 <span class="per">/ month</span></div>
+          <div class="price-after-note">Cancel anytime. No commitment.</div>
+          <a href="#install" class="btn btn-primary btn-lg">
+            Add to Chrome — Free now
+            <span class="arr">→</span>
+          </a>
+        </div>
+        <div class="pricing-note">
+          Beta pricing ends July 31. Early users get 30 days free after the beta ends.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTES -->
+  <section id="proof">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Built for the underground</span>
+        <h2 class="display">Built for the <span class="accent">SoundCloud</span> underground.</h2>
+      </div>
+      <div class="quotes-grid">
+        <div class="qcard reveal" data-delay="1">
+          <div class="q-stars">★★★★★</div>
+          <blockquote>Finally. I've been looking for something like this for years. Shazam never works on mixes.</blockquote>
+          <div class="by">
+            <span class="avatar">L</span>
+            <div><div class="who">Leon</div><div class="loc">London, UK</div></div>
+          </div>
+        </div>
+        <div class="qcard reveal" data-delay="2">
+          <div class="q-stars">★★★★★</div>
+          <blockquote>I used to spend 5 minutes every time finding a track. Now I just click.</blockquote>
+          <div class="by">
+            <span class="avatar">D</span>
+            <div><div class="who">Daniel</div><div class="loc">Warsaw, PL</div></div>
+          </div>
+        </div>
+        <div class="qcard reveal" data-delay="3">
+          <div class="q-stars">★★★★★</div>
+          <blockquote>Heard a track, copied the name, found it in 30 seconds. This is exactly what was missing.</blockquote>
+          <div class="by">
+            <span class="avatar">M</span>
+            <div><div class="who">Marco</div><div class="loc">Berlin, DE</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="illustrative-note">Illustrative quotes</div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section id="install">
+    <div class="wrap">
+      <div class="final-card reveal">
+        <h2 class="display">Your next favourite track<br/>is <span class="accent">playing right now</span>.</h2>
+        <p>Add HuntID to Chrome. Free during beta — no credit card.</p>
+        <div class="ctas">
+          <a href="#" class="btn btn-primary btn-lg" onclick="event.preventDefault();">
+            Add to Chrome — Free until July 31
+            <span class="arr">→</span>
+          </a>
+          <a href="#how" class="btn btn-outline btn-on-dark btn-lg">See how it works</a>
+        </div>
+        <div class="cta-meta">Chrome only · SoundCloud · No credit card required</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-col foot-brand">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
+                <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+                <circle cx="7" cy="7" r="1.2" fill="white"/>
+              </svg>
+            </span>
+            Hunt<span class="id">ID</span>
+          </div>
+          <p>The fastest way to find any track in any DJ mix on SoundCloud.</p>
+        </div>
+        <div class="foot-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="foot-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="mailto:hello@huntid.app">Contact</a></li>
+            <li><a href="#privacy">Privacy Policy</a></li>
+            <li><a href="#terms">Terms of Service</a></li>
+          </ul>
+        </div>
+        <div class="foot-col">
+          <h4>Stay in the loop</h4>
+          <ul>
+            <li><a href="#install">Add to Chrome</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <div>© 2026 HuntID · huntid.app</div>
+        <div class="foot-fineprint">
+          HuntID is not affiliated with SoundCloud Limited. SoundCloud is a trademark of SoundCloud Limited.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ============================================================ PRIVACY -->
+<div id="page-privacy" class="subpage" style="display: none;">
+  <div class="wrap">
+    <a href="#home" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to HuntID
+    </a>
+    <h1 class="display">Privacy <span class="accent">Policy</span></h1>
+    <div class="subtitle">Last updated · May 2026</div>
+    <div class="subpage-content">
+      <article>
+        <span class="n">SECTION 01</span>
+        <div>
+          <h2>What we collect</h2>
+          <div class="body">
+            <p>When you use HuntID, we collect the following information:</p>
+            <ul>
+              <li><strong>Email address</strong> — We store this when you sign up via Google Auth. It's how we identify your account.</li>
+              <li><strong>Sign-up date</strong> — The timestamp when you created your HuntID account.</li>
+              <li><strong>Search statistics</strong> — When you search for a tracklist, we log: the search query (artist/mix name), the timestamp, and whether the search returned results.</li>
+            </ul>
+            <p>We do <strong>not</strong> collect: which SoundCloud mixes or tracks you browse, your SoundCloud account data or credentials, your browser history or activity outside HuntID, audio data, cookies, or session tokens from SoundCloud, or location, device ID, or personal identifiers beyond your email.</p>
+            <p>We're not tracking your listening habits. We only know what you <em>searched for</em>, not what you <em>listened to</em>.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 02</span>
+        <div>
+          <h2>How we use your data</h2>
+          <div class="body">
+            <p>We use the data we collect for one reason: <strong>to make HuntID better</strong>.</p>
+            <ul>
+              <li><strong>Improving search</strong> — We analyze search patterns to understand which DJ mixes and artists users look for most, so we can improve our search algorithm and accuracy.</li>
+              <li><strong>Product decisions</strong> — Search stats tell us which features matter, what breaks, and where to focus next.</li>
+              <li><strong>Debugging</strong> — If something goes wrong, we use your search history to diagnose and fix issues.</li>
+            </ul>
+            <p>We don't sell your data, share it with third parties for marketing, use it for advertising or profiling, or give it to SoundCloud or any other platform.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 03</span>
+        <div>
+          <h2>Third-party services</h2>
+          <div class="body">
+            <p><strong>Google Auth</strong> — You sign up with your Google account. Google handles your password and authentication. When you authenticate, Google shares your email address with us.</p>
+            <p><strong>Supabase</strong> — We use Supabase (a PostgreSQL database service) to store your email, sign-up date, and search statistics. Supabase handles data encryption and security. Your data is encrypted at rest and in transit.</p>
+            <p>The HuntID extension itself runs <strong>locally on your browser</strong>. When it interacts with SoundCloud, it only sends playback commands (like "skip to 2:30"). It doesn't read or extract SoundCloud data.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 04</span>
+        <div>
+          <h2>Data retention</h2>
+          <div class="body">
+            <p>We keep your data as long as your account exists.</p>
+            <p>If you delete your HuntID account, we delete your email address, sign-up date, and search history. Deletion happens within 30 days of your request.</p>
+            <p>We may keep anonymized, aggregated data (e.g., "100 searches for 'Richie Hawtin' in May") for product analytics. This can't identify you.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 05</span>
+        <div>
+          <h2>Your rights</h2>
+          <div class="body">
+            <p>You have the right to:</p>
+            <ul>
+              <li><strong>Access your data</strong> — We'll send you everything we have on you (email, sign-up date, full search history).</li>
+              <li><strong>Correct your data</strong> — If your email is wrong, we'll fix it.</li>
+              <li><strong>Delete your data</strong> — Request full deletion of your account and all associated data.</li>
+              <li><strong>Opt out of analytics</strong> — We can disable data collection for your account if you ask.</li>
+            </ul>
+            <p>To exercise any of these rights, email us (see Section 06). We'll respond within 30 days. If you're in the EU, you have rights under GDPR. If you're in California, you have rights under CCPA. Same process: email us.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 06</span>
+        <div>
+          <h2>Contact</h2>
+          <div class="body">
+            <p>Questions about privacy? Data requests? Want to delete your account?</p>
+            <p><strong>Email:</strong> [your-email@domain.com]</p>
+            <p>We read every email and respond within 30 days.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 07</span>
+        <div>
+          <h2>Changes to this policy</h2>
+          <div class="body">
+            <p>We may update this privacy policy if our practices change or if the law requires it. We'll email you about material changes. Your continued use of HuntID means you accept the updated policy.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ TERMS -->
+<div id="page-terms" class="subpage" style="display: none;">
+  <div class="wrap">
+    <a href="#home" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to HuntID
+    </a>
+    <h1 class="display">Terms <span class="accent">of Service</span></h1>
+    <div class="subtitle">Last updated · May 2026</div>
+    <div class="subpage-content">
+      <article>
+        <span class="n">SECTION 01</span>
+        <div>
+          <h2>Acceptance of terms</h2>
+          <div class="body">
+            <p>By installing and using HuntID, you agree to these terms. If you don't agree, don't use the extension.</p>
+            <p>These terms are a contract between you and the creator of HuntID. They govern how you can use the extension, what we're responsible for (and what we're not), and how disputes get resolved.</p>
+            <p>If you're using HuntID on behalf of a company or organization, you're responsible for making sure everyone who uses it agrees to these terms too.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 02</span>
+        <div>
+          <h2>Use of the extension</h2>
+          <div class="body">
+            <p><strong>What you can do:</strong></p>
+            <ul>
+              <li>Install HuntID on your Chrome browser and use it to search for DJ mix tracklists on SoundCloud.</li>
+              <li>Create an account, search, and save tracklists.</li>
+              <li>Use the extension for personal, non-commercial purposes.</li>
+            </ul>
+            <p><strong>What you can't do:</strong></p>
+            <ul>
+              <li>Reverse-engineer, decompile, or try to extract the source code.</li>
+              <li>Use the extension to scrape SoundCloud or extract data at scale.</li>
+              <li>Modify the extension or create derivatives without permission.</li>
+              <li>Use it to violate SoundCloud's terms of service.</li>
+              <li>Use it for anything illegal or harmful.</li>
+              <li>Spam, abuse, or attack the HuntID servers.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 03</span>
+        <div>
+          <h2>Subscription and billing</h2>
+          <div class="body">
+            <p>HuntID is currently <strong>free</strong>.</p>
+            <p>If paid features are introduced in the future, you'll receive clear notice before any charges, the ability to opt out or cancel anytime, a refund if you're not satisfied (within 14 days), and no card charges without explicit consent.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 04</span>
+        <div>
+          <h2>Intellectual property</h2>
+          <div class="body">
+            <p><strong>HuntID's IP belongs to the creator.</strong> The extension code, design, and features are not available for copying, selling, or redistribution.</p>
+            <p><strong>Your content is yours.</strong> If you create tracklists or save searches in HuntID, you own that data. We're just storing it for you.</p>
+            <p><strong>Tracklist data from SoundCloud</strong> — SoundCloud owns the music and mix data. The extension is just a navigation tool. You're not allowed to download or redistribute SoundCloud content via HuntID.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 05</span>
+        <div>
+          <h2>Disclaimer</h2>
+          <div class="body">
+            <p><strong>HuntID is provided "as-is."</strong> No guarantees are made that the extension will work perfectly 100% of the time, that search results will always be accurate, or that it won't break if SoundCloud changes their platform.</p>
+            <p>We're not liable for data loss or corruption, lost earnings or business losses, indirect or consequential damages, or issues caused by SoundCloud, Google, or third-party services.</p>
+            <p><strong>SoundCloud is not responsible for HuntID.</strong> This is a solo side project — there's no SLA or guaranteed 24/7 support, but every reasonable effort will be made.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 06</span>
+        <div>
+          <h2>Contact</h2>
+          <div class="body">
+            <p>Questions? Issues? Want to report a bug?</p>
+            <p><strong>Email:</strong> [your-email@domain.com]</p>
+            <p>If you want to report a security issue, please email privately instead of posting it publicly.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 07</span>
+        <div>
+          <h2>Changes to these terms</h2>
+          <div class="body">
+            <p>These terms may be updated if the law changes or if the service changes. You'll be emailed about material changes. Continued use means you accept the updated terms.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 08</span>
+        <div>
+          <h2>Governing law</h2>
+          <div class="body">
+            <p>These terms are governed by the laws of [Your jurisdiction]. Any disputes will be handled in [Your jurisdiction]'s courts, or we'll try to work it out via email first.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ----------------------- hero waves */
+  (function () {
+    const host = document.getElementById('hero-waves');
+    if (!host) return;
+    const N = 64;
+    let html = '';
+    for (let i = 0; i < N; i++) {
+      const delay = ((i * 0.06) % 1.4).toFixed(2);
+      const h = 16 + Math.abs(Math.sin(i * 0.34) * 80);
+      html += `<i style="animation-delay:-${delay}s; height:${h}px"></i>`;
+    }
+    host.innerHTML = html;
+  })();
+
+  /* ----------------------- tracks data */
+  const TRACKS = [
+    { n: 1,  t: "00:00", a: "Roza Terenzi",       ti: "Modem Tan" },
+    { n: 2,  t: "04:12", a: "DJ Boring",          ti: "Sunday Avenue" },
+    { n: 3,  t: "09:48", a: "Avalon Emerson",     ti: "Fluorescent Rush" },
+    { n: 4,  t: "14:30", a: "Skee Mask",          ti: "VLI" },
+    { n: 5,  t: "19:55", a: "Anz",                ti: "Last Before Lights", active: true },
+    { n: 6,  t: "24:18", a: "Nia Archives",       ti: "Forbidden Feelingz" },
+    { n: 7,  t: null,    a: "Unknown",            ti: "ID — bootleg edit" },
+    { n: 8,  t: "33:02", a: "Jensen Interceptor", ti: "Bionic Symphony" },
+    { n: 9,  t: "38:44", a: "Sherelle",           ti: "JUNGLE TEKNAH" },
+    { n: 10, t: "43:11", a: "Overmono",           ti: "So U Kno" }
+  ];
+
+  /* ----------------------- popup tracklist (rows duplicated for seamless scroll) */
+  (function () {
+    const host = document.getElementById('tl-rows-inner');
+    if (!host) return;
+    function rowHtml(t, i) {
+      const cls = ['tl-row'];
+      if (t.active) cls.push('active');
+      if (t.t === null) cls.push('unknown');
+      const tc = t.t === null
+        ? `<span class="tc empty">--:--</span>`
+        : `<span class="tc">${t.t}</span>`;
+      const eq = t.active ? `<span class="eq"><i></i><i></i><i></i><i></i></span>` : `<span></span>`;
+      return `
+        <div class="${cls.join(' ')}">
+          <span class="n">${String(t.n).padStart(2, '0')}</span>
+          ${tc}
+          <span class="meta"><span class="ar">${t.a}</span><span class="em">—</span><span class="ti">${t.ti}</span></span>
+          ${eq}
+        </div>`;
+    }
+    const all = TRACKS.concat(TRACKS).map(rowHtml).join('');
+    host.innerHTML = all;
+  })();
+
+  /* ----------------------- ticker */
+  (function () {
+    const host = document.getElementById('ticker-track');
+    if (!host) return;
+    const items = TRACKS.filter(t => t.t).slice(0, 8).map(t =>
+      `<div class="ticker-item"><span class="tc">${t.t}</span> ${t.a} <span style="color: var(--text-faint);">—</span> ${t.ti}</div>`
+    );
+    host.innerHTML = (items.concat(items)).join('');
+  })();
+
+  /* ----------------------- popup state cycle */
+  (function () {
+    const STATES = [
+      { id: 'find',      label: 'Idle on a mix',    h: 184, dur: 2200 },
+      { id: 'loading',   label: 'Searching',        h: 184, dur: 2000 },
+      { id: 'tracklist', label: 'Tracklist found',  h: 464, dur: 5800 },
+      { id: 'now',       label: 'Now playing',      h: 184, dur: 3000 }
+    ];
+    const shell = document.getElementById('popup-shell');
+    const numEl = document.getElementById('state-num');
+    const lblEl = document.getElementById('state-label');
+    const views = document.querySelectorAll('.state-view');
+    let idx = 0;
+
+    function show(i) {
+      const s = STATES[i];
+      shell.style.height = s.h + 'px';
+      views.forEach(v => v.classList.toggle('show', v.dataset.state === s.id));
+      numEl.textContent = String(i + 1).padStart(2, '0');
+      lblEl.textContent = s.label;
+    }
+
+    function tick() {
+      show(idx);
+      setTimeout(() => {
+        idx = (idx + 1) % STATES.length;
+        tick();
+      }, STATES[idx].dur);
+    }
+
+    // start
+    setTimeout(tick, 800);
+  })();
+
+  /* ----------------------- hash routing */
+  (function () {
+    const pages = {
+      privacy: document.getElementById('page-privacy'),
+      terms:   document.getElementById('page-terms'),
+      main:    document.getElementById('page-main')
+    };
+    function route() {
+      const h = (location.hash || '').replace('#', '').toLowerCase();
+      const t = (h === 'privacy' || h === 'terms') ? h : 'main';
+      pages.main.style.display    = t === 'main' ? '' : 'none';
+      pages.privacy.style.display = t === 'privacy' ? '' : 'none';
+      pages.terms.style.display   = t === 'terms' ? '' : 'none';
+      if (t !== 'main') window.scrollTo({ top: 0, behavior: 'instant' });
+      document.title = t === 'privacy' ? 'HuntID — Privacy Policy'
+                     : t === 'terms'   ? 'HuntID — Terms of Service'
+                     : 'HuntID — Never lose a track again.';
+    }
+    window.addEventListener('hashchange', route);
+    route();
+  })();
+
+  /* ----------------------- reveal on scroll */
+  (function () {
+    const reveals = Array.from(document.querySelectorAll('.reveal'));
+    if (!reveals.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      reveals.forEach(el => el.classList.add('in'));
+      return;
+    }
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+
+    // Double rAF: ensures the browser paints opacity:0 BEFORE the observer
+    // fires — without this, IO adds .in before first paint and transitions
+    // never run (elements appear fully visible from the start).
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      reveals.forEach(el => io.observe(el));
+    }));
+  })();
+
+  /* ----------------------- magnetic CTA on primary buttons */
+  (function () {
+    const btns = document.querySelectorAll('.btn-primary');
+    btns.forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const r = btn.getBoundingClientRect();
+        const x = e.clientX - r.left - r.width / 2;
+        const y = e.clientY - r.top - r.height / 2;
+        btn.style.transform = `translate(${x * 0.12}px, ${y * 0.18 - 1}px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
