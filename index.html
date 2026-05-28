@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>HuntID — Never lose a track again.</title>
+<title>HuntID — That track you can't stop thinking about?</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="HuntID instantly finds the tracklist for any DJ mix on SoundCloud — with clickable timecodes that jump right to that moment." />
+<meta name="description" content="HuntID finds tracklists for DJ mixes on SoundCloud. Click any timecode — jump right to that moment." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -1060,6 +1060,30 @@
   }
   .back-link:hover { color: var(--accent); border-color: var(--accent); }
 
+  /* ============================== one track block */
+  .one-track-block {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 48px 40px;
+    border-left: 3px solid var(--accent);
+    background: color-mix(in oklab, var(--accent) 5%, var(--surface));
+    border-radius: 0 16px 16px 0;
+  }
+  .one-track-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  .one-track-body {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    font-style: italic;
+    margin: 0;
+  }
+
   /* ============================== legal body content */
   .subpage-content article .body p { font-size: 14px; color: var(--text-dim); font-style: normal; margin: 0 0 10px; }
   .subpage-content article .body p:last-child { margin-bottom: 0; }
@@ -1135,10 +1159,13 @@
             HuntID for SoundCloud
             <span class="chip-new">NEW</span>
           </div>
-          <h1 class="display">Never lose a <span class="accent">track</span> again.</h1>
+          <h1 class="display">That track you can't stop<br/>thinking about?</h1>
           <p class="hero-sub">
-            HuntID instantly finds the tracklist for any DJ mix on SoundCloud —
-            with clickable timecodes that jump right to that moment.
+            It's in the tracklist.
+          </p>
+          <p class="hero-sub" style="margin-top: 12px; font-size: 15px; color: var(--text-faint);">
+            HuntID finds tracklists for DJ mixes on SoundCloud.<br/>
+            Click any timecode — jump right to that moment.
           </p>
           <div class="hero-cta-row">
             <a href="#install" class="btn btn-primary btn-lg">
@@ -1245,8 +1272,8 @@
           </div>
           <div class="pain reveal" data-delay="2">
             <div class="pain-num">02</div>
-            <h3>Manual search kills the flow</h3>
-            <p>Tab switching, scrolling, matching timecodes by hand — five minutes gone, mix still playing.</p>
+            <h3>You heard something. Now it's gone.</h3>
+            <p>You were in the mix. You heard it. By the time you found it manually — the moment was already gone.</p>
           </div>
           <div class="pain reveal" data-delay="3">
             <div class="pain-num">03</div>
@@ -1302,6 +1329,16 @@
             <div class="step-mini"><span class="tc">14:30</span><span class="label">Skee Mask — VLI</span></div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ONE TRACK WORTH IT -->
+  <section id="one-track">
+    <div class="wrap">
+      <div class="one-track-block reveal">
+        <p class="one-track-title">One track. Worth it.</p>
+        <p class="one-track-body">DJ mixes are dense. Underground sets even more so. HuntID won't always find every track — but when it finds that one you've been chasing, nothing else matters.</p>
       </div>
     </div>
   </section>
@@ -1432,7 +1469,7 @@
       <div class="quotes-grid">
         <div class="qcard reveal" data-delay="1">
           <div class="q-stars">★★★★★</div>
-          <blockquote>Finally. I've been looking for something like this for years. Shazam never works on mixes.</blockquote>
+          <blockquote>Found one track I'd been searching for months. Just like that. That's enough for me.</blockquote>
           <div class="by">
             <span class="avatar">L</span>
             <div><div class="who">Leon</div><div class="loc">London, UK</div></div>
@@ -1463,11 +1500,11 @@
   <section id="install">
     <div class="wrap">
       <div class="final-card reveal">
-        <h2 class="display">Your next favourite track<br/>is <span class="accent">playing right now</span>.</h2>
-        <p>Add HuntID to Chrome. Free during beta — no credit card.</p>
+        <h2 class="display">That track is in there<br/><span class="accent">somewhere.</span></h2>
+        <p>Add HuntID. Find it.</p>
         <div class="ctas">
           <a href="#" class="btn btn-primary btn-lg" onclick="event.preventDefault();">
-            Add to Chrome — Free until July 31
+            Add to Chrome — Free during beta
             <span class="arr">→</span>
           </a>
           <a href="#how" class="btn btn-outline btn-on-dark btn-lg">See how it works</a>
@@ -1853,7 +1890,7 @@
       if (t !== 'main') window.scrollTo({ top: 0, behavior: 'instant' });
       document.title = t === 'privacy' ? 'HuntID — Privacy Policy'
                      : t === 'terms'   ? 'HuntID — Terms of Service'
-                     : 'HuntID — Never lose a track again.';
+                     : 'HuntID — That track you can\'t stop thinking about?';
     }
     window.addEventListener('hashchange', route);
     route();
