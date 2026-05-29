@@ -1092,6 +1092,127 @@
   .subpage-content article .body li { font-size: 14px; color: var(--text-dim); margin-bottom: 4px; line-height: 1.55; }
   .subpage-content article .body strong { color: var(--text); font-weight: 600; font-style: normal; }
 
+  /* ============================== roadmap */
+  .roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .roadmap-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: transform 320ms ease, border-color 320ms, box-shadow 320ms;
+  }
+  .roadmap-card.active {
+    border-color: rgba(255, 85, 0, 0.4);
+    box-shadow: 0 0 24px rgba(255, 85, 0, 0.08);
+  }
+  .roadmap-card:hover { transform: translateY(-4px); }
+
+  .rm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .rm-badge.live {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+  }
+  .rm-badge.in-progress {
+    background: rgba(255, 85, 0, 0.1);
+    border: 1px solid rgba(255, 85, 0, 0.3);
+    color: #ff5500;
+  }
+  .rm-badge.planned {
+    background: rgba(136, 136, 136, 0.1);
+    border: 1px solid rgba(136, 136, 136, 0.2);
+    color: #888888;
+  }
+  .rm-dot {
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  }
+  .rm-badge.live .rm-dot { background: #22c55e; }
+  .rm-badge.in-progress .rm-dot {
+    background: #ff5500;
+    animation: rm-pulse 1.5s ease-in-out infinite;
+  }
+  .rm-badge.planned .rm-dot { background: #888888; }
+  @keyframes rm-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  .roadmap-card h3 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 20px; font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 0 0 16px;
+  }
+
+  .rm-progress-label {
+    font-size: 10px; font-weight: 600;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .rm-progress-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 999px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .rm-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    width: 0;
+  }
+  .rm-progress-fill.green { background: #22c55e; }
+  .rm-progress-fill.orange {
+    background: linear-gradient(90deg, #ff5500 0%, #ff7733 50%, #ff5500 100%);
+    background-size: 200% auto;
+    animation: rm-shimmer 2s linear infinite;
+  }
+  @keyframes rm-shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .rm-list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column;
+  }
+  .rm-list li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+  .rm-list li:last-child { border-bottom: 0; }
+  .now-card .rm-list li { color: var(--text); }
+  .later-card .rm-list li { opacity: 0.7; }
+  .rm-list-icon { font-size: 14px; flex-shrink: 0; width: 18px; text-align: center; }
+
+  .rm-footer-note {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 13px;
+    color: var(--text-faint);
+    line-height: 1.6;
+  }
+  .rm-footer-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
   /* ============================== mobile */
   @media (max-width: 1000px) {
     .hero-grid { grid-template-columns: 1fr; }
@@ -1099,6 +1220,7 @@
     .hero-card-right { min-height: 480px; padding: 32px; }
     .problem-grid, .how-grid, .quotes-grid { grid-template-columns: 1fr; }
     .feat-grid { grid-template-columns: 1fr; }
+    .roadmap-grid { grid-template-columns: 1fr; gap: 16px; }
     .problem-card { padding: 56px 32px; }
     .final-card { padding: 72px 32px; }
     .foot-grid { grid-template-columns: 1fr 1fr; }
@@ -1140,6 +1262,7 @@
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
         <a href="#pricing">Pricing</a>
+        <a href="#roadmap">Roadmap</a>
       </div>
       <div class="nav-spacer"></div>
       <span class="nav-pill"><span class="dot"></span> Beta · Free until July 31</span>
@@ -1459,6 +1582,73 @@
     </div>
   </section>
 
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Roadmap</span>
+        <h2 class="display">What's <span class="accent">coming.</span></h2>
+        <p>HuntID is actively developed. Here's where we're headed.</p>
+      </div>
+      <div class="roadmap-grid">
+
+        <!-- NOW -->
+        <div class="roadmap-card now-card reveal" data-delay="1">
+          <div class="rm-badge live"><span class="rm-dot"></span> Live</div>
+          <h3>v1 · Free Beta</h3>
+          <div class="rm-progress-label">Shipped</div>
+          <div class="rm-progress-track">
+            <div class="rm-progress-fill green" data-target="100"></div>
+          </div>
+          <ul class="rm-list">
+            <li><span class="rm-list-icon">✅</span> Instant tracklist search</li>
+            <li><span class="rm-list-icon">✅</span> Clickable timecodes</li>
+            <li><span class="rm-list-icon">✅</span> Now Playing view</li>
+            <li><span class="rm-list-icon">✅</span> One-click copy</li>
+            <li><span class="rm-list-icon">✅</span> Auto-detects mixes</li>
+            <li><span class="rm-list-icon">✅</span> Light &amp; dark theme</li>
+            <li><span class="rm-list-icon">✅</span> Tracklist quality rating</li>
+          </ul>
+        </div>
+
+        <!-- SOON -->
+        <div class="roadmap-card soon-card active reveal" data-delay="2">
+          <div class="rm-badge in-progress"><span class="rm-dot"></span> In Progress</div>
+          <h3>Pro · $4.99/mo</h3>
+          <div class="rm-progress-label">In development</div>
+          <div class="rm-progress-track">
+            <div class="rm-progress-fill orange" data-target="35"></div>
+          </div>
+          <ul class="rm-list">
+            <li><span class="rm-list-icon">🔜</span> Unlimited searches</li>
+            <li><span class="rm-list-icon">🔜</span> History — all past searches</li>
+            <li><span class="rm-list-icon">🔜</span> Favourites — save tracks</li>
+            <li><span class="rm-list-icon">🔜</span> Buy links (Beatport, Bandcamp, Traxsource)</li>
+            <li><span class="rm-list-icon">🔜</span> Better source coverage</li>
+          </ul>
+        </div>
+
+        <!-- LATER -->
+        <div class="roadmap-card later-card reveal" data-delay="3">
+          <div class="rm-badge planned"><span class="rm-dot"></span> Planned</div>
+          <h3>What's next</h3>
+          <div class="rm-progress-label">Planned</div>
+          <div class="rm-progress-track">
+            <div class="rm-progress-fill grey" data-target="0"></div>
+          </div>
+          <ul class="rm-list">
+            <li><span class="rm-list-icon">🔮</span> YouTube support</li>
+            <li><span class="rm-list-icon">🔮</span> Better source coverage</li>
+            <li><span class="rm-list-icon">🔮</span> Tracklist confidence score</li>
+            <li><span class="rm-list-icon">🔮</span> Analyze this set (Pro)</li>
+          </ul>
+        </div>
+
+      </div>
+      <p class="rm-footer-note">Roadmap is subject to change. Feature requests? <a href="mailto:foreverykindofthing@gmail.com">Let us know →</a></p>
+    </div>
+  </section>
+
   <!-- QUOTES -->
   <section id="proof">
     <div class="wrap">
@@ -1537,6 +1727,7 @@
             <li><a href="#how">How it works</a></li>
             <li><a href="#features">Features</a></li>
             <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
           </ul>
         </div>
         <div class="foot-col">
@@ -1921,6 +2112,28 @@
     requestAnimationFrame(() => requestAnimationFrame(() => {
       reveals.forEach(el => io.observe(el));
     }));
+  })();
+
+  /* ----------------------- roadmap progress bars */
+  (function () {
+    const fills = document.querySelectorAll('.rm-progress-fill[data-target]');
+    if (!fills.length) return;
+    if (!('IntersectionObserver' in window)) {
+      fills.forEach(f => { f.style.width = f.dataset.target + '%'; });
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const target = parseInt(e.target.dataset.target, 10);
+          const dur = target === 100 ? 800 : 600;
+          e.target.style.transition = `width ${dur}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+          setTimeout(() => { e.target.style.width = target + '%'; }, 120);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    fills.forEach(f => io.observe(f));
   })();
 
   /* ----------------------- magnetic CTA on primary buttons */
