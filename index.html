@@ -1746,6 +1746,7 @@
             <li><a href="mailto:hello@huntid.app">Contact</a></li>
             <li><a href="#privacy">Privacy Policy</a></li>
             <li><a href="#terms">Terms of Service</a></li>
+            <li><a href="#refund">Refund Policy</a></li>
           </ul>
         </div>
         <div class="foot-col">
@@ -1978,6 +1979,86 @@
   </div>
 </div>
 
+<!-- ============================================================ REFUND -->
+<div id="page-refund" class="subpage" style="display: none;">
+  <div class="wrap">
+    <a href="#home" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to HuntID
+    </a>
+    <h1 class="display">Refund <span class="accent">Policy</span></h1>
+    <div class="subtitle">Last updated · May 2026</div>
+    <div class="subpage-content">
+      <article>
+        <span class="n">SECTION 01</span>
+        <div>
+          <h2>Overview</h2>
+          <div class="body">
+            <p>HuntID subscriptions are processed by <strong>Paddle.com</strong>, who acts as the Merchant of Record. All billing, payments, and refund transactions are handled by Paddle on our behalf.</p>
+            <p>During the <strong>beta period (until July 31, 2026)</strong>, HuntID is completely free. This refund policy applies once paid subscriptions begin.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 02</span>
+        <div>
+          <h2>14-day refund guarantee</h2>
+          <div class="body">
+            <p>If you're not satisfied with HuntID, you can request a full refund within <strong>14 days of your first payment</strong> — no questions asked.</p>
+            <p>This applies to new subscriptions only. The 14-day window starts on the date your first charge is processed.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 03</span>
+        <div>
+          <h2>After 14 days</h2>
+          <div class="body">
+            <p>After the 14-day window, refunds are not issued for the current billing period. You can cancel your subscription at any time — you'll keep access until the end of the period you've already paid for.</p>
+            <p>Exceptions are made at our discretion in cases of significant technical failure on our side (e.g., the extension stops working entirely for an extended period).</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 04</span>
+        <div>
+          <h2>How to request a refund</h2>
+          <div class="body">
+            <p>Email us at <strong>foreverykindofthing@gmail.com</strong> with the subject line <strong>"Refund request"</strong> and include:</p>
+            <ul>
+              <li>The email address used to sign up</li>
+              <li>The date of your charge</li>
+              <li>A brief reason (optional, but helpful)</li>
+            </ul>
+            <p>We'll process your request within <strong>5 business days</strong>. Paddle handles the actual refund transaction — funds typically appear within 5–10 business days depending on your bank.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 05</span>
+        <div>
+          <h2>Cancellations</h2>
+          <div class="body">
+            <p>You can cancel your subscription at any time from your account settings. Cancellation stops future charges — it does not trigger a refund for the current period unless you're within the 14-day window.</p>
+            <p>No cancellation fees. No commitment. Cancel whenever you want.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 06</span>
+        <div>
+          <h2>Contact</h2>
+          <div class="body">
+            <p>Questions about billing or refunds?</p>
+            <p><strong>Email:</strong> foreverykindofthing@gmail.com</p>
+            <p>We respond within 5 business days.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
 <script>
   /* ----------------------- hero waves */
   (function () {
@@ -2080,17 +2161,20 @@
     const pages = {
       privacy: document.getElementById('page-privacy'),
       terms:   document.getElementById('page-terms'),
+      refund:  document.getElementById('page-refund'),
       main:    document.getElementById('page-main')
     };
     function route() {
       const h = (location.hash || '').replace('#', '').toLowerCase();
-      const t = (h === 'privacy' || h === 'terms') ? h : 'main';
+      const t = (h === 'privacy' || h === 'terms' || h === 'refund') ? h : 'main';
       pages.main.style.display    = t === 'main' ? '' : 'none';
       pages.privacy.style.display = t === 'privacy' ? '' : 'none';
       pages.terms.style.display   = t === 'terms' ? '' : 'none';
+      pages.refund.style.display  = t === 'refund' ? '' : 'none';
       if (t !== 'main') window.scrollTo({ top: 0, behavior: 'instant' });
       document.title = t === 'privacy' ? 'HuntID — Privacy Policy'
                      : t === 'terms'   ? 'HuntID — Terms of Service'
+                     : t === 'refund'  ? 'HuntID — Refund Policy'
                      : 'HuntID — That track you can\'t stop thinking about?';
     }
     window.addEventListener('hashchange', route);
