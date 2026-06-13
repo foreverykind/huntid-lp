@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HuntID — Payment</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card { text-align: center; max-width: 340px; padding: 40px 24px; }
+    .icon {
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .icon.success { background: rgba(255,85,0,0.12); border: 1px solid rgba(255,85,0,0.25); }
+    .icon.fail    { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); }
+    h1 { font-size: 20px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .sub { font-size: 13px; color: #777; line-height: 1.55; margin-bottom: 28px; }
+    .btn {
+      display: inline-block;
+      padding: 11px 22px;
+      background: #ff5500;
+      color: #fff;
+      border-radius: 9px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+    .timer { font-size: 11px; color: #444; margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon success" id="icon">
+      <svg id="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+           stroke="#ff5500" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </div>
+    <h1 id="title">You're all set!</h1>
+    <p class="sub" id="sub">Your HuntID Pro subscription is now active. Head back to SoundCloud and keep hunting.</p>
+    <a href="https://soundcloud.com" class="btn">Back to SoundCloud</a>
+    <p class="timer" id="timer"></p>
+  </div>
+
+  <script>
+    const status = new URLSearchParams(window.location.search).get("status");
+
+    if (status === "failed") {
+      document.getElementById("icon").className = "icon fail";
+      document.getElementById("icon-svg").setAttribute("stroke", "#555");
+      document.getElementById("icon-svg").innerHTML =
+        '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
+      document.getElementById("title").textContent = "Payment failed";
+      document.getElementById("sub").textContent =
+        "Something went wrong. Please try again from the HuntID extension.";
+    }
+
+    let secs = 10;
+    const timer = document.getElementById("timer");
+    timer.textContent = "This tab will close in " + secs + " seconds";
+    const iv = setInterval(function () {
+      secs--;
+      if (secs <= 0) {
+        clearInterval(iv);
+        window.close();
+      } else {
+        timer.textContent = "This tab will close in " + secs + " seconds";
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
