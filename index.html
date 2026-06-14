@@ -1110,6 +1110,15 @@
   .subpage-content article .body ul:last-child { margin-bottom: 0; }
   .subpage-content article .body li { font-size: 14px; color: var(--text-dim); margin-bottom: 4px; line-height: 1.55; }
   .subpage-content article .body strong { color: var(--text); font-weight: 600; font-style: normal; }
+  .subpage-content article .body a { color: var(--accent); text-decoration: none; }
+  .subpage-content article .body a:hover { text-decoration: underline; }
+  .subpage-content article .body .legal-table { width: 100%; border-collapse: collapse; margin: 4px 0 10px; }
+  .subpage-content article .body .legal-table th,
+  .subpage-content article .body .legal-table td {
+    font-size: 13px; color: var(--text-dim); text-align: left;
+    padding: 8px 12px; border: 1px solid var(--border); line-height: 1.45;
+  }
+  .subpage-content article .body .legal-table thead th { color: var(--text); font-weight: 600; background: color-mix(in oklab, var(--accent) 5%, var(--surface)); }
 
   /* ============================== roadmap */
   .roadmap-grid {
@@ -1784,94 +1793,129 @@
       Back to HuntID
     </a>
     <h1 class="display">Privacy <span class="accent">Policy</span></h1>
-    <div class="subtitle">Last updated · May 2026</div>
+    <div class="subtitle">Last updated · June 2026</div>
     <div class="subpage-content">
       <article>
         <span class="n">SECTION 01</span>
         <div>
-          <h2>What we collect</h2>
+          <h2>Who we are</h2>
           <div class="body">
-            <p>When you use HuntID, we collect the following information:</p>
-            <ul>
-              <li><strong>Email address</strong> — We store this when you sign up via Google Auth. It's how we identify your account.</li>
-              <li><strong>Sign-up date</strong> — The timestamp when you created your HuntID account.</li>
-              <li><strong>Search statistics</strong> — When you search for a tracklist, we log: the search query (artist/mix name), the timestamp, and whether the search returned results.</li>
-            </ul>
-            <p>We do <strong>not</strong> collect: which SoundCloud mixes or tracks you browse, your SoundCloud account data or credentials, your browser history or activity outside HuntID, audio data, cookies, or session tokens from SoundCloud, or location, device ID, or personal identifiers beyond your email.</p>
-            <p>We're not tracking your listening habits. We only know what you <em>searched for</em>, not what you <em>listened to</em>.</p>
+            <p>HuntID ("we", "our", "us") is a Chrome Extension that helps music fans find tracklists for DJ mixes on SoundCloud.</p>
+            <p><strong>Contact:</strong> foreverykindofthing@gmail.com<br /><strong>Website:</strong> <a href="https://huntid.app">https://huntid.app</a></p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 02</span>
         <div>
-          <h2>How we use your data</h2>
+          <h2>What data we collect and why</h2>
           <div class="body">
-            <p>We use the data we collect for one reason: <strong>to make HuntID better</strong>.</p>
-            <ul>
-              <li><strong>Improving search</strong> — We analyze search patterns to understand which DJ mixes and artists users look for most, so we can improve our search algorithm and accuracy.</li>
-              <li><strong>Product decisions</strong> — Search stats tell us which features matter, what breaks, and where to focus next.</li>
-              <li><strong>Debugging</strong> — If something goes wrong, we use your search history to diagnose and fix issues.</li>
-            </ul>
-            <p>We don't sell your data, share it with third parties for marketing, use it for advertising or profiling, or give it to SoundCloud or any other platform.</p>
+            <p><strong>Account data.</strong> When you sign in with Google, we receive and store your email address and your Google display name (optional). Purpose: to identify your account and provide personalized features (search history, favourites). Legal basis: contract performance.</p>
+            <p><strong>Usage data.</strong> When you use HuntID, we store the SoundCloud URLs you searched for tracklists, the date and time of each search, whether a tracklist was found, the number of tracks in the tracklist, quality ratings you submit (1–3 stars), and the number of searches used (for freemium limits). Purpose: to provide search history, improve tracklist quality, and enforce freemium limits. Legal basis: contract performance and legitimate interest.</p>
+            <p><strong>Payment data.</strong> If you upgrade to Pro, payment is processed by Paddle (our Merchant of Record). We receive your subscription status (active/cancelled), subscription period end date, and Paddle subscription ID. We never receive or store your credit card details. Legal basis: contract performance.</p>
+            <p><strong>Analytics data.</strong> We use Google Analytics 4 and PostHog to understand how visitors use huntid.app: pages visited, time spent, scroll depth, browser type, country (anonymized), and session recordings on huntid.app (inputs masked). No analytics data is collected inside the Chrome Extension itself. Legal basis: legitimate interest.</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 03</span>
         <div>
-          <h2>Third-party services</h2>
+          <h2>How long we keep your data</h2>
           <div class="body">
-            <p><strong>Google Auth</strong> — You sign up with your Google account. Google handles your password and authentication. When you authenticate, Google shares your email address with us.</p>
-            <p><strong>Supabase</strong> — We use Supabase (a PostgreSQL database service) to store your email, sign-up date, and search statistics. Supabase handles data encryption and security. Your data is encrypted at rest and in transit.</p>
-            <p>The HuntID extension itself runs <strong>locally on your browser</strong>. When it interacts with SoundCloud, it only sends playback commands (like "skip to 2:30"). It doesn't read or extract SoundCloud data.</p>
+            <table class="legal-table">
+              <thead><tr><th>Data type</th><th>Retention period</th></tr></thead>
+              <tbody>
+                <tr><td>Account (email)</td><td>Until you delete your account</td></tr>
+                <tr><td>Search history</td><td>12 months rolling</td></tr>
+                <tr><td>Ratings</td><td>12 months rolling</td></tr>
+                <tr><td>Payment records</td><td>7 years (legal requirement)</td></tr>
+                <tr><td>Analytics data</td><td>26 months (GA4 default)</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 04</span>
         <div>
-          <h2>Data retention</h2>
+          <h2>Who we share data with</h2>
           <div class="body">
-            <p>We keep your data as long as your account exists.</p>
-            <p>If you delete your HuntID account, we delete your email address, sign-up date, and search history. Deletion happens within 30 days of your request.</p>
-            <p>We may keep anonymized, aggregated data (e.g., "100 searches for 'Richie Hawtin' in May") for product analytics. This can't identify you.</p>
+            <p>We share data only with these service providers:</p>
+            <table class="legal-table">
+              <thead><tr><th>Service</th><th>Purpose</th><th>Location</th></tr></thead>
+              <tbody>
+                <tr><td>Supabase</td><td>Database &amp; auth</td><td>EU (AWS)</td></tr>
+                <tr><td>Paddle</td><td>Payment processing</td><td>UK / Global</td></tr>
+                <tr><td>PostHog</td><td>Session analytics</td><td>EU</td></tr>
+                <tr><td>Google</td><td>OAuth + Analytics</td><td>Global</td></tr>
+              </tbody>
+            </table>
+            <p>We do not sell your data. We do not share your data with advertisers. We do not share your search history with third parties.</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 05</span>
         <div>
-          <h2>Your rights</h2>
+          <h2>Your rights (GDPR)</h2>
           <div class="body">
-            <p>You have the right to:</p>
+            <p>If you are in the European Economic Area, you have the right to:</p>
             <ul>
-              <li><strong>Access your data</strong> — We'll send you everything we have on you (email, sign-up date, full search history).</li>
-              <li><strong>Correct your data</strong> — If your email is wrong, we'll fix it.</li>
-              <li><strong>Delete your data</strong> — Request full deletion of your account and all associated data.</li>
-              <li><strong>Opt out of analytics</strong> — We can disable data collection for your account if you ask.</li>
+              <li><strong>Access</strong> — request a copy of your personal data.</li>
+              <li><strong>Correction</strong> — update inaccurate data.</li>
+              <li><strong>Deletion</strong> — request deletion of your data ("right to be forgotten").</li>
+              <li><strong>Portability</strong> — receive your data in a machine-readable format.</li>
+              <li><strong>Objection</strong> — object to processing based on legitimate interest.</li>
+              <li><strong>Withdraw consent</strong> — at any time, where processing is based on consent.</li>
             </ul>
-            <p>To exercise any of these rights, email us (see Section 06). We'll respond within 30 days. If you're in the EU, you have rights under GDPR. If you're in California, you have rights under CCPA. Same process: email us.</p>
+            <p>To exercise any of these rights, or to delete your account and all associated data, email us at <strong>foreverykindofthing@gmail.com</strong>. We will respond within 30 days.</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 06</span>
         <div>
-          <h2>Contact</h2>
+          <h2>Cookies and tracking</h2>
           <div class="body">
-            <p>Questions about privacy? Data requests? Want to delete your account?</p>
-            <p><strong>Email:</strong> foreverykindofthing@gmail.com</p>
-            <p>We read every email and respond within 30 days.</p>
+            <p>huntid.app uses Google Analytics cookies (analytics) and PostHog cookies (session replay).</p>
+            <p>The HuntID Chrome Extension does not use cookies. It uses <code>chrome.storage.local</code> to store your session token locally on your device.</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 07</span>
         <div>
+          <h2>Data security</h2>
+          <div class="body">
+            <p>We protect your data using encrypted connections (HTTPS/TLS) for all data transfer, row-level security in our database (Supabase RLS), no plaintext storage of passwords or tokens, and regular security reviews.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 08</span>
+        <div>
+          <h2>Children's privacy</h2>
+          <div class="body">
+            <p>HuntID is not directed at children under 13. We do not knowingly collect data from children under 13. If you believe a child has provided us data, contact foreverykindofthing@gmail.com and we will delete it.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 09</span>
+        <div>
           <h2>Changes to this policy</h2>
           <div class="body">
-            <p>We may update this privacy policy if our practices change or if the law requires it. We'll email you about material changes. Your continued use of HuntID means you accept the updated policy.</p>
+            <p>We may update this Privacy Policy from time to time. When we do, we update the "Last updated" date at the top. For significant changes, we will notify users by email.</p>
+          </div>
+        </div>
+      </article>
+      <article>
+        <span class="n">SECTION 10</span>
+        <div>
+          <h2>Contact</h2>
+          <div class="body">
+            <p>Questions about this Privacy Policy?</p>
+            <p><strong>Email:</strong> foreverykindofthing@gmail.com<br /><strong>Website:</strong> <a href="https://huntid.app">https://huntid.app</a></p>
           </div>
         </div>
       </article>
@@ -1887,100 +1931,84 @@
       Back to HuntID
     </a>
     <h1 class="display">Terms <span class="accent">of Service</span></h1>
-    <div class="subtitle">Last updated · May 2026</div>
+    <div class="subtitle">Last updated · June 2026</div>
     <div class="subpage-content">
       <article>
         <span class="n">SECTION 01</span>
         <div>
-          <h2>Acceptance of terms</h2>
+          <h2>Acceptance</h2>
           <div class="body">
-            <p>By installing and using HuntID, you agree to these terms. If you don't agree, don't use the extension.</p>
-            <p>These terms are a contract between you and the creator of HuntID. They govern how you can use the extension, what we're responsible for (and what we're not), and how disputes get resolved.</p>
-            <p>If you're using HuntID on behalf of a company or organization, you're responsible for making sure everyone who uses it agrees to these terms too.</p>
+            <p>By using HuntID you agree to these terms.</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 02</span>
         <div>
-          <h2>Use of the extension</h2>
+          <h2>Service description</h2>
           <div class="body">
-            <p><strong>What you can do:</strong></p>
-            <ul>
-              <li>Install HuntID on your Chrome browser and use it to search for DJ mix tracklists on SoundCloud.</li>
-              <li>Create an account, search, and save tracklists.</li>
-              <li>Use the extension for personal, non-commercial purposes.</li>
-            </ul>
-            <p><strong>What you can't do:</strong></p>
-            <ul>
-              <li>Reverse-engineer, decompile, or try to extract the source code.</li>
-              <li>Use the extension to scrape SoundCloud or extract data at scale.</li>
-              <li>Modify the extension or create derivatives without permission.</li>
-              <li>Use it to violate SoundCloud's terms of service.</li>
-              <li>Use it for anything illegal or harmful.</li>
-              <li>Spam, abuse, or attack the HuntID servers.</li>
-            </ul>
+            <p>HuntID is a Chrome Extension that finds tracklists for DJ mixes on SoundCloud. We do not guarantee availability or accuracy of tracklists.</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 03</span>
         <div>
-          <h2>Subscription and billing</h2>
+          <h2>Free and Pro plans</h2>
           <div class="body">
-            <p>HuntID is currently <strong>free</strong>.</p>
-            <p>If paid features are introduced in the future, you'll receive clear notice before any charges, the ability to opt out or cancel anytime, a refund if you're not satisfied (within 14 days), and no card charges without explicit consent.</p>
+            <p><strong>Free plan:</strong> 10 tracklist searches per month.</p>
+            <p><strong>Pro plan:</strong> $3.99/month, unlimited searches.</p>
+            <p>Prices may change with 30 days notice to existing subscribers.</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 04</span>
         <div>
-          <h2>Intellectual property</h2>
+          <h2>Acceptable use</h2>
           <div class="body">
-            <p><strong>HuntID's IP belongs to the creator.</strong> The extension code, design, and features are not available for copying, selling, or redistribution.</p>
-            <p><strong>Your content is yours.</strong> If you create tracklists or save searches in HuntID, you own that data. We're just storing it for you.</p>
-            <p><strong>Tracklist data from SoundCloud</strong> — SoundCloud owns the music and mix data. The extension is just a navigation tool. You're not allowed to download or redistribute SoundCloud content via HuntID.</p>
+            <p>You may not use HuntID to:</p>
+            <ul>
+              <li>Scrape or redistribute tracklist data commercially.</li>
+              <li>Attempt to circumvent freemium limits.</li>
+              <li>Use the service in a way that violates SoundCloud's terms.</li>
+            </ul>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 05</span>
         <div>
-          <h2>Disclaimer</h2>
+          <h2>Intellectual property</h2>
           <div class="body">
-            <p><strong>HuntID is provided "as-is."</strong> No guarantees are made that the extension will work perfectly 100% of the time, that search results will always be accurate, or that it won't break if SoundCloud changes their platform.</p>
-            <p>We're not liable for data loss or corruption, lost earnings or business losses, indirect or consequential damages, or issues caused by SoundCloud, Google, or third-party services.</p>
-            <p><strong>SoundCloud is not responsible for HuntID.</strong> This is a solo side project — there's no SLA or guaranteed 24/7 support, but every reasonable effort will be made.</p>
+            <p>Tracklist data is sourced from third-party databases. HuntID does not claim ownership of tracklist content.</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 06</span>
         <div>
-          <h2>Contact</h2>
+          <h2>Limitation of liability</h2>
           <div class="body">
-            <p>Questions? Issues? Want to report a bug?</p>
-            <p><strong>Email:</strong> foreverykindofthing@gmail.com</p>
-            <p>If you want to report a security issue, please email privately instead of posting it publicly.</p>
+            <p>HuntID is provided "as is". We are not liable for inaccurate tracklists or service interruptions.</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 07</span>
         <div>
-          <h2>Changes to these terms</h2>
+          <h2>Governing law</h2>
           <div class="body">
-            <p>These terms may be updated if the law changes or if the service changes. You'll be emailed about material changes. Continued use means you accept the updated terms.</p>
+            <p>These terms are governed by the laws of Georgia (country).</p>
           </div>
         </div>
       </article>
       <article>
         <span class="n">SECTION 08</span>
         <div>
-          <h2>Governing law</h2>
+          <h2>Contact</h2>
           <div class="body">
-            <p>These terms are governed by the laws of [Your jurisdiction]. Any disputes will be handled in [Your jurisdiction]'s courts, or we'll try to work it out via email first.</p>
+            <p><strong>Email:</strong> foreverykindofthing@gmail.com</p>
           </div>
         </div>
       </article>
