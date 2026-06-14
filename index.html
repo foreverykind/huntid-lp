@@ -5,22 +5,37 @@
 <title>HuntID — That track you can't stop thinking about?</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="For the tracks Shazam can't find. HuntID finds tracklists for DJ mixes on SoundCloud — click any timecode to jump right there." />
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FSL80G4RP9"></script>
+<!-- Analytics consent gate: GA4 + PostHog load ONLY after the visitor accepts cookies -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  window.huntidLoadAnalytics = function () {
+    if (window.__huntidAnalyticsLoaded) return;
+    window.__huntidAnalyticsLoaded = true;
 
-  gtag('config', 'G-FSL80G4RP9');
-</script>
-<!-- PostHog -->
-<script>
-  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init be fs capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureFlagEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-  posthog.init('phc_mLEypmnYhEpYaecasRXCbhFE7oK4XEJhRB8njEyDy9vb', {
-    api_host: 'https://eu.i.posthog.com',
-    person_profiles: 'identified_only',
-  });
+    // Google Analytics 4
+    var ga = document.createElement('script');
+    ga.async = true;
+    ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-FSL80G4RP9';
+    document.head.appendChild(ga);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-FSL80G4RP9');
+
+    // PostHog
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init be fs capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureFlagEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_mLEypmnYhEpYaecasRXCbhFE7oK4XEJhRB8njEyDy9vb', {
+      api_host: 'https://eu.i.posthog.com',
+      person_profiles: 'identified_only',
+    });
+  };
+
+  // Load immediately only if the visitor previously accepted.
+  try {
+    if (localStorage.getItem('huntid_cookie_consent') === 'accepted') {
+      window.huntidLoadAnalytics();
+    }
+  } catch (e) {}
 </script>
 <link rel="canonical" href="https://www.huntid.app/" />
 <link rel="icon" type="image/png" href="favicon.png" />
@@ -1079,6 +1094,35 @@
   }
   .back-link:hover { color: var(--accent); border-color: var(--accent); }
 
+  /* ============================== cookie consent */
+  .cookie-banner {
+    position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 9999;
+    max-width: 640px; margin: 0 auto;
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    padding: 18px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+  }
+  .cookie-banner p { margin: 0; flex: 1 1 260px; font-size: 13px; line-height: 1.5; color: var(--text-dim); }
+  .cookie-banner p a { color: var(--accent); text-decoration: none; }
+  .cookie-banner p a:hover { text-decoration: underline; }
+  .cookie-banner .cookie-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .cookie-banner button {
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 9px 18px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--border); transition: all 160ms;
+  }
+  .cookie-banner .cookie-decline { background: transparent; color: var(--text-dim); }
+  .cookie-banner .cookie-decline:hover { color: var(--text); border-color: var(--text-dim); }
+  .cookie-banner .cookie-accept { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .cookie-banner .cookie-accept:hover { filter: brightness(0.95); }
+  @media (max-width: 520px) {
+    .cookie-banner { flex-direction: column; align-items: stretch; }
+    .cookie-banner .cookie-actions { justify-content: flex-end; }
+  }
+
   /* ============================== one track block */
   .one-track-block {
     max-width: 600px;
@@ -1813,7 +1857,7 @@
             <p><strong>Account data.</strong> When you sign in with Google, we receive and store your email address and your Google display name (optional). Purpose: to identify your account and provide personalized features (search history, favourites). Legal basis: contract performance.</p>
             <p><strong>Usage data.</strong> When you use HuntID, we store the SoundCloud URLs you searched for tracklists, the date and time of each search, whether a tracklist was found, the number of tracks in the tracklist, quality ratings you submit (1–3 stars), and the number of searches used (for freemium limits). Purpose: to provide search history, improve tracklist quality, and enforce freemium limits. Legal basis: contract performance and legitimate interest.</p>
             <p><strong>Payment data.</strong> If you upgrade to Pro, payment is processed by Paddle (our Merchant of Record). We receive your subscription status (active/cancelled), subscription period end date, and Paddle subscription ID. We never receive or store your credit card details. Legal basis: contract performance.</p>
-            <p><strong>Analytics data.</strong> We use Google Analytics 4 and PostHog to understand how visitors use huntid.app: pages visited, time spent, scroll depth, browser type, country (anonymized), and session recordings on huntid.app (inputs masked). No analytics data is collected inside the Chrome Extension itself. Legal basis: legitimate interest.</p>
+            <p><strong>Analytics data.</strong> We use Google Analytics 4 and PostHog to understand how visitors use huntid.app: pages visited, time spent, scroll depth, browser type, country (anonymized), and session recordings on huntid.app (inputs masked). These tools load only after you accept cookies via the consent banner. No analytics data is collected inside the Chrome Extension itself. Legal basis: consent.</p>
           </div>
         </div>
       </article>
@@ -1877,7 +1921,7 @@
         <div>
           <h2>Cookies and tracking</h2>
           <div class="body">
-            <p>huntid.app uses Google Analytics cookies (analytics) and PostHog cookies (session replay).</p>
+            <p>huntid.app uses Google Analytics cookies (analytics) and PostHog cookies (session replay). These load only after you accept cookies via the consent banner shown on your first visit. If you decline, no analytics cookies are set. You can change your choice at any time by clearing your browser's site data for huntid.app.</p>
             <p>The HuntID Chrome Extension does not use cookies. It uses <code>chrome.storage.local</code> to store your session token locally on your device.</p>
           </div>
         </div>
@@ -2311,6 +2355,38 @@
       });
     }
     window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>
+
+<!-- ============================================================ COOKIE CONSENT -->
+<div id="cookie-banner" class="cookie-banner" style="display: none;" role="dialog" aria-live="polite" aria-label="Cookie consent">
+  <p>We use cookies for analytics (Google Analytics, PostHog) to understand how huntid.app is used. See our <a href="#privacy">Privacy Policy</a>.</p>
+  <div class="cookie-actions">
+    <button type="button" class="cookie-decline" id="cookie-decline">Decline</button>
+    <button type="button" class="cookie-accept" id="cookie-accept">Accept</button>
+  </div>
+</div>
+<script>
+  (function () {
+    var KEY = 'huntid_cookie_consent';
+    var banner = document.getElementById('cookie-banner');
+    var choice = null;
+    try { choice = localStorage.getItem(KEY); } catch (e) {}
+
+    if (choice !== 'accepted' && choice !== 'declined') {
+      banner.style.display = 'flex';
+    }
+
+    function decide(value) {
+      try { localStorage.setItem(KEY, value); } catch (e) {}
+      banner.style.display = 'none';
+      if (value === 'accepted' && typeof window.huntidLoadAnalytics === 'function') {
+        window.huntidLoadAnalytics();
+      }
+    }
+
+    document.getElementById('cookie-accept').addEventListener('click', function () { decide('accepted'); });
+    document.getElementById('cookie-decline').addEventListener('click', function () { decide('declined'); });
   })();
 </script>
 
