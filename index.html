@@ -1695,16 +1695,16 @@
         <div class="price-card reveal">
           <div class="pill-badge">Pro</div>
           <div class="plan-toggle">
-            <button class="plan-btn" id="btn-monthly" onclick="setPlan('monthly')">Monthly</button>
-            <button class="plan-btn plan-btn-active" id="btn-annual" onclick="setPlan('annual')">Annual <span class="save-chip">Save 39%</span></button>
+            <button class="plan-btn plan-btn-active" id="btn-monthly" onclick="setPlan('monthly')">Monthly</button>
+            <button class="plan-btn" id="btn-annual" onclick="setPlan('annual')">Annual <span class="save-chip">Save 39%</span></button>
           </div>
-          <div id="plan-annual-price">
-            <div class="price-big" style="font-size: clamp(52px,5vw,72px); line-height:1;">$21.99</div>
-            <div class="price-sub">/ year · ≈ $1.83/mo</div>
-          </div>
-          <div id="plan-monthly-price" style="display:none">
+          <div id="plan-monthly-price">
             <div class="price-big" style="font-size: clamp(52px,5vw,72px); line-height:1;">$2.99</div>
             <div class="price-sub">/ month</div>
+          </div>
+          <div id="plan-annual-price" style="display:none">
+            <div class="price-big" style="font-size: clamp(52px,5vw,72px); line-height:1;">$21.99</div>
+            <div class="price-sub">/ year · ≈ $1.83/mo</div>
           </div>
           <ul class="price-list" style="text-align:left; margin-top: 24px;">
             <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Everything in Free</li>
