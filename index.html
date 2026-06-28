@@ -803,9 +803,11 @@
   /* ============================== pricing */
   .pricing-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    max-width: 480px;
+    grid-template-columns: 1fr 1fr;
+    max-width: 880px;
     margin: 0 auto;
+    gap: 24px;
+    align-items: start;
   }
   .price-card {
     background: var(--surface);
@@ -815,6 +817,20 @@
     text-align: center;
     position: relative;
     box-shadow: 0 0 0 6px var(--accent-soft), 0 30px 60px -20px rgba(255,85,0,0.3);
+  }
+  .price-card-free {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+  }
+  .price-tier {
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 16px;
   }
   .price-card .pill-badge {
     position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
@@ -1325,6 +1341,7 @@
     .hero-card-right { min-height: 480px; padding: 32px; }
     .problem-grid, .how-grid, .quotes-grid { grid-template-columns: 1fr; }
     .feat-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
     .roadmap-grid { grid-template-columns: 1fr; gap: 16px; }
     .problem-card { padding: 56px 32px; }
     .final-card { padding: 72px 32px; }
@@ -1657,42 +1674,59 @@
       <div class="sec-head reveal">
         <span class="eyebrow">Pricing</span>
         <h2 class="display">Simple <span class="accent">pricing</span>.</h2>
-        <p>Free forever. Go Pro when you're ready.</p>
+        <p>Free forever. Upgrade for the full workflow.</p>
       </div>
       <div class="pricing-grid">
-        <div class="price-card reveal">
-          <div class="pill-badge">Beta</div>
-          <div class="price-big">Free</div>
-          <div class="price-sub">Until July 31, 2026</div>
-          <ul class="price-list">
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Full tracklist search</li>
+
+        <!-- FREE -->
+        <div class="price-card-free reveal">
+          <div class="price-tier">Free · forever</div>
+          <div class="price-big" style="font-size: clamp(52px,5vw,72px); line-height:1;">$0</div>
+          <div class="price-sub" style="margin-bottom: 28px;">No credit card. No expiry.</div>
+          <ul class="price-list" style="text-align:left;">
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> 10 tracklist searches / month</li>
             <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Clickable timecodes</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Now Playing view</li>
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Now Playing — always know what's on</li>
             <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> One-click copy</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Unlimited searches during beta</li>
           </ul>
-          <div class="price-divider"></div>
-          <div class="price-after-lbl">After beta — Pro plan</div>
+          <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-outline btn-lg" style="width:100%; margin-top: 28px;">
+            Add to Chrome
+            <span class="arr">→</span>
+          </a>
+        </div>
+
+        <!-- PRO -->
+        <div class="price-card reveal">
+          <div class="pill-badge">Pro</div>
           <div class="plan-toggle">
             <button class="plan-btn" id="btn-monthly" onclick="setPlan('monthly')">Monthly</button>
             <button class="plan-btn plan-btn-active" id="btn-annual" onclick="setPlan('annual')">Annual <span class="save-chip">Save 39%</span></button>
           </div>
-          <div id="plan-monthly-price" style="display:none">
-            <div class="price-after">$2.99 <span class="per">/ month</span></div>
-            <div class="price-after-note">Cancel anytime. No commitment.</div>
-          </div>
           <div id="plan-annual-price">
-            <div class="price-after">$21.99 <span class="per">/ year</span></div>
-            <div class="price-after-note">≈ $1.83/mo · best value · cancel anytime</div>
+            <div class="price-big" style="font-size: clamp(52px,5vw,72px); line-height:1;">$21.99</div>
+            <div class="price-sub">/ year · ≈ $1.83/mo</div>
           </div>
-          <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-primary btn-lg" data-track-cws="pricing">
+          <div id="plan-monthly-price" style="display:none">
+            <div class="price-big" style="font-size: clamp(52px,5vw,72px); line-height:1;">$2.99</div>
+            <div class="price-sub">/ month</div>
+          </div>
+          <ul class="price-list" style="text-align:left; margin-top: 24px;">
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Everything in Free</li>
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Unlimited searches</li>
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> History — all past tracklist searches</li>
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Favourites — save tracks</li>
+            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Buy links — Beatport, Bandcamp, Traxsource</li>
+          </ul>
+          <div class="price-after-note" style="margin-top: 16px;">Cancel anytime. No commitment.</div>
+          <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="width:100%; margin-top: 20px;" data-track-cws="pricing">
             Add to Chrome — Free now
             <span class="arr">→</span>
           </a>
         </div>
-        <div class="pricing-note">
-          Beta pricing ends July 31. Early users get 30 days free after the beta ends.
-        </div>
+
+      </div>
+      <div class="pricing-note">
+        Beta ends July 31. Early users get 30 days free Pro after the beta.
       </div>
     </div>
   </section>
