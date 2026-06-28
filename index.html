@@ -843,7 +843,8 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
-  .price-card .price-big {
+  .price-card .price-big,
+  .price-card-free .price-big {
     font-family: "Bricolage Grotesque", sans-serif;
     font-size: 88px;
     font-weight: 700;
@@ -851,7 +852,8 @@
     letter-spacing: -0.04em;
     margin: 16px 0 4px;
   }
-  .price-card .price-sub {
+  .price-card .price-sub,
+  .price-card-free .price-sub {
     font-size: 14px; color: var(--text-dim);
   }
   .price-list {
@@ -1681,7 +1683,8 @@
         <!-- FREE -->
         <div class="price-card-free reveal">
           <div class="price-tier">Free · forever</div>
-          <div class="price-big" style="font-size: clamp(52px,5vw,72px); line-height:1;">$0</div>
+          <div style="height: 50px;"></div>
+          <div class="price-big">$0</div>
           <div class="price-sub" style="margin-bottom: 28px;">No credit card. No expiry.</div>
           <ul class="price-list" style="text-align:left;">
             <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> 10 tracklist searches / month</li>
@@ -1699,11 +1702,11 @@
             <button class="plan-btn" id="btn-annual" onclick="setPlan('annual')">Annual <span class="save-chip">Save 39%</span></button>
           </div>
           <div id="plan-monthly-price">
-            <div class="price-big" style="font-size: clamp(52px,5vw,72px); line-height:1;">$2.99</div>
+            <div class="price-big">$2.99</div>
             <div class="price-sub">/ month</div>
           </div>
           <div id="plan-annual-price" style="display:none">
-            <div class="price-big" style="font-size: clamp(52px,5vw,72px); line-height:1;">$21.99</div>
+            <div class="price-big">$21.99</div>
             <div class="price-sub">/ year · ≈ $1.83/mo</div>
           </div>
           <ul class="price-list" style="text-align:left; margin-top: 24px;">
@@ -1728,7 +1731,7 @@
           <span class="arr">→</span>
         </a>
         <div class="pricing-note" style="margin-top: 16px;">
-          Beta ends July 31. Early users get 30 days free Pro after the beta.
+          Beta ends July 31. Freemium kicks in — 10 searches/month free forever.
         </div>
       </div>
     </div>
