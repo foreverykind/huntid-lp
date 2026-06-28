@@ -1285,6 +1285,39 @@
   }
   .rm-footer-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
 
+  /* ============================== plan toggle */
+  .plan-toggle {
+    display: flex;
+    background: var(--surface-3);
+    border-radius: 999px;
+    padding: 4px; gap: 4px;
+    margin: 16px 0 20px;
+  }
+  .plan-btn {
+    flex: 1; height: 34px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-dim);
+    background: transparent;
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: background 200ms, color 200ms;
+    font-family: inherit;
+  }
+  .plan-btn-active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+  .save-chip {
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+
   /* ============================== mobile */
   @media (max-width: 1000px) {
     .hero-grid { grid-template-columns: 1fr; }
@@ -1624,7 +1657,7 @@
       <div class="sec-head reveal">
         <span class="eyebrow">Pricing</span>
         <h2 class="display">Simple <span class="accent">pricing</span>.</h2>
-        <p>One product. One price. No tiers.</p>
+        <p>Free forever. Go Pro when you're ready.</p>
       </div>
       <div class="pricing-grid">
         <div class="price-card reveal">
@@ -1639,9 +1672,19 @@
             <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Unlimited searches during beta</li>
           </ul>
           <div class="price-divider"></div>
-          <div class="price-after-lbl">After beta</div>
-          <div class="price-after">$3.99 <span class="per">/ month</span></div>
-          <div class="price-after-note">Cancel anytime. No commitment.</div>
+          <div class="price-after-lbl">After beta — Pro plan</div>
+          <div class="plan-toggle">
+            <button class="plan-btn" id="btn-monthly" onclick="setPlan('monthly')">Monthly</button>
+            <button class="plan-btn plan-btn-active" id="btn-annual" onclick="setPlan('annual')">Annual <span class="save-chip">Save 39%</span></button>
+          </div>
+          <div id="plan-monthly-price" style="display:none">
+            <div class="price-after">$2.99 <span class="per">/ month</span></div>
+            <div class="price-after-note">Cancel anytime. No commitment.</div>
+          </div>
+          <div id="plan-annual-price">
+            <div class="price-after">$21.99 <span class="per">/ year</span></div>
+            <div class="price-after-note">≈ $1.83/mo · best value · cancel anytime</div>
+          </div>
           <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-primary btn-lg" data-track-cws="pricing">
             Add to Chrome — Free now
             <span class="arr">→</span>
@@ -1686,7 +1729,7 @@
         <!-- SOON -->
         <div class="roadmap-card soon-card active reveal" data-delay="2">
           <div class="rm-badge in-progress"><span class="rm-dot"></span> In Progress</div>
-          <h3>Pro · $3.99/mo</h3>
+          <h3>Pro · $2.99/mo</h3>
           <div class="rm-progress-label">In development</div>
           <div class="rm-progress-track">
             <div class="rm-progress-fill orange" data-target="35"></div>
@@ -2202,6 +2245,14 @@
     );
     host.innerHTML = (items.concat(items)).join('');
   })();
+
+  /* ----------------------- plan toggle */
+  function setPlan(plan) {
+    document.getElementById('plan-monthly-price').style.display = plan === 'monthly' ? 'block' : 'none';
+    document.getElementById('plan-annual-price').style.display  = plan === 'annual'  ? 'block' : 'none';
+    document.getElementById('btn-monthly').className = 'plan-btn' + (plan === 'monthly' ? ' plan-btn-active' : '');
+    document.getElementById('btn-annual').className  = 'plan-btn' + (plan === 'annual'  ? ' plan-btn-active' : '');
+  }
 
   /* ----------------------- popup state cycle */
   (function () {
