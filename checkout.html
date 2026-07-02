@@ -55,9 +55,8 @@
   </div>
 
   <script>
-    Paddle.Environment.set("sandbox");
     Paddle.Initialize({
-      token: "test_614bf3664826c37a1dda69e91e6",
+      token: "live_d9fbf05058c411bda68c0d571c8",
       eventCallback: function (data) {
         if (data.name === "checkout.completed") {
           window.location.href = "/payment-success.html?status=success";
