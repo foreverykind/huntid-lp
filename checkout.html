@@ -17,12 +17,12 @@
       justify-content: center;
       -webkit-font-smoothing: antialiased;
     }
-    .wrap { text-align: center; padding: 24px; }
+    .wrap { text-align: center; padding: 24px; max-width: 360px; width: 100%; }
     .logo {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 28px;
     }
     .logo-icon {
       width: 28px; height: 28px;
@@ -31,8 +31,32 @@
       display: flex; align-items: center; justify-content: center;
     }
     .logo-name { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
-    .hint { font-size: 13px; color: #666; }
-    .err { font-size: 13px; color: #ff5500; margin-top: 8px; }
+    h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .sub { font-size: 13px; color: #888; margin-bottom: 28px; line-height: 1.5; }
+    .plans { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .plan {
+      border: 1.5px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 16px 18px;
+      cursor: pointer;
+      text-align: left;
+      background: #161616;
+      transition: border-color 160ms, background 160ms;
+      position: relative;
+    }
+    .plan:hover { border-color: #ff5500; background: #1a1212; }
+    .plan-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+    .plan-name { font-size: 14px; font-weight: 600; }
+    .plan-badge {
+      font-size: 10px; font-weight: 700;
+      background: #ff5500; color: #fff;
+      padding: 2px 7px; border-radius: 99px;
+    }
+    .plan-price { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; }
+    .plan-price span { font-size: 12px; font-weight: 400; color: #666; }
+    .plan-note { font-size: 11px; color: #555; margin-top: 3px; }
+    .hint { font-size: 12px; color: #444; }
+    .err { font-size: 13px; color: #ff5500; margin-top: 16px; }
   </style>
 </head>
 <body>
@@ -50,11 +74,36 @@
       </div>
       <span class="logo-name">HuntID</span>
     </div>
-    <p class="hint" id="hint">Opening checkout…</p>
+
+    <h1>Upgrade to Pro</h1>
+    <p class="sub">Unlimited searches, history, favourites<br>and more to come.</p>
+
+    <div class="plans" id="plans">
+      <div class="plan" id="plan-annual" onclick="startCheckout('annual')">
+        <div class="plan-header">
+          <span class="plan-name">Annual</span>
+          <span class="plan-badge">Save 39%</span>
+        </div>
+        <div class="plan-price">$21.99 <span>/ year</span></div>
+        <div class="plan-note">≈ $1.83/month</div>
+      </div>
+      <div class="plan" id="plan-monthly" onclick="startCheckout('monthly')">
+        <div class="plan-header">
+          <span class="plan-name">Monthly</span>
+        </div>
+        <div class="plan-price">$2.99 <span>/ month</span></div>
+        <div class="plan-note">Cancel anytime</div>
+      </div>
+    </div>
+
+    <p class="hint">Resets never · this is not a trial</p>
     <p class="err" id="err" style="display:none"></p>
   </div>
 
   <script>
+    var PRICE_MONTHLY = "pri_01kt9kehxvwehw4mw8mav4gkcc";
+    var PRICE_ANNUAL  = "pri_01kw72fcy8gbe5aahzfb9n9hpk";
+
     Paddle.Initialize({
       token: "live_d9fbf05058c411bda68c0d571c8",
       eventCallback: function (data) {
@@ -64,21 +113,24 @@
       }
     });
 
-    const params = new URLSearchParams(window.location.search);
-    const priceId = params.get("price_id");
-    const userId  = params.get("user_id");
-    const email   = params.get("email");
+    var params = new URLSearchParams(window.location.search);
+    var userId = params.get("user_id");
+    var email  = params.get("email");
 
     function showError(msg) {
-      document.getElementById("hint").style.display = "none";
-      const el = document.getElementById("err");
+      document.getElementById("plans").style.display = "none";
+      var el = document.getElementById("err");
       el.style.display = "block";
       el.textContent = msg;
     }
 
-    if (!priceId || !userId) {
+    if (!userId) {
       showError("Invalid checkout link. Please try again from the extension.");
-    } else {
+    }
+
+    function startCheckout(plan) {
+      if (!userId) return;
+      var priceId = plan === "annual" ? PRICE_ANNUAL : PRICE_MONTHLY;
       Paddle.Checkout.open({
         items: [{ priceId: priceId, quantity: 1 }],
         customer: email ? { email: decodeURIComponent(email) } : undefined,
