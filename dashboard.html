@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>HuntID — Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#0f0f0f;--surface:#1a1a1a;--surface-2:#1f1f1f;--surface-3:#252525;--accent:#ff5500;--accent-soft:rgba(255,85,0,0.10);--accent-strong:#ff6a1f;--text:#fff;--text-dim:#b3b3b3;--text-faint:#888;--border:#2a2a2a;--border-strong:#3a3a3a;--danger:#ef4444;--danger-soft:rgba(239,68,68,0.10);--success:#4ade80;--success-soft:rgba(74,222,128,0.10)}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{font-family:"Geist",system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent-strong)}
+button{font-family:inherit;cursor:pointer}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-feature-settings:"tnum" 1}
+.display{font-family:"Bricolage Grotesque","Geist",sans-serif;font-weight:600;letter-spacing:-0.025em}
+
+.brand{display:inline-flex;align-items:center;gap:9px;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.02em}
+.brand-mark{width:24px;height:24px;border-radius:7px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand .id{color:var(--accent)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border:0;border-radius:10px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:background 160ms,border-color 160ms,color 160ms,transform 200ms cubic-bezier(.2,.9,.3,1.4)}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 1px 0 rgba(255,255,255,0.18) inset,0 8px 22px -8px rgba(255,85,0,0.5)}
+.btn-primary:hover{background:var(--accent-strong);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border-strong)}
+.btn-outline:hover{background:var(--surface-2);border-color:var(--text-dim)}
+.btn-danger{background:var(--danger-soft);color:var(--danger);border:1px solid rgba(239,68,68,0.35)}
+.btn-danger:hover{background:rgba(239,68,68,0.18)}
+.btn-block{width:100%}
+.btn-sm{height:34px;padding:0 14px;font-size:12.5px}
+.btn:disabled{opacity:0.45;cursor:not-allowed;transform:none}
+
+#app{position:fixed;inset:0;display:grid;grid-template-columns:264px 1fr;background:var(--bg);overflow:hidden}
+.dsb{border-right:1px solid var(--border);background:#131313;display:flex;flex-direction:column;padding:22px 0 16px;overflow-y:auto}
+.dsb-brand{padding:0 20px 26px}
+.dsb-lbl{font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--text-faint);padding:0 20px 10px}
+.dsb nav{display:flex;flex-direction:column;gap:2px;padding:0 12px}
+.dnav{display:flex;align-items:center;gap:11px;width:100%;padding:9px 12px;border:0;border-radius:9px;background:none;font-family:inherit;font-size:13.5px;color:var(--text-dim);cursor:pointer;text-align:left;transition:background 140ms,color 140ms}
+.dnav svg{flex-shrink:0;opacity:0.8}
+.dnav .cnt{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--text-faint)}
+.dnav:hover{background:var(--surface-2);color:var(--text)}
+.dnav.on{background:var(--surface-3);color:var(--text);font-weight:500}
+.dnav.on svg{color:var(--accent);opacity:1}
+.dsb-foot{margin-top:auto;padding:18px 20px 0;font-family:"JetBrains Mono",monospace;font-size:9.5px;color:#5a5a5a;letter-spacing:0.06em;line-height:1.6}
+
+.dmain{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.dtop{height:64px;flex-shrink:0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:0 28px}
+.dtop .crumb{font-size:14.5px;color:var(--text-dim)}
+.dtop .du{display:flex;align-items:center;gap:10px;margin-left:auto;font-size:13px;color:var(--text-dim)}
+.dtop .av{width:28px;height:28px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:12px;color:var(--text)}
+.dbody{flex:1;overflow-y:auto;padding:36px 28px 80px}
+.dcol{max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.dhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:4px}
+.dhead h2{font-size:24px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600;letter-spacing:-0.02em;margin:0}
+.dhead p{margin:5px 0 0;font-size:13.5px;color:var(--text-faint)}
+.dcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px}
+.dcard-lbl{font-size:11px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--text-faint);margin-bottom:18px}
+.kvs{display:flex;flex-direction:column;gap:14px}
+.kvr{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.kvr .k{font-size:13.5px;color:var(--text-dim)}
+.kvr .v{font-size:15px;font-weight:600;text-align:right}
+.plan{font-size:23px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600;letter-spacing:-0.015em;display:flex;align-items:center;gap:10px}
+.pro-badge{font-family:"JetBrains Mono",monospace;font-size:9.5px;font-weight:600;letter-spacing:0.08em;background:var(--accent);color:#fff;padding:3px 8px;border-radius:999px}
+.usage{margin-top:14px;font-size:13.5px;color:var(--text-dim)}
+.usage b{color:var(--text)}
+.reset{margin-top:10px;font-size:12.5px;color:var(--text-faint)}
+.dnote{margin-top:13px;font-size:12.5px;color:var(--text-faint);line-height:1.5}
+
+.rows{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.rw{display:flex;align-items:center;gap:14px;padding:15px 20px;border-bottom:1px solid var(--border)}
+.rows .rw:last-child{border-bottom:0}
+.rw.clickable{cursor:pointer}
+.rw.clickable:hover{background:var(--surface-2)}
+.rw-main{min-width:0;flex:1}
+.rw-t{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rw-s{font-size:12px;color:var(--text-faint);margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rw-s .sep{color:var(--border-strong)}
+.rw-acts{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ibtn{width:32px;height:32px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-faint);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color 140ms,border-color 140ms,background 140ms}
+.ibtn:hover{color:var(--text);border-color:var(--text-dim);background:var(--surface-2)}
+.ibtn.dgr:hover{color:var(--danger);border-color:var(--danger);background:var(--danger-soft)}
+.buy{display:flex;gap:5px}
+.buy a{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-faint);border:1px solid var(--border);border-radius:6px;padding:5px 7px;transition:color 140ms,border-color 140ms}
+.buy a:hover{color:var(--accent);border-color:var(--accent)}
+
+.btbl{width:100%;border-collapse:collapse;font-size:13px}
+.btbl th{background:var(--surface-2);font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);font-weight:500;padding:11px 20px;text-align:left;border-bottom:1px solid var(--border)}
+.btbl td{padding:14px 20px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:middle}
+.btbl tbody tr:last-child td{border-bottom:0}
+.btbl td.amt{font-family:"JetBrains Mono",monospace;color:var(--text);text-align:right}
+.st{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;padding:4px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface-3);color:var(--text-dim)}
+.st.ok{color:var(--success);border-color:rgba(74,222,128,0.3);background:var(--success-soft)}
+.st.no{color:var(--danger);border-color:rgba(239,68,68,0.3);background:var(--danger-soft)}
+
+.dempty{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:56px 32px;text-align:center}
+.dempty h3{margin:0 0 8px;font-size:16px;font-weight:600;font-family:"Bricolage Grotesque",sans-serif}
+.dempty p{margin:0 auto;font-size:13.5px;color:var(--text-dim);max-width:400px}
+.dempty .hint{margin-top:16px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-faint)}
+.derror{border-color:rgba(239,68,68,0.35)}
+.derror h3{color:var(--danger)}
+.skel{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.skel .sr{padding:19px 20px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:9px}
+.skel .sr:last-child{border-bottom:0}
+.sk{height:11px;border-radius:5px;background:linear-gradient(90deg,var(--surface-2) 0%,var(--surface-3) 50%,var(--surface-2) 100%);background-size:220% 100%;animation:shim 1.3s linear infinite}
+@keyframes shim{from{background-position:120% 0}to{background-position:-120% 0}}
+
+.dfull{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:28px;z-index:20}
+.dfull[hidden]{display:none}
+.fcard{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px 36px;text-align:center;box-shadow:0 30px 80px -30px rgba(0,0,0,0.6)}
+.fcard .m{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
+.fcard h3{margin:0 0 10px;font-size:20px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600}
+.fcard p{margin:0 0 24px;font-size:14px;color:var(--text-dim)}
+.fsteps{text-align:left;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:9px;margin-bottom:22px;font-size:13px;color:var(--text-dim)}
+.fsteps span{display:flex;gap:10px}
+.fsteps i{font-family:"JetBrains Mono",monospace;font-style:normal;color:var(--accent);font-size:11px;padding-top:2px}
+.spin{width:26px;height:26px;border-radius:50%;border:2px solid var(--surface-3);border-top-color:var(--accent);margin:0 auto 20px;animation:sp 800ms linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.mask{position:fixed;inset:0;background:rgba(0,0,0,0.62);backdrop-filter:blur(2px);z-index:90;display:flex;align-items:center;justify-content:center;padding:24px}
+.mask[hidden]{display:none}
+.modal{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border-strong);border-radius:16px;padding:26px;box-shadow:0 40px 90px -30px rgba(0,0,0,0.8)}
+.modal h3{margin:0 0 9px;font-size:17px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600}
+.modal p{margin:0;font-size:13.5px;color:var(--text-dim)}
+.modal ul{margin:12px 0 0;padding-left:18px;font-size:13px;color:var(--text-dim);display:flex;flex-direction:column;gap:5px}
+.modal .macts{display:flex;gap:10px;margin-top:22px}
+.modal .macts .btn{flex:1}
+.tconf{margin-top:18px}
+.tconf label{display:block;font-size:12px;color:var(--text-faint);margin-bottom:7px}
+.tconf input{width:100%;height:42px;background:var(--bg);border:1px solid var(--border-strong);border-radius:9px;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;padding:0 13px;outline:none}
+.tconf input:focus{border-color:var(--accent)}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--surface-3);border:1px solid var(--border-strong);border-radius:9px;padding:10px 16px;font-size:12.5px;z-index:95;box-shadow:0 16px 40px -12px rgba(0,0,0,0.7);transition:opacity 200ms}
+.toast[hidden]{display:none}
+@media(max-width:820px){#app{grid-template-columns:1fr}.dsb{display:none}}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <aside class="dsb">
+    <div class="dsb-brand brand"><span class="brand-mark"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"></circle><path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"></path><circle cx="7" cy="7" r="1.2" fill="white"></circle></svg></span>Hunt<span class="id">ID</span></div>
+    <div class="dsb-lbl">Dashboard</div>
+    <nav id="dnav">
+      <button type="button" class="dnav on" data-sec="account"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="5.5" r="2.6"></circle><path d="M2.8 13.6c0-2.5 2.3-4 5.2-4s5.2 1.5 5.2 4" stroke-linecap="round"></path></svg>Account</button>
+      <button type="button" class="dnav" data-sec="saved"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 2.8h8v10.4L8 10.3l-4 2.9V2.8z" stroke-linejoin="round"></path></svg>Saved tracklists<span class="cnt" data-cnt="saved"></span></button>
+      <button type="button" class="dnav" data-sec="fav"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.2S2.4 9.9 2.4 6.3A2.9 2.9 0 0 1 8 5.1a2.9 2.9 0 0 1 5.6 1.2c0 3.6-5.6 6.9-5.6 6.9z" stroke-linejoin="round"></path></svg>Favourites<span class="cnt" data-cnt="fav"></span></button>
+      <button type="button" class="dnav" data-sec="analyzed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 6.5c1.3-1.6 2.7-1.6 4 0s2.7 1.6 4 0 2.7-1.6 4 0M2 10.5c1.3-1.6 2.7-1.6 4 0s2.7 1.6 4 0 2.7-1.6 4 0" stroke-linecap="round"></path></svg>Analyzed mixes<span class="cnt" data-cnt="analyzed"></span></button>
+      <button type="button" class="dnav" data-sec="billing"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="2.4" width="10" height="11.2" rx="1.6"></rect><path d="M5.6 5.6h4.8M5.6 8h4.8M5.6 10.4h2.8" stroke-linecap="round"></path></svg>Billing history<span class="cnt" data-cnt="billing"></span></button>
+    </nav>
+    <div class="dsb-foot">huntid.app/dashboard<br/>extension-only access</div>
+  </aside>
+
+  <div class="dmain">
+    <div class="dtop">
+      <span class="crumb" id="crumb">Account</span>
+      <div class="du" id="du" hidden><span class="av" id="av"></span><span id="email-label"></span></div>
+    </div>
+    <div class="dbody"><div class="dcol" id="dcol"></div></div>
+  </div>
+</div>
+
+<!-- Full-screen states live OUTSIDE #app on purpose: showFull() hides #app via
+     visibility:hidden, which is inherited by descendants — nesting these
+     inside #app would hide them along with everything else. -->
+<div class="dfull" id="full-handoff">
+  <div class="fcard"><div class="spin"></div><h3>Opening your dashboard</h3><p>Handing your session over from the extension. Usually under a second.</p></div>
+</div>
+<div class="dfull" id="full-noaccess" hidden>
+  <div class="fcard">
+    <div class="m"><svg width="22" height="22" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"></circle><path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"></path><circle cx="7" cy="7" r="1.2" fill="white"></circle></svg></div>
+    <h3 id="noaccess-title">The dashboard opens from the extension</h3>
+    <p id="noaccess-sub">HuntID has no separate sign-in on the web — your session comes from the extension, so there is no email or password here.</p>
+    <div class="fsteps"><span><i>01</i>Open the HuntID extension on SoundCloud</span><span><i>02</i>Click "Account"</span><span><i>03</i>The dashboard opens in a new tab</span></div>
+    <a class="btn btn-outline btn-block" href="https://soundcloud.com">Back to SoundCloud</a>
+  </div>
+</div>
+<div class="dfull" id="full-failed" hidden>
+  <div class="fcard">
+    <h3>Couldn't load your data</h3>
+    <p>You are signed in, but the server didn't respond. No need to sign in again — just try the request once more.</p>
+    <button type="button" class="btn btn-primary btn-block" id="retry-btn">Retry</button>
+  </div>
+</div>
+
+<div class="mask" id="mask" hidden><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+const SUPABASE_URL = "https://qhyebkofqjgzmmkpyalb.supabase.co"
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoeWVia29mcWpnem1ta3B5YWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTc1NTksImV4cCI6MjA5NTAzMzU1OX0.jaCLLf65tHmWOfN6CFTDDNfToqaF-Ody0LTJsuPt_E8"
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+const $ = (sel) => document.querySelector(sel)
+const col = $("#dcol"), crumb = $("#crumb"), mask = $("#mask"), modal = $("#modal"), toastEl = $("#toast")
+let sec = "account", profile = null
+
+const T = { account: "Account", saved: "Saved tracklists", fav: "Favourites", analyzed: "Analyzed mixes", billing: "Billing history" }
+const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")
+const icoExt = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5.5 2.5H2.5v9h9v-3" stroke-linecap="round"></path><path d="M8.5 2.5h3v3M11.5 2.5L7 7" stroke-linecap="round"></path></svg>'
+const icoTrash = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.8 4.2h8.4M5.6 4.2V2.8h2.8v1.4M4 4.2l.5 7h5l.5-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
+const icoCopy = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5" y="5" width="6.5" height="6.5" rx="1.3"></rect><path d="M9 4.2V3.8A1.3 1.3 0 0 0 7.7 2.5H3.8A1.3 1.3 0 0 0 2.5 3.8v3.9A1.3 1.3 0 0 0 3.8 9h.4" stroke-linecap="round"></path></svg>'
+
+function skeleton(n) {
+  let h = '<div class="skel">'
+  for (let i = 0; i < n; i++) h += '<div class="sr"><div class="sk" style="width:' + (48 + (i * 7) % 34) + '%"></div><div class="sk" style="width:26%;height:9px"></div></div>'
+  return h + "</div>"
+}
+function emptyBlock(title, body, hint) {
+  return '<div class="dempty"><h3>' + title + "</h3><p>" + body + "</p>" + (hint ? '<div class="hint">' + hint + "</div>" : "") + "</div>"
+}
+function errBlock(what, retryFn) {
+  const id = "retry-" + Math.random().toString(36).slice(2)
+  setTimeout(() => { const b = document.getElementById(id); if (b) b.onclick = retryFn }, 0)
+  return '<div class="dempty derror"><h3>This section didn’t load</h3><p>We couldn’t fetch ' + what + '. Other sections still work — try again.</p><div style="margin-top:20px"><button type="button" id="' + id + '" class="btn btn-outline btn-sm">Retry</button></div></div>'
+}
+function head(title, note) {
+  return '<div class="dhead"><div><h2>' + title + "</h2>" + (note ? "<p>" + note + "</p>" : "") + "</div></div>"
+}
+function toast(msg) {
+  toastEl.textContent = msg
+  toastEl.hidden = false
+  clearTimeout(toast._t)
+  toast._t = setTimeout(() => { toastEl.hidden = true }, 1800)
+}
+function closeModal() { mask.hidden = true; modal.innerHTML = "" }
+mask.addEventListener("click", (e) => { if (e.target === mask) closeModal() })
+
+// ---------- boot: handoff exchange or existing session ----------
+
+function showFull(which) {
+  document.getElementById("full-handoff").hidden = which !== "handoff"
+  document.getElementById("full-noaccess").hidden = which !== "noaccess"
+  document.getElementById("full-failed").hidden = which !== "failed"
+  document.getElementById("app").style.visibility = which ? "hidden" : "visible"
+}
+
+async function boot() {
+  showFull("handoff")
+  const params = new URLSearchParams(window.location.search)
+  const handoffToken = params.get("handoff")
+
+  if (handoffToken) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/exchange-dashboard-handoff`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON_KEY },
+        body: JSON.stringify({ token: handoffToken }),
+      })
+      history.replaceState(null, "", window.location.pathname)
+      if (!res.ok) {
+        // Expired / already used / never existed — not a network problem, just
+        // no legal way in. S3, not S4.
+        showFull("noaccess")
+        return
+      }
+      const { access_token, refresh_token } = await res.json()
+      const { error } = await supabase.auth.setSession({ access_token, refresh_token })
+      if (error) { showFull("noaccess"); return }
+    } catch {
+      showFull("failed")
+      return
+    }
+  } else {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { showFull("noaccess"); return }
+  }
+
+  await loadDashboard()
+}
+
+async function loadDashboard() {
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+  if (userError || !user) { showFull("noaccess"); return }
+
+  const { data: row, error: profileError } = await supabase
+    .from("users")
+    .select("email, created_at, plan")
+    .eq("id", user.id)
+    .single()
+
+  if (profileError || !row) { showFull("failed"); return }
+
+  let subscription = null
+  if (row.plan === "pro") {
+    const { data: sub } = await supabase
+      .from("subscriptions")
+      .select("current_period_end")
+      .eq("user_id", user.id)
+      .maybeSingle()
+    subscription = sub
+  }
+
+  profile = { id: user.id, email: row.email, memberSince: row.created_at, plan: row.plan, subscription }
+
+  showFull(null)
+  $("#av").textContent = (profile.email[0] || "?").toUpperCase()
+  $("#email-label").textContent = profile.email
+  $("#du").hidden = false
+
+  document.getElementById("dnav").addEventListener("click", (e) => {
+    const b = e.target.closest(".dnav")
+    if (b) go(b.dataset.sec)
+  })
+  document.getElementById("retry-btn").onclick = () => { showFull("handoff"); loadDashboard() }
+
+  await refreshCounts()
+  render()
+}
+
+function go(next) { sec = next; render() }
+
+async function refreshCounts() {
+  const [{ data: saved }, { data: fav }] = await Promise.all([
+    supabase.from("saved_tracklists").select("id"),
+    supabase.from("favourite_tracks").select("id"),
+  ])
+  const counts = { saved: saved?.length ?? 0, fav: fav?.length ?? 0, analyzed: 0, billing: profile.plan === "pro" ? "" : 0 }
+  document.querySelectorAll("[data-cnt]").forEach((el) => { el.textContent = counts[el.dataset.cnt] })
+}
+
+function render() {
+  crumb.textContent = T[sec]
+  document.querySelectorAll("#dnav .dnav").forEach((b) => b.classList.toggle("on", b.dataset.sec === sec))
+  const views = { account: viewAccount, saved: viewSaved, fav: viewFav, analyzed: viewAnalyzed, billing: viewBilling }
+  col.innerHTML = skeleton(3)
+  views[sec]()
+}
+
+// ---------- Account (+ Subscription, merged per the flow spec) ----------
+
+function viewAccount() {
+  const memberSince = new Date(profile.memberSince).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+  let html = head("Account") +
+    '<div class="dcard"><div class="dcard-lbl">Account</div><div class="kvs">' +
+    '<div class="kvr"><span class="k">Email</span><span class="v">' + esc(profile.email) + '</span></div>' +
+    '<div class="kvr"><span class="k">Member since</span><span class="v">' + esc(memberSince) + '</span></div>' +
+    '</div></div>' +
+    subscriptionCard() +
+    '<div class="dcard"><div class="dcard-lbl">Account actions</div>' +
+    '<button type="button" class="btn btn-danger btn-block" id="delete-account-btn">Delete my account</button>' +
+    '<div class="dnote">This permanently deletes your account, saved tracklists, favourite tracks and search history. It cannot be undone.</div></div>'
+  col.innerHTML = html
+  document.getElementById("delete-account-btn").onclick = confirmDeleteAccount
+  const upgradeBtn = document.getElementById("upgrade-btn")
+  if (upgradeBtn) upgradeBtn.onclick = () => {
+    const url = new URL("https://huntid.app/checkout.html")
+    url.searchParams.set("user_id", profile.id)
+    if (profile.email) url.searchParams.set("email", profile.email)
+    window.location.href = url.toString()
+  }
+}
+
+function subscriptionCard() {
+  if (profile.plan === "pro") {
+    const renews = profile.subscription?.current_period_end
+      ? new Date(profile.subscription.current_period_end).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+      : null
+    return '<div class="dcard"><div class="dcard-lbl">Subscription</div><div class="plan">Pro<span class="pro-badge">PRO</span></div>' +
+      '<div class="usage">Unlimited searches</div>' +
+      (renews ? '<div class="reset">Renews on ' + esc(renews) + '</div>' : "") +
+      '<div class="dnote">Billed through Paddle. To change or cancel your plan, contact support.</div></div>'
+  }
+  return '<div class="dcard"><div class="dcard-lbl">Subscription</div><div class="plan">Free plan</div>' +
+    '<div class="usage">Every unique mix you’ve found so far is on the house.</div>' +
+    '<div style="margin-top:20px"><button type="button" class="btn btn-primary" id="upgrade-btn">Upgrade to Pro</button></div>' +
+    '<div class="dnote">Pro removes the search limit. Billed through Paddle, cancel anytime.</div></div>'
+}
+
+function confirmDeleteAccount() {
+  modal.innerHTML = '<h3 style="color:var(--danger)">Delete your account permanently?</h3><p>This permanently removes:</p>' +
+    "<ul><li>your account and Google connection</li><li>saved tracklists and favourite tracks</li><li>search history and subscription</li></ul>" +
+    '<div class="tconf"><label>Type DELETE to confirm</label><input id="tc" autocomplete="off" spellcheck="false" placeholder="DELETE"/></div>' +
+    '<div class="macts"><button type="button" class="btn btn-outline" data-x="cancel">Cancel</button><button type="button" class="btn btn-danger" data-x="ok" disabled>Delete account</button></div>'
+  mask.hidden = false
+  const inp = modal.querySelector("#tc"), ok = modal.querySelector('[data-x="ok"]')
+  inp.oninput = () => { ok.disabled = inp.value.trim().toUpperCase() !== "DELETE" }
+  inp.focus()
+  modal.querySelector('[data-x="cancel"]').onclick = closeModal
+  ok.onclick = async () => {
+    modal.innerHTML = '<h3>Deleting your account</h3><p>This can no longer be cancelled. It takes a few seconds.</p><div class="spin" style="margin:22px auto 0"></div>'
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/delete-account`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY },
+      })
+      if (!res.ok) throw new Error("delete failed")
+      await supabase.auth.signOut()
+      closeModal()
+      showFull("noaccess")
+      document.getElementById("noaccess-title").textContent = "Your account has been deleted"
+      document.getElementById("noaccess-sub").textContent = "All your HuntID data has been permanently removed."
+      document.querySelector("#full-noaccess .fsteps").style.display = "none"
+    } catch {
+      modal.innerHTML = '<h3 style="color:var(--danger)">Something went wrong</h3><p>Your account was not deleted. Please try again.</p>' +
+        '<div class="macts"><button type="button" class="btn btn-outline btn-block" data-x="close">Close</button></div>'
+      modal.querySelector('[data-x="close"]').onclick = closeModal
+    }
+  }
+}
+
+// ---------- Saved tracklists ----------
+
+async function viewSaved() {
+  const { data, error } = await supabase.from("saved_tracklists").select("*").order("saved_at", { ascending: false })
+  if (error) { col.innerHTML = head("Saved tracklists") + errBlock("your saved tracklists", viewSaved); return }
+  if (!data.length) {
+    col.innerHTML = head("Saved tracklists") + emptyBlock(
+      "No saved tracklists yet",
+      "You save a tracklist from the HuntID extension while listening to a mix on SoundCloud — it shows up here automatically.",
+      "saving happens in the extension"
+    )
+    return
+  }
+  let h = head("Saved tracklists", data.length + " tracklist" + (data.length === 1 ? "" : "s")) + '<div class="rows">'
+  data.forEach((x) => {
+    const title = x.mix_title || x.sc_url
+    h += '<div class="rw clickable" data-open="' + esc(x.sc_url) + '"><div class="rw-main"><div class="rw-t">' + esc(title) + '</div>' +
+      '<div class="rw-s"><span>saved ' + new Date(x.saved_at).toLocaleDateString() + '</span></div></div>' +
+      '<div class="rw-acts"><a class="ibtn" href="' + esc(x.sc_url) + '" target="_blank" rel="noreferrer" title="Open mix on SoundCloud" onclick="event.stopPropagation()">' + icoExt + '</a>' +
+      '<button type="button" class="ibtn dgr" title="Delete" data-del="' + x.id + '" data-name="' + esc(title) + '">' + icoTrash + '</button></div></div>'
+  })
+  col.innerHTML = h + "</div>"
+  col.querySelectorAll("[data-open]").forEach((el) => el.addEventListener("click", () => window.open(el.dataset.open, "_blank")))
+  col.querySelectorAll("[data-del]").forEach((el) => el.addEventListener("click", (e) => {
+    e.stopPropagation()
+    confirmDelete("saved_tracklists", el.dataset.del, "tracklist", el.dataset.name, viewSaved)
+  }))
+}
+
+// ---------- Favourite tracks ----------
+
+async function viewFav() {
+  const { data, error } = await supabase.from("favourite_tracks").select("*").order("saved_at", { ascending: false })
+  if (error) { col.innerHTML = head("Favourites") + errBlock("your favourite tracks", viewFav); return }
+  if (!data.length) {
+    col.innerHTML = head("Favourites") + emptyBlock(
+      "No favourite tracks yet",
+      "You heart a track in the extension, inside a mix tracklist on SoundCloud.",
+      "liking happens in the extension"
+    )
+    return
+  }
+  let h = head("Favourites", data.length + " track" + (data.length === 1 ? "" : "s")) + '<div class="rows">'
+  data.forEach((x) => {
+    const name = x.artist + " — " + x.title
+    const q = encodeURIComponent(name)
+    h += '<div class="rw"><div class="rw-main"><div class="rw-t">' + esc(name) + '</div><div class="rw-s"><span>saved ' + new Date(x.saved_at).toLocaleDateString() + '</span></div></div>' +
+      '<div class="buy"><a href="https://www.beatport.com/search?q=' + q + '" target="_blank" rel="noreferrer">Beatport</a><a href="https://bandcamp.com/search?q=' + q + '" target="_blank" rel="noreferrer">Bandcamp</a><a href="https://www.discogs.com/search/?q=' + q + '" target="_blank" rel="noreferrer">Discogs</a></div>' +
+      '<div class="rw-acts"><button type="button" class="ibtn" title="Copy track name" data-copy="' + esc(name) + '">' + icoCopy + '</button>' +
+      '<button type="button" class="ibtn dgr" title="Delete" data-del="' + x.id + '" data-name="' + esc(name) + '">' + icoTrash + '</button></div></div>'
+  })
+  col.innerHTML = h + "</div>"
+  col.querySelectorAll("[data-copy]").forEach((el) => el.addEventListener("click", () => {
+    navigator.clipboard?.writeText(el.dataset.copy)
+    toast("Track name copied")
+  }))
+  col.querySelectorAll("[data-del]").forEach((el) => el.addEventListener("click", () => {
+    confirmDelete("favourite_tracks", el.dataset.del, "track", el.dataset.name, viewFav)
+  }))
+}
+
+function confirmDelete(table, id, kind, name, reload) {
+  modal.innerHTML = "<h3>Delete this " + kind + "?</h3><p>" + esc(name) + "</p>" +
+    '<p style="margin-top:10px;color:var(--text-faint);font-size:12.5px">This can’t be undone, but you can save it again from the extension.</p>' +
+    '<div class="macts"><button type="button" class="btn btn-outline" data-x="cancel">Cancel</button><button type="button" class="btn btn-danger" data-x="ok">Delete</button></div>'
+  mask.hidden = false
+  modal.querySelector('[data-x="cancel"]').onclick = closeModal
+  modal.querySelector('[data-x="ok"]').onclick = async () => {
+    const { error } = await supabase.from(table).delete().eq("id", id)
+    closeModal()
+    if (error) { toast("Couldn’t delete — try again"); return }
+    toast(kind.charAt(0).toUpperCase() + kind.slice(1) + " deleted")
+    await refreshCounts()
+    reload()
+  }
+}
+
+// ---------- Analyzed mixes (feature not shipped yet — always empty) ----------
+
+function viewAnalyzed() {
+  col.innerHTML = head("Analyzed mixes") + emptyBlock(
+    "No analyzed mixes yet",
+    "This list fills up once “Analyze this mix” ships in the extension.",
+    "coming soon"
+  )
+}
+
+// ---------- Billing history ----------
+
+async function viewBilling() {
+  if (profile.plan !== "pro") {
+    col.innerHTML = head("Billing history") + emptyBlock(
+      "No charges yet",
+      "The log is empty on the free plan. This table appears after your first Pro payment.",
+      "no payments"
+    )
+    return
+  }
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/get-billing-history`, {
+      headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY },
+    })
+    if (!res.ok) throw new Error("billing fetch failed")
+    const { rows } = await res.json()
+    if (!rows.length) {
+      col.innerHTML = head("Billing history") + emptyBlock("No charges yet", "Nothing has been billed on this subscription yet.")
+      return
+    }
+    let h = head("Billing history", "charge log · rows are not clickable") +
+      '<div class="rows"><table class="btbl"><thead><tr><th>Date</th><th>Description</th><th style="text-align:right">Amount</th><th>Status</th></tr></thead><tbody>'
+    rows.forEach((x) => {
+      const ok = x.status === "paid"
+      h += "<tr><td>" + new Date(x.date).toLocaleDateString() + "</td><td>" + esc(x.description) + '</td><td class="amt">' + esc(x.amount ?? "—") + '</td><td><span class="st ' + (ok ? "ok" : "no") + '">' + (ok ? "Paid" : esc(x.status)) + "</span></td></tr>"
+    })
+    col.innerHTML = h + "</tbody></table></div>"
+  } catch {
+    col.innerHTML = head("Billing history") + errBlock("your billing history", viewBilling)
+  }
+}
+
+boot()
+</script>
+</body>
+</html>
