@@ -287,17 +287,10 @@ async function loadDashboard() {
 
   if (profileError || !row) { showFull("failed"); return }
 
-  let subscription = null
+  profile = { id: user.id, email: row.email, memberSince: row.created_at, plan: row.plan, subscription: null }
   if (row.plan === "pro") {
-    const { data: sub } = await supabase
-      .from("subscriptions")
-      .select("current_period_end")
-      .eq("user_id", user.id)
-      .maybeSingle()
-    subscription = sub
+    profile.subscription = await fetchSubscriptionStatus()
   }
-
-  profile = { id: user.id, email: row.email, memberSince: row.created_at, plan: row.plan, subscription }
 
   showFull(null)
   $("#av").textContent = (profile.email[0] || "?").toUpperCase()
@@ -355,22 +348,102 @@ function viewAccount() {
     if (profile.email) url.searchParams.set("email", profile.email)
     window.location.href = url.toString()
   }
+  const downgradeBtn = document.getElementById("downgrade-btn")
+  if (downgradeBtn) downgradeBtn.onclick = confirmDowngrade
+  const resumeBtn = document.getElementById("resume-btn")
+  if (resumeBtn) resumeBtn.onclick = handleResume
+}
+
+async function fetchSubscriptionStatus() {
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/get-subscription-status`, {
+      headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY },
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    return data.found ? data : null
+  } catch {
+    return null
+  }
 }
 
 function subscriptionCard() {
   if (profile.plan === "pro") {
-    const renews = profile.subscription?.current_period_end
-      ? new Date(profile.subscription.current_period_end).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    const sub = profile.subscription
+    const renews = sub?.currentPeriodEnd
+      ? new Date(sub.currentPeriodEnd).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
       : null
+
+    if (sub?.cancelAtPeriodEnd) {
+      const endsOn = sub.scheduledChangeEffectiveAt
+        ? new Date(sub.scheduledChangeEffectiveAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+        : renews
+      return '<div class="dcard"><div class="dcard-lbl">Subscription</div><div class="plan">Pro<span class="pro-badge">PRO</span></div>' +
+        '<div class="usage">Unlimited searches until ' + esc(endsOn ?? "the end of this period") + '</div>' +
+        '<div class="reset">Moving to the Free plan on ' + esc(endsOn ?? "period end") + '</div>' +
+        '<div style="margin-top:20px"><button type="button" class="btn btn-primary" id="resume-btn">Keep Pro</button></div>' +
+        '<div class="dnote">Changed your mind? Keep Pro to cancel the downgrade — this only works before ' + esc(endsOn ?? "the period ends") + '.</div></div>'
+    }
+
     return '<div class="dcard"><div class="dcard-lbl">Subscription</div><div class="plan">Pro<span class="pro-badge">PRO</span></div>' +
       '<div class="usage">Unlimited searches</div>' +
       (renews ? '<div class="reset">Renews on ' + esc(renews) + '</div>' : "") +
-      '<div class="dnote">Billed through Paddle. To change or cancel your plan, contact support.</div></div>'
+      '<div style="margin-top:20px"><button type="button" class="btn btn-outline" id="downgrade-btn">Downgrade to Free</button></div>' +
+      '<div class="dnote">Billed through Paddle. You keep Pro until the current period ends, then move to Free automatically.</div></div>'
   }
   return '<div class="dcard"><div class="dcard-lbl">Subscription</div><div class="plan">Free plan</div>' +
     '<div class="usage">Every unique mix you’ve found so far is on the house.</div>' +
     '<div style="margin-top:20px"><button type="button" class="btn btn-primary" id="upgrade-btn">Upgrade to Pro</button></div>' +
     '<div class="dnote">Pro removes the search limit. Billed through Paddle, cancel anytime.</div></div>'
+}
+
+function confirmDowngrade() {
+  modal.innerHTML = "<h3>Downgrade to the Free plan?</h3>" +
+    "<p>You'll keep Pro (unlimited searches) until your current billing period ends, then move to Free automatically.</p>" +
+    '<p style="margin-top:10px;color:var(--text-faint);font-size:12.5px">You can undo this anytime before then from this same screen.</p>' +
+    '<div class="macts"><button type="button" class="btn btn-outline" data-x="cancel">Keep Pro</button><button type="button" class="btn btn-danger" data-x="ok">Downgrade to Free</button></div>'
+  mask.hidden = false
+  modal.querySelector('[data-x="cancel"]').onclick = closeModal
+  modal.querySelector('[data-x="ok"]').onclick = async () => {
+    const btn = modal.querySelector('[data-x="ok"]')
+    btn.disabled = true
+    btn.textContent = "Downgrading…"
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/cancel-subscription`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY },
+      })
+      if (!res.ok) throw new Error("cancel failed")
+      closeModal()
+      toast("Downgrade scheduled")
+      profile.subscription = await fetchSubscriptionStatus()
+      viewAccount()
+    } catch {
+      closeModal()
+      toast("Couldn’t downgrade — try again")
+    }
+  }
+}
+
+async function handleResume() {
+  const btn = document.getElementById("resume-btn")
+  if (btn) { btn.disabled = true; btn.textContent = "Keeping Pro…" }
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/resume-subscription`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY },
+    })
+    if (!res.ok) throw new Error("resume failed")
+    toast("You're staying on Pro")
+    profile.subscription = await fetchSubscriptionStatus()
+    viewAccount()
+  } catch {
+    toast("Couldn’t undo the downgrade — try again")
+    if (btn) { btn.disabled = false; btn.textContent = "Keep Pro" }
+  }
 }
 
 function confirmDeleteAccount() {
