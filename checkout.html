@@ -101,11 +101,28 @@
   </div>
 
   <script>
-    var PRICE_MONTHLY = "pri_01kt9kehxvwehw4mw8mav4gkcc";
-    var PRICE_ANNUAL  = "pri_01kw72fcy8gbe5aahzfb9n9hpk";
+    // 🧪 SANDBOX TESTING — flip back to false + redeploy before going live again.
+    // Confirmed 2026-07-26: pri_01kt9kehxvwehw4mw8mav4gkcc / pri_01kw72fcy8gbe5aahzfb9n9hpk
+    // (product pro_01ksxd8xvkqjfzea07cc9n3yam) are SANDBOX prices — they were wrongly
+    // paired with the live client token before, which is why production checkout showed
+    // "Something went wrong". Real LIVE price IDs don't exist yet — create them in
+    // Paddle Dashboard (Live mode) before flipping SANDBOX back to false.
+    var SANDBOX = true;
+
+    var SANDBOX_PRICE_MONTHLY = "pri_01kt9kehxvwehw4mw8mav4gkcc";
+    var SANDBOX_PRICE_ANNUAL  = "pri_01kw72fcy8gbe5aahzfb9n9hpk";
+    var LIVE_PRICE_MONTHLY = "pri_TODO_create_live_price";
+    var LIVE_PRICE_ANNUAL  = "pri_TODO_create_live_price";
+
+    var PRICE_MONTHLY = SANDBOX ? SANDBOX_PRICE_MONTHLY : LIVE_PRICE_MONTHLY;
+    var PRICE_ANNUAL  = SANDBOX ? SANDBOX_PRICE_ANNUAL  : LIVE_PRICE_ANNUAL;
+
+    if (SANDBOX) {
+      Paddle.Environment.set("sandbox");
+    }
 
     Paddle.Initialize({
-      token: "live_d9fbf05058c411bda68c0d571c8",
+      token: SANDBOX ? "test_614bf3664826c37a1dda69e91e6" : "live_d9fbf05058c411bda68c0d571c8",
       eventCallback: function (data) {
         if (data.name === "checkout.completed") {
           window.location.href = "/payment-success.html?status=success";
