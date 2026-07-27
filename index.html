@@ -218,6 +218,21 @@
   /* ============================== sections */
   section { padding: 56px 0; }
 
+  #h1-word {
+    display: inline-block;
+    color: var(--accent);
+  }
+  #h1-word::after {
+    content: '|';
+    color: var(--accent);
+    opacity: 1;
+    animation: h1-blink 0.6s step-end infinite;
+  }
+  @keyframes h1-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
   /* ============================== hero */
   .hero {
     padding-top: 32px;
@@ -1405,7 +1420,7 @@
             HuntID for SoundCloud
             <span class="chip-new">NEW</span>
           </div>
-          <h1 class="display">Wondering what your favourite<br/>dj played?</h1>
+          <h1 class="display"><span id="h1-word">Wondering</span><br/>what your favourite dj played?</h1>
           <p class="hero-sub">
             It's in the tracklist.
           </p>
@@ -1621,54 +1636,6 @@
     </div>
   </section>
 
-  <!-- COMPARISON -->
-  <section id="compare">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">vs. the rest</span>
-        <h2 class="display">Not Shazam. Not comments.<br/><span class="accent">Not another tab.</span></h2>
-      </div>
-      <div class="compare-card reveal">
-        <table class="compare">
-          <thead>
-            <tr>
-              <th></th>
-              <th style="text-align: center;">Others</th>
-              <th class="huntid" style="text-align: center;">HuntID</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="col-h">Works on DJ mixes</td>
-              <td class="col-o"><span class="cross">✕</span></td>
-              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
-            </tr>
-            <tr>
-              <td class="col-h">No tab switching</td>
-              <td class="col-o"><span class="cross">✕</span></td>
-              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
-            </tr>
-            <tr>
-              <td class="col-h">Clickable timecodes</td>
-              <td class="col-o"><span class="cross">✕</span></td>
-              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
-            </tr>
-            <tr>
-              <td class="col-h">High confidence</td>
-              <td class="col-o"><span class="cross">✕</span></td>
-              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
-            </tr>
-            <tr>
-              <td class="col-h">10 searches free</td>
-              <td class="col-o">varies</td>
-              <td class="col-y"><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
   <!-- PRICING -->
   <section id="pricing">
     <div class="wrap">
@@ -1764,9 +1731,9 @@
           </div>
           <ul class="rm-list">
             <li><span class="rm-list-icon">🔜</span> Unlimited searches</li>
-            <li><span class="rm-list-icon">🔜</span> History — all past searches</li>
-            <li><span class="rm-list-icon">🔜</span> Favourites — save tracks</li>
-            <li><span class="rm-list-icon">🔜</span> Buy links (Beatport, Bandcamp, Traxsource)</li>
+            <li><span class="rm-list-icon">🔜</span> Save tracklist</li>
+            <li><span class="rm-list-icon">🔜</span> Favourite — collect tracks</li>
+            <li><span class="rm-list-icon">🔜</span> Buy links (Beatport, Bandcamp)</li>
             <li><span class="rm-list-icon">🔜</span> Better source coverage</li>
           </ul>
         </div>
@@ -2407,6 +2374,42 @@
         btn.style.transform = '';
       });
     });
+  })();
+</script>
+
+<script>
+  // H1 typewriter animation
+  (function() {
+    const words = ['Wondering', 'Curious', 'Chasing', 'Looking', 'Searching', 'Hunting'];
+    let wordIdx = 0, charIdx = 0, deleting = false;
+    const el = document.getElementById('h1-word');
+    if (!el) return;
+    el.textContent = '';
+
+    function tick() {
+      const word = words[wordIdx];
+      if (!deleting) {
+        charIdx++;
+        el.textContent = word.slice(0, charIdx);
+        if (charIdx === word.length) {
+          setTimeout(function() { deleting = true; tick(); }, 1600);
+          return;
+        }
+        setTimeout(tick, 75);
+      } else {
+        charIdx--;
+        el.textContent = word.slice(0, charIdx);
+        if (charIdx === 0) {
+          deleting = false;
+          wordIdx = (wordIdx + 1) % words.length;
+          setTimeout(tick, 300);
+          return;
+        }
+        setTimeout(tick, 35);
+      }
+    }
+
+    tick();
   })();
 </script>
 
