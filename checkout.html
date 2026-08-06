@@ -82,16 +82,16 @@
       <div class="plan" id="plan-annual" onclick="startCheckout('annual')">
         <div class="plan-header">
           <span class="plan-name">Annual</span>
-          <span class="plan-badge">Save 33%</span>
+          <span class="plan-badge" id="badge-annual">Save 33%</span>
         </div>
-        <div class="plan-price">$39.99 <span>/ year</span></div>
-        <div class="plan-note">≈ $3.33/month</div>
+        <div class="plan-price"><span id="price-annual">$39.99</span> <span>/ year</span></div>
+        <div class="plan-note" id="note-annual">≈ $3.33/month</div>
       </div>
       <div class="plan" id="plan-monthly" onclick="startCheckout('monthly')">
         <div class="plan-header">
           <span class="plan-name">Monthly</span>
         </div>
-        <div class="plan-price">$4.99 <span>/ month</span></div>
+        <div class="plan-price"><span id="price-monthly">$4.99</span> <span>/ month</span></div>
         <div class="plan-note">Cancel anytime</div>
       </div>
     </div>
@@ -101,32 +101,42 @@
   </div>
 
   <script>
-    // 🧪 SANDBOX TESTING — flip back to false + redeploy before going live again.
-    // Confirmed sandbox prices (2026-07-26). Real LIVE price IDs are unconfirmed —
-    // verify pri_01kt9kehxvwehw4mw8mav4gkcc / pri_01kw72fcy8gbe5aahzfb9n9hpk in
-    // Paddle Dashboard (Live mode) before flipping SANDBOX back to false.
-    var SANDBOX = false;
-
-    var SANDBOX_PRICE_MONTHLY = "pri_01kt9mjjbpep0w991cm02b2pw5";
-    var SANDBOX_PRICE_ANNUAL  = "pri_01kyen5dcmcvw9wqvztphxgvnk";
-    var LIVE_PRICE_MONTHLY = "pri_01kt9kehxvwehw4mw8mav4gkcc";
-    var LIVE_PRICE_ANNUAL  = "pri_01kw72fcy8gbe5aahzfb9n9hpk";
-
-    var PRICE_MONTHLY = SANDBOX ? SANDBOX_PRICE_MONTHLY : LIVE_PRICE_MONTHLY;
-    var PRICE_ANNUAL  = SANDBOX ? SANDBOX_PRICE_ANNUAL  : LIVE_PRICE_ANNUAL;
-
-    if (SANDBOX) {
-      Paddle.Environment.set("sandbox");
-    }
+    // Price IDs stay hardcoded on purpose. They are stable — repricing edits the
+    // amount on the existing Paddle price entity and never changes the ID — and
+    // this page must be able to take money even if the pricing endpoint is down.
+    // Amounts are the volatile half and are fetched below.
+    var PRICE_MONTHLY = "pri_01kt9kehxvwehw4mw8mav4gkcc";
+    var PRICE_ANNUAL  = "pri_01kw72fcy8gbe5aahzfb9n9hpk";
 
     Paddle.Initialize({
-      token: SANDBOX ? "test_614bf3664826c37a1dda69e91e6" : "live_d9fbf05058c411bda68c0d571c8",
+      token: "live_d9fbf05058c411bda68c0d571c8",
       eventCallback: function (data) {
         if (data.name === "checkout.completed") {
           window.location.href = "/payment-success.html?status=success";
         }
       }
     });
+
+    // Displayed amounts come from get-pricing, which reads them off Paddle, so a
+    // reprice needs no deploy here. The markup ships with the current amounts as
+    // the fallback: if this fails the page shows those and still charges
+    // correctly, since Paddle owns the real number at checkout either way.
+    fetch("https://qhyebkofqjgzmmkpyalb.supabase.co/functions/v1/get-pricing")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (p) {
+        if (!p || !p.monthly || !p.annual) return;
+        document.getElementById("price-monthly").textContent = p.monthly.amount;
+        document.getElementById("price-annual").textContent = p.annual.amount;
+        document.getElementById("note-annual").textContent = "≈ " + p.annual.monthly_equivalent + "/month";
+        var badge = document.getElementById("badge-annual");
+        // Hide rather than show "Save 0%" if the two plans ever price flat.
+        if (p.annual.save_percent > 0) {
+          badge.textContent = "Save " + p.annual.save_percent + "%";
+        } else {
+          badge.style.display = "none";
+        }
+      })
+      .catch(function () {});
 
     var params = new URLSearchParams(window.location.search);
     var userId = params.get("user_id");
