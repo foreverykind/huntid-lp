@@ -1437,7 +1437,7 @@
           </div>
           <div class="hero-meta">
             <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> 10 searches free</span>
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> $4.99/mo after</span>
+            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> <span id="px-hero">$4.99</span>/mo after</span>
             <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> No credit card</span>
           </div>
         </div>
@@ -1651,15 +1651,15 @@
           <div class="pill-badge">Pro</div>
           <div class="plan-toggle">
             <button class="plan-btn plan-btn-active" id="btn-monthly" onclick="setPlan('monthly')">Monthly</button>
-            <button class="plan-btn" id="btn-annual" onclick="setPlan('annual')">Annual <span class="save-chip">Save 33%</span></button>
+            <button class="plan-btn" id="btn-annual" onclick="setPlan('annual')">Annual <span class="save-chip" id="px-save">Save 33%</span></button>
           </div>
           <div id="plan-monthly-price">
-            <div class="price-big">$4.99</div>
+            <div class="price-big" id="px-monthly">$4.99</div>
             <div class="price-sub">/ month</div>
           </div>
           <div id="plan-annual-price" style="display:none">
-            <div class="price-big">$39.99</div>
-            <div class="price-sub">/ year · ≈ $3.33/mo</div>
+            <div class="price-big" id="px-annual">$39.99</div>
+            <div class="price-sub">/ year · ≈ <span id="px-annual-eq">$3.33</span>/mo</div>
           </div>
           <div style="margin: 14px 0 0; font-size: 13px; color: var(--accent); font-weight: 600;">First 10 searches free — no card needed</div>
           <ul class="price-list" style="text-align:left; margin-top: 24px;">
@@ -1724,7 +1724,7 @@
         <!-- SOON -->
         <div class="roadmap-card now-card reveal" data-delay="2">
           <div class="rm-badge live"><span class="rm-dot"></span> Live</div>
-          <h3>Pro · $4.99/mo</h3>
+          <h3>Pro · <span id="px-roadmap">$4.99</span>/mo</h3>
           <div class="rm-progress-label">Shipped</div>
           <div class="rm-progress-track">
             <div class="rm-progress-fill green" data-target="100"></div>
@@ -2042,7 +2042,7 @@
           <h2>Free and Pro plans</h2>
           <div class="body">
             <p><strong>Free to start:</strong> 10 tracklist searches included at no cost. After the free searches are used, a Pro subscription is required to continue.</p>
-            <p><strong>Pro plan:</strong> $4.99/month or $39.99/year, unlimited searches.</p>
+            <p><strong>Pro plan:</strong> <span id="px-tos-m">$4.99</span>/month or <span id="px-tos-a">$39.99</span>/year, unlimited searches.</p>
             <p>Prices may change with 30 days notice to existing subscribers.</p>
           </div>
         </div>
@@ -2472,6 +2472,39 @@
 
     document.getElementById('cookie-accept').addEventListener('click', function () { decide('accepted'); });
     document.getElementById('cookie-decline').addEventListener('click', function () { decide('declined'); });
+  })();
+</script>
+
+<script>
+  // Prices come from get-pricing, which reads them off Paddle — the same source
+  // the checkout page and the extension use. The markup ships with the current
+  // amounts as the fallback, so a failed fetch leaves the page correct rather
+  // than blank. After this, repricing is a Paddle-only change: nothing on this
+  // site or in the extension has to be redeployed.
+  (function () {
+    var set = function (id, value) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+    fetch('https://qhyebkofqjgzmmkpyalb.supabase.co/functions/v1/get-pricing')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (p) {
+        if (!p || !p.monthly || !p.annual) return;
+        set('px-hero', p.monthly.amount);
+        set('px-monthly', p.monthly.amount);
+        set('px-roadmap', p.monthly.amount);
+        set('px-tos-m', p.monthly.amount);
+        set('px-annual', p.annual.amount);
+        set('px-annual-eq', p.annual.monthly_equivalent);
+        set('px-tos-a', p.annual.amount);
+        var save = document.getElementById('px-save');
+        // Hide rather than claim "Save 0%" if the two plans ever price flat.
+        if (save) {
+          if (p.annual.save_percent > 0) save.textContent = 'Save ' + p.annual.save_percent + '%';
+          else save.style.display = 'none';
+        }
+      })
+      .catch(function () {});
   })();
 </script>
 
