@@ -535,6 +535,142 @@
   }
   .modal-success p { font-size: 14px; color: var(--text-dim); margin: 0; }
 
+  /* ============================== search result block */
+  .result-block {
+    margin-top: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    text-align: left;
+  }
+  .result-loading {
+    padding: 28px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .result-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    animation: rdot 1.2s ease-in-out infinite;
+  }
+  .result-dot:nth-child(2) { animation-delay: .2s; }
+  .result-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes rdot {
+    0%,100% { opacity:.3; transform:scale(.8); }
+    50%      { opacity:1;  transform:scale(1); }
+  }
+  .result-empty {
+    padding: 28px 20px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .result-empty strong { display: block; color: var(--text); font-size: 15px; margin-bottom: 4px; }
+  .result-header {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .result-artwork {
+    width: 64px; height: 64px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--surface-2);
+  }
+  .result-artwork-placeholder {
+    width: 64px; height: 64px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-faint);
+    font-size: 24px;
+  }
+  .result-meta { min-width: 0; }
+  .result-meta-label {
+    font-size: 11px; color: var(--text-faint);
+    letter-spacing: .06em; text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .result-meta-title {
+    font-size: 15px; font-weight: 600; color: var(--text);
+    line-height: 1.3;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .result-meta-artist {
+    font-size: 13px; color: var(--text-dim); margin-top: 2px;
+  }
+  .result-meta-count {
+    font-size: 12px; color: var(--text-faint); margin-top: 4px;
+  }
+  /* visible tracks */
+  .result-tracks-visible { padding: 0 20px; }
+  .result-track-row {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 8px;
+    align-items: baseline;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .result-track-row:last-child { border-bottom: none; }
+  .result-track-num {
+    color: var(--text-faint);
+    font-size: 12px;
+    font-family: "JetBrains Mono", monospace;
+    text-align: right;
+    padding-top: 1px;
+  }
+  .result-track-artist { color: var(--accent); font-weight: 500; }
+  .result-track-title  { color: var(--text); }
+  /* blur + gate */
+  .result-gate-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+  .result-blur-tracks {
+    padding: 0 20px;
+    filter: blur(4px);
+    user-select: none;
+    pointer-events: none;
+    opacity: .85;
+  }
+  .result-gate {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(26,26,26,.96) 55%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 28px;
+    gap: 8px;
+  }
+  .result-gate-label {
+    font-size: 13px; color: var(--text-dim);
+  }
+  .result-gate-btn {
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 12px;
+    padding: 13px 28px;
+    font-size: 14px; font-weight: 600;
+    font-family: "Geist", "Inter", system-ui, sans-serif;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 150ms, transform 200ms cubic-bezier(.2,.9,.3,1.4);
+    box-shadow: 0 8px 22px -8px rgba(255,85,0,0.55);
+  }
+  .result-gate-btn:hover { background: var(--accent-strong); transform: translateY(-1px); }
+
   /* ============================== hero (original — kept below hero-cta) */
   .hero {
     padding-top: 32px;
@@ -1731,7 +1867,10 @@
           </button>
         </div>
 
-        <div class="mix-divider">or start with a featured mix</div>
+        <!-- dynamic search result injected here by JS -->
+        <div id="search-result" class="result-block" style="display:none;" aria-live="polite"></div>
+
+        <div class="mix-divider" id="mix-section-divider">or start with a featured mix</div>
 
         <div class="mix-grid">
           <div class="mix-card reveal" data-delay="0"
@@ -2946,39 +3085,42 @@
 </script>
 
 <script>
-  /* ----------------------- hero sign-up modal */
+  /* ----------------------- hero sign-up modal + tracklist search */
   (function () {
     var SUPA_URL = 'https://qhyebkofqjgzmmkpyalb.supabase.co';
+    var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoeWVia29mcWpnem1ta3B5YWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTc1NTksImV4cCI6MjA5NTAzMzU1OX0.jaCLLf65tHmWOfN6CFTDDNfToqaF-Ody0LTJsuPt_E8';
+    var FREE_VISIBLE = 4;
 
-    var overlay    = document.getElementById('signup-modal');
-    var closeBtn   = document.getElementById('modal-close');
-    var googleBtn  = document.getElementById('modal-google-btn');
-    var mixPreview = document.getElementById('modal-mix-preview');
-    var mixArtist  = document.getElementById('modal-mix-artist');
-    var mixName    = document.getElementById('modal-mix-name');
-    var formView   = document.getElementById('modal-form-view');
-    var successView= document.getElementById('modal-success-view');
-    var titleEl    = document.getElementById('modal-title-text');
-    var scInput    = document.getElementById('sc-url-input');
-    var findBtn    = document.getElementById('hero-find-btn');
+    var overlay     = document.getElementById('signup-modal');
+    var closeBtn    = document.getElementById('modal-close');
+    var googleBtn   = document.getElementById('modal-google-btn');
+    var mixPreview  = document.getElementById('modal-mix-preview');
+    var mixArtist   = document.getElementById('modal-mix-artist');
+    var mixName     = document.getElementById('modal-mix-name');
+    var formView    = document.getElementById('modal-form-view');
+    var successView = document.getElementById('modal-success-view');
+    var titleEl     = document.getElementById('modal-title-text');
+    var scInput     = document.getElementById('sc-url-input');
+    var findBtn     = document.getElementById('hero-find-btn');
+    var resultBlock = document.getElementById('search-result');
+    var mixDivider  = document.getElementById('mix-section-divider');
 
+    var gateObserver = null;
+
+    /* ---- modal ---------------------------------------------------------- */
     function openModal(url, artist, mix) {
-      /* always reset to clean sign-up state */
       formView.style.display    = '';
       successView.style.display = 'none';
-      titleEl.textContent = 'Get your tracklist';
+      titleEl.textContent       = 'Sign up to see full tracklist';
       if (googleBtn) googleBtn.disabled = false;
-
       try { localStorage.setItem('huntid_pending_url', url || ''); } catch (e) {}
-
       if (artist) {
         mixArtist.textContent    = artist;
-        mixName.textContent      = mix || '';
+        mixName.textContent      = mix  || '';
         mixPreview.style.display = 'block';
       } else {
         mixPreview.style.display = 'none';
       }
-
       overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -2986,46 +3128,216 @@
     function closeModal() {
       overlay.classList.remove('open');
       document.body.style.overflow = '';
-      /* reset so next open is always clean */
       formView.style.display    = '';
       successView.style.display = 'none';
-      titleEl.textContent = 'Get your tracklist';
+      titleEl.textContent       = 'Get your tracklist';
       mixPreview.style.display  = 'none';
       if (googleBtn) googleBtn.disabled = false;
     }
 
     function startGoogleAuth() {
-      if (googleBtn) {
-        googleBtn.disabled = true;
-        googleBtn.textContent = 'Redirecting…';
-      }
+      if (googleBtn) { googleBtn.disabled = true; googleBtn.textContent = 'Redirecting…'; }
       var redirectTo = window.location.origin + '/dashboard.html';
       window.location.href = SUPA_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
     }
 
-    /* bind hero URL input */
+    /* ---- fetch helpers -------------------------------------------------- */
+    function fetchTracks(scUrl) {
+      return fetch(SUPA_URL + '/functions/v1/search-tracklist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPA_KEY,
+          'apikey': SUPA_KEY
+        },
+        body: JSON.stringify({ scUrl: scUrl })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.paywalled) return { paywalled: true, tracks: [] };
+        return { tracks: (d && d.tracks) ? d.tracks : [] };
+      });
+    }
+
+    function fetchOembed(scUrl) {
+      return fetch('https://soundcloud.com/oembed?url=' + encodeURIComponent(scUrl) + '&format=json')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
+    }
+
+    /* ---- rendering ------------------------------------------------------ */
+    function showLoading() {
+      resultBlock.style.display = '';
+      resultBlock.innerHTML =
+        '<div class="result-loading">' +
+        '<span class="result-dot"></span>' +
+        '<span class="result-dot"></span>' +
+        '<span class="result-dot"></span>' +
+        '<span style="margin-left:6px">Finding tracklist…</span>' +
+        '</div>';
+      if (mixDivider) mixDivider.style.display = 'none';
+      resultBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function showEmpty(msg) {
+      resultBlock.innerHTML =
+        '<div class="result-empty">' +
+        '<strong>' + (msg || 'Tracklist not found') + '</strong>' +
+        'Try a different mix URL, or browse the featured mixes below.' +
+        '</div>';
+      if (mixDivider) mixDivider.style.display = '';
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function trackRowHtml(t) {
+      return '<div class="result-track-row">' +
+        '<span class="result-track-num">' + escHtml(t.index) + '</span>' +
+        '<span>' +
+          '<span class="result-track-artist">' + escHtml(t.artist) + '</span>' +
+          (t.title ? ' <span class="result-track-title">— ' + escHtml(t.title) + '</span>' : '') +
+        '</span>' +
+        '</div>';
+    }
+
+    function renderResults(scUrl, tracks, oembed) {
+      var title      = (oembed && oembed.title)        ? oembed.title        : scUrl;
+      var artist     = (oembed && oembed.author_name)  ? oembed.author_name  : '';
+      var thumb      = (oembed && oembed.thumbnail_url)
+        ? oembed.thumbnail_url.replace('-large', '-t300x300')
+        : null;
+
+      /* strip artist prefix from title if it's redundant ("Artist - Mix") */
+      if (artist && title.toLowerCase().startsWith(artist.toLowerCase() + ' -')) {
+        title = title.slice(artist.length + 2).trim();
+      }
+
+      var visible = tracks.slice(0, FREE_VISIBLE);
+      var hidden  = tracks.slice(FREE_VISIBLE);
+
+      var artworkHtml = thumb
+        ? '<img class="result-artwork" src="' + escHtml(thumb) + '" alt="" loading="lazy">'
+        : '<div class="result-artwork-placeholder">♫</div>';
+
+      var html = '<div class="result-header">' +
+        artworkHtml +
+        '<div class="result-meta">' +
+          '<div class="result-meta-label">Tracklist</div>' +
+          '<div class="result-meta-title">' + escHtml(title) + '</div>' +
+          (artist ? '<div class="result-meta-artist">' + escHtml(artist) + '</div>' : '') +
+          '<div class="result-meta-count">' + tracks.length + ' tracks</div>' +
+        '</div>' +
+        '</div>';
+
+      html += '<div class="result-tracks-visible">';
+      visible.forEach(function (t) { html += trackRowHtml(t); });
+      html += '</div>';
+
+      if (hidden.length > 0) {
+        var blurredRows = '';
+        hidden.forEach(function (t) { blurredRows += trackRowHtml(t); });
+        html +=
+          '<div class="result-gate-wrap" id="result-gate-wrap">' +
+            '<div class="result-blur-tracks">' + blurredRows + '</div>' +
+            '<div class="result-gate" id="result-gate">' +
+              '<span class="result-gate-label">+' + hidden.length + ' more tracks</span>' +
+              '<button class="result-gate-btn" id="result-gate-btn" type="button">' +
+                'Sign up to see full tracklist →' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      }
+
+      resultBlock.innerHTML = html;
+      if (mixDivider) mixDivider.style.display = '';
+
+      /* CTA button click */
+      var gateBtn = document.getElementById('result-gate-btn');
+      if (gateBtn) {
+        gateBtn.addEventListener('click', function () {
+          openModal(scUrl, artist || null, title || null);
+        });
+      }
+
+      /* scroll-into-view trigger */
+      if (hidden.length > 0) {
+        setupGateObserver(scUrl, artist, title);
+      }
+    }
+
+    function setupGateObserver(scUrl, artist, title) {
+      if (gateObserver) { gateObserver.disconnect(); gateObserver = null; }
+      var gateEl = document.getElementById('result-gate-wrap');
+      if (!gateEl || !window.IntersectionObserver) return;
+      var fired = false;
+      gateObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!fired && entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+            fired = true;
+            gateObserver.disconnect();
+            gateObserver = null;
+            /* small delay so the user sees the blur before the modal */
+            setTimeout(function () {
+              openModal(scUrl, artist || null, title || null);
+            }, 600);
+          }
+        });
+      }, { threshold: 0.4 });
+      gateObserver.observe(gateEl);
+    }
+
+    /* ---- main fetch flow ------------------------------------------------ */
+    function fetchAndRender(url) {
+      if (gateObserver) { gateObserver.disconnect(); gateObserver = null; }
+      showLoading();
+
+      Promise.all([
+        fetchTracks(url).catch(function () { return { tracks: [] }; }),
+        fetchOembed(url)
+      ]).then(function (results) {
+        var trackResult = results[0];
+        var oembed      = results[1];
+        var tracks      = trackResult.tracks || [];
+
+        if (trackResult.paywalled) {
+          showEmpty('Tracklist found — sign up to view it');
+          openModal(url, null, null);
+          return;
+        }
+        if (!tracks.length) {
+          showEmpty(null);
+          return;
+        }
+        renderResults(url, tracks, oembed);
+      }).catch(function () {
+        showEmpty('Something went wrong. Try again.');
+      });
+    }
+
+    /* ---- event bindings ------------------------------------------------- */
     if (findBtn && scInput) {
       findBtn.addEventListener('click', function () {
         var url = (scInput.value || '').trim();
         if (!url) { scInput.focus(); return; }
-        openModal(url, null, null);
+        fetchAndRender(url);
       });
       scInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') findBtn.click();
       });
     }
 
-    /* bind mix cards */
+    /* mix cards still open modal directly */
     document.querySelectorAll('.mix-card').forEach(function (card) {
       card.addEventListener('click', function () {
         openModal(card.dataset.url, card.dataset.artist, card.dataset.mix);
       });
     });
 
-    /* modal controls */
-    if (closeBtn)   closeBtn.addEventListener('click', closeModal);
-    if (overlay)    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
-    if (googleBtn)  googleBtn.addEventListener('click', startGoogleAuth);
+    if (closeBtn)  closeBtn.addEventListener('click', closeModal);
+    if (overlay)   overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+    if (googleBtn) googleBtn.addEventListener('click', startGoogleAuth);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
   })();
 </script>
