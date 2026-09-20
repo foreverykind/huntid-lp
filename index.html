@@ -545,7 +545,7 @@
     text-align: left;
   }
   .result-loading {
-    padding: 28px 20px;
+    padding: 14px 16px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -3237,7 +3237,7 @@
 
       if (hidden.length > 0) {
         var blurredRows = '';
-        hidden.forEach(function (t) { blurredRows += trackRowHtml(t); });
+        hidden.slice(0, 3).forEach(function (t) { blurredRows += trackRowHtml(t); });
         html +=
           '<div class="result-gate-wrap" id="result-gate-wrap">' +
             '<div class="result-blur-tracks">' + blurredRows + '</div>' +
