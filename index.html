@@ -136,7 +136,9 @@
   .nav-links a { transition: color 200ms; }
   .nav-links a:hover { color: var(--text); }
   .nav-spacer { flex: 1; }
-  .nav-dashboard-btn {
+  /* Both stay hidden until the session resolves, so neither flashes the
+     wrong state on load. */
+  .nav-dashboard-btn, .nav-signin-btn {
     display: none;
     align-items: center; gap: 6px;
     height: 40px; padding: 0 16px;
@@ -145,10 +147,13 @@
     font-size: 13px; font-weight: 500;
     color: var(--text-dim);
     white-space: nowrap;
+    background: none; font-family: inherit; cursor: pointer;
     transition: color 150ms, border-color 150ms;
   }
-  .nav-dashboard-btn:hover { color: var(--text); border-color: rgba(255,255,255,.3); }
-  .nav-dashboard-btn.visible { display: inline-flex; }
+  .nav-dashboard-btn:hover, .nav-signin-btn:hover {
+    color: var(--text); border-color: rgba(255,255,255,.3);
+  }
+  .nav-dashboard-btn.visible, .nav-signin-btn.visible { display: inline-flex; }
   .nav-pill {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 12px;
@@ -1848,6 +1853,7 @@
         <a href="#roadmap">Roadmap</a>
       </div>
       <div class="nav-spacer"></div>
+      <button type="button" class="nav-signin-btn" id="nav-signin-btn">Sign in</button>
       <a href="/dashboard" class="nav-dashboard-btn" id="nav-dashboard-btn">
         Dashboard <span style="opacity:.6">→</span>
       </a>
@@ -3109,51 +3115,77 @@
     var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoeWVia29mcWpnem1ta3B5YWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTc1NTksImV4cCI6MjA5NTAzMzU1OX0.jaCLLf65tHmWOfN6CFTDDNfToqaF-Ody0LTJsuPt_E8';
     var FREE_VISIBLE = 4;
 
-    var lastSearch  = null; /* { scUrl, tracks, oembed } — re-rendered after sign-in */
+    var lastSearch   = null; /* { scUrl, tracks, oembed } from the last search */
+    var modalUrl     = '';   /* the mix the open modal belongs to */
+    var authResolved = false;
+    var PENDING_KEY  = 'huntid_pending_search';
 
     function session()  { return (window.huntidAuth && window.huntidAuth.session) || null; }
     function isAuthed() { return !!session(); }
 
     function updateHeaderAuth() {
-      var btn  = document.getElementById('nav-dashboard-btn');
-      var pill = document.getElementById('nav-beta-pill');
-      if (btn)  btn.classList.toggle('visible', isAuthed());
-      if (pill) pill.style.display = isAuthed() ? 'none' : '';
+      if (!authResolved) return; /* neither button shows a guess */
+      var authed = isAuthed();
+      var dash   = document.getElementById('nav-dashboard-btn');
+      var signin = document.getElementById('nav-signin-btn');
+      var pill   = document.getElementById('nav-beta-pill');
+      if (dash)   dash.classList.toggle('visible', authed);
+      if (signin) signin.classList.toggle('visible', !authed);
+      if (pill)   pill.style.display = authed ? 'none' : '';
     }
 
     /* Signing up IS the gate: the tracklist is what the visitor came for, so
-       the account is made here rather than on a separate registration page. */
+       the account is made here rather than on a separate registration page.
+       OAuth reloads the page, so carry the tracklist across the redirect —
+       coming back should open the mix, not look it up again. */
     function startGoogleAuth() {
-      if (googleBtn) { googleBtn.disabled = true; googleBtn.textContent = 'Redirecting…'; }
-      /* openModal() already stored the mix they were gated on. */
-      if (window.huntidAuth) window.huntidAuth.signIn();
+      if (googleBtn) googleBtn.disabled = true;
+      if (modalUrl) {
+        var payload = { scUrl: modalUrl };
+        if (lastSearch && lastSearch.scUrl === modalUrl) {
+          payload.tracks = lastSearch.tracks;
+          payload.oembed = lastSearch.oembed;
+        }
+        try { localStorage.setItem(PENDING_KEY, JSON.stringify(payload)); } catch (e) {}
+      }
+      if (!window.huntidAuth) return;
+      window.huntidAuth.signIn().then(function (r) {
+        /* Only reached if the redirect never happened — an origin missing
+           from Supabase's allowed redirect URLs lands here. */
+        if (r && r.error) {
+          if (googleBtn) googleBtn.disabled = false;
+          titleEl.textContent = 'Sign-in is unavailable right now';
+        }
+      });
     }
 
     /* Back from Google: reveal what they signed up for. */
     window.addEventListener('huntid:auth', function (e) {
-      if (!e.detail.session) return;
+      authResolved = true;
       updateHeaderAuth();
+      if (!e.detail.session) return;
 
-      var pending = '';
+      var pending = null;
       try {
-        pending = localStorage.getItem('huntid_pending_url') || '';
-        localStorage.removeItem('huntid_pending_url');
+        var raw = localStorage.getItem(PENDING_KEY);
+        localStorage.removeItem(PENDING_KEY);
+        if (raw) pending = JSON.parse(raw);
       } catch (err) {}
 
-      if (!pending) {
-        if (lastSearch) renderResults(lastSearch.scUrl, lastSearch.tracks, lastSearch.oembed);
-        return;
-      }
+      if (!pending || !pending.scUrl) return; /* signed in from the header */
 
-      /* Straight back from Google: confirm, then hand over the mix they
-         signed up for, already unlocked. */
-      if (scInput)     scInput.value             = pending;
+      if (scInput)     scInput.value             = pending.scUrl;
       if (formView)    formView.style.display    = 'none';
       if (successView) successView.style.display = '';
       overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
 
-      fetchAndRender(pending);
+      if (pending.tracks && pending.tracks.length) {
+        renderResults(pending.scUrl, pending.tracks, pending.oembed);
+      } else {
+        /* Came from a featured mix card — nothing was looked up yet. */
+        fetchAndRender(pending.scUrl);
+      }
       setTimeout(closeModal, 1800);
     });
 
@@ -3180,7 +3212,7 @@
       successView.style.display = 'none';
       titleEl.textContent       = 'Sign up to see full tracklist';
       if (googleBtn) googleBtn.disabled = false;
-      try { localStorage.setItem('huntid_pending_url', url || ''); } catch (e) {}
+      modalUrl = url || '';
       if (artist) {
         mixArtist.textContent    = artist;
         mixName.textContent      = mix  || '';
@@ -3392,7 +3424,8 @@
         /* Anonymous searches are never metered, so this is an account that
            has spent its free searches — an upgrade, not a sign-up. */
         if (trackResult.paywalled) {
-          showEmpty('');
+          setStatus('');
+          if (mixDivider) mixDivider.style.display = '';
           resultBlock.innerHTML =
             '<div class="result-empty"><strong>You\'ve used your free searches</strong>' +
             'Upgrade to Pro for unlimited tracklists.' +
@@ -3442,7 +3475,14 @@
     if (googleBtn) googleBtn.addEventListener('click', startGoogleAuth);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
-    updateHeaderAuth();
+    /* Returning visitors: no mix to gate on, so straight to Google. */
+    var navSignin = document.getElementById('nav-signin-btn');
+    if (navSignin) navSignin.addEventListener('click', function () {
+      navSignin.disabled = true;
+      if (window.huntidAuth) window.huntidAuth.signIn().then(function (r) {
+        if (r && r.error) navSignin.disabled = false;
+      });
+    });
   })();
 </script>
 
