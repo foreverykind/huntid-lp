@@ -8,6 +8,25 @@
 <link rel="icon" type="image/png" href="favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!-- The auth module is imported from inside an inline module script, so the
+     browser would not discover it until that script parses. Start both the
+     fetch and the Supabase connection now, alongside everything else. -->
+<link rel="modulepreload" href="https://esm.sh/@supabase/supabase-js@2" />
+<link rel="preconnect" href="https://qhyebkofqjgzmmkpyalb.supabase.co" crossorigin />
+<script>
+  // Settle the first paint before the body is even parsed. A session already
+  // in storage means the shell is certainly right, so it goes up at once and
+  // fills in; a handoff is a real exchange worth waiting on, and no session
+  // at all means we do not know yet. showFull() drops the flag once the real
+  // answer is in.
+  (function () {
+    var stored = false
+    try { stored = !!localStorage.getItem("sb-qhyebkofqjgzmmkpyalb-auth-token") } catch (e) {}
+    if (!stored || location.search.indexOf("handoff=") !== -1) {
+      document.documentElement.className += " booting"
+    }
+  })()
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
 :root{--bg:#0f0f0f;--surface:#1a1a1a;--surface-2:#1f1f1f;--surface-3:#252525;--accent:#ff5500;--accent-soft:rgba(255,85,0,0.10);--accent-strong:#ff6a1f;--text:#fff;--text-dim:#b3b3b3;--text-faint:#888;--border:#2a2a2a;--border-strong:#3a3a3a;--danger:#ef4444;--danger-soft:rgba(239,68,68,0.10);--success:#4ade80;--success-soft:rgba(74,222,128,0.10)}
@@ -59,6 +78,10 @@ button{font-family:inherit;cursor:pointer}
 .dscrim{position:fixed;inset:0;z-index:25;background:rgba(0,0,0,0.55);opacity:0;transition:opacity 200ms}
 .dscrim[hidden]{display:none}
 .dscrim.open{opacity:1}
+/* Pre-script boot state, set on <html> before the body parses so the shell
+   never flashes ahead of the answer. showFull() clears it. */
+html.booting #full-handoff[hidden]{display:flex}
+html.booting #app{visibility:hidden}
 
 .dmain{display:flex;flex-direction:column;min-width:0;overflow:hidden}
 .dtop{height:64px;flex-shrink:0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:0 28px}
@@ -215,14 +238,14 @@ button{font-family:inherit;cursor:pointer}
       <span class="crumb" id="crumb">Account</span>
       <div class="du" id="du" hidden><span class="av" id="av"></span><span id="email-label"></span></div>
     </div>
-    <div class="dbody"><div class="dcol" id="dcol"></div></div>
+    <div class="dbody"><div class="dcol" id="dcol"><div class="skel"><div class="sr"><div class="sk" style="width:48%"></div><div class="sk" style="width:26%;height:9px"></div></div><div class="sr"><div class="sk" style="width:55%"></div><div class="sk" style="width:26%;height:9px"></div></div><div class="sr"><div class="sk" style="width:62%"></div><div class="sk" style="width:26%;height:9px"></div></div></div></div></div>
   </div>
 </div>
 
 <!-- Full-screen states live OUTSIDE #app on purpose: showFull() hides #app via
      visibility:hidden, which is inherited by descendants — nesting these
      inside #app would hide them along with everything else. -->
-<div class="dfull" id="full-handoff">
+<div class="dfull" id="full-handoff" hidden>
   <div class="fcard"><div class="spin"></div><h3>Opening your dashboard</h3><p>Just a moment.</p></div>
 </div>
 <div class="dfull" id="full-noaccess" hidden>
@@ -269,7 +292,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 const $ = (sel) => document.querySelector(sel)
 const col = $("#dcol"), crumb = $("#crumb"), mask = $("#mask"), modal = $("#modal"), toastEl = $("#toast")
-let sec = "account", profile = null
+let sec = "account", profile = null, authUser = null
 
 const T = { account: "Account", saved: "Saved tracklists", fav: "Favourites", analyzed: "Analyzed mixes", billing: "Billing history" }
 const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")
@@ -327,6 +350,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") { setMenu(
 // ---------- boot: handoff exchange or existing session ----------
 
 function showFull(which) {
+  document.documentElement.classList.remove("booting")
   document.getElementById("full-handoff").hidden = which !== "handoff"
   document.getElementById("full-noaccess").hidden = which !== "noaccess"
   document.getElementById("full-failed").hidden = which !== "failed"
@@ -350,11 +374,12 @@ document.getElementById("google-signin").onclick = async (e) => {
 }
 
 async function boot() {
-  showFull("handoff")
   const params = new URLSearchParams(window.location.search)
   const handoffToken = params.get("handoff")
 
   if (handoffToken) {
+    // A real exchange with the server — this one is worth waiting on.
+    showFull("handoff")
     try {
       const res = await fetch(`${SUPABASE_URL}/functions/v1/exchange-dashboard-handoff`, {
         method: "POST",
@@ -369,8 +394,9 @@ async function boot() {
         return
       }
       const { access_token, refresh_token } = await res.json()
-      const { error } = await supabase.auth.setSession({ access_token, refresh_token })
+      const { data, error } = await supabase.auth.setSession({ access_token, refresh_token })
       if (error) { showFull("noaccess"); return }
+      authUser = data.session?.user ?? null
     } catch {
       showFull("failed")
       return
@@ -378,14 +404,18 @@ async function boot() {
   } else {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) { showFull("noaccess"); return }
+    authUser = session.user
   }
 
   await loadDashboard()
 }
 
 async function loadDashboard() {
-  const { data: { user }, error: userError } = await supabase.auth.getUser()
-  if (userError || !user) { showFull("noaccess"); return }
+  // The session already carries the user, and every query below is checked
+  // against the JWT server-side anyway, so asking the server who we are
+  // would only be another round trip before anything can paint.
+  const user = authUser
+  if (!user) { showFull("noaccess"); return }
 
   const selectProfile = () => supabase
     .from("users")
@@ -404,12 +434,7 @@ async function loadDashboard() {
 
   if (profileError || !row) { showFull("failed"); return }
 
-  profile = { id: user.id, email: row.email, memberSince: row.created_at, plan: row.plan, subscription: null, searchCount: 0 }
-  if (row.plan === "pro") {
-    profile.subscription = await fetchSubscriptionStatus()
-  } else {
-    profile.searchCount = await fetchSearchCount(user.id)
-  }
+  profile = { id: user.id, email: row.email, memberSince: row.created_at, plan: row.plan, subscription: null, searchCount: 0, usageLoaded: false }
 
   showFull(null)
   $("#av").textContent = (profile.email[0] || "?").toUpperCase()
@@ -422,8 +447,19 @@ async function loadDashboard() {
   })
   document.getElementById("retry-btn").onclick = () => { showFull("handoff"); loadDashboard() }
 
-  await refreshCounts()
   render()
+
+  // Usage and the sidebar counts are not needed to put the dashboard on
+  // screen, so they land in what is already there rather than holding it back.
+  const usage = profile.plan === "pro"
+    ? fetchSubscriptionStatus().then((s) => { profile.subscription = s })
+    : fetchSearchCount(user.id).then((c) => { profile.searchCount = c })
+
+  usage.then(() => {
+    profile.usageLoaded = true
+    if (sec === "account") render()
+  })
+  refreshCounts()
 }
 
 function go(next) { sec = next; render() }
@@ -534,9 +570,11 @@ function subscriptionCard() {
       '<div class="dnote">Billed through Paddle. You keep Pro until the current period ends, then move to Free automatically.</div></div>'
   }
   const used = profile.searchCount ?? 0
-  const pct = Math.min(100, Math.round((used / FREE_SEARCH_LIMIT) * 100))
+  const pct = profile.usageLoaded ? Math.min(100, Math.round((used / FREE_SEARCH_LIMIT) * 100)) : 0
+  // Until the count is in, say nothing rather than a confident zero.
+  const usedLabel = profile.usageLoaded ? used + " / " + FREE_SEARCH_LIMIT : "…"
   return '<div class="dcard"><div class="dcard-lbl">Subscription</div><div class="plan">Free plan</div>' +
-    '<div class="usage">Searches used: <b>' + used + ' / ' + FREE_SEARCH_LIMIT + '</b></div>' +
+    '<div class="usage">Searches used: <b>' + usedLabel + '</b></div>' +
     '<div class="ptrack"><div class="pfill" style="width:' + pct + '%"></div></div>' +
     '<div style="margin-top:20px"><button type="button" class="btn btn-primary" id="upgrade-btn">Upgrade to Pro</button></div>' +
     '<div class="dnote">Pro removes the search limit. Billed through Paddle, cancel anytime.</div></div>'
