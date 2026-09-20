@@ -3109,36 +3109,53 @@
     var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoeWVia29mcWpnem1ta3B5YWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTc1NTksImV4cCI6MjA5NTAzMzU1OX0.jaCLLf65tHmWOfN6CFTDDNfToqaF-Ody0LTJsuPt_E8';
     var FREE_VISIBLE = 4;
 
-    var STUB_EMAIL  = 'ruslan.zubchenko@gmail.com';
-    var lastSearch  = null; /* { scUrl, tracks, oembed } — saved to re-render after sign-in */
+    var lastSearch  = null; /* { scUrl, tracks, oembed } — re-rendered after sign-in */
 
-    function isAuthed() {
-      try { return !!localStorage.getItem('huntid_stub_authed'); } catch (e) { return false; }
-    }
+    function session()  { return (window.huntidAuth && window.huntidAuth.session) || null; }
+    function isAuthed() { return !!session(); }
 
     function updateHeaderAuth() {
       var btn  = document.getElementById('nav-dashboard-btn');
       var pill = document.getElementById('nav-beta-pill');
-      if (isAuthed()) {
-        if (btn)  btn.classList.add('visible');
-        if (pill) pill.style.display = 'none';
-      }
+      if (btn)  btn.classList.toggle('visible', isAuthed());
+      if (pill) pill.style.display = isAuthed() ? 'none' : '';
     }
 
-    function mockSignIn() {
-      try { localStorage.setItem('huntid_stub_authed', '1'); } catch (e) {}
-      /* show success screen inside the modal */
+    /* Signing up IS the gate: the tracklist is what the visitor came for, so
+       the account is made here rather than on a separate registration page. */
+    function startGoogleAuth() {
+      if (googleBtn) { googleBtn.disabled = true; googleBtn.textContent = 'Redirecting…'; }
+      /* openModal() already stored the mix they were gated on. */
+      if (window.huntidAuth) window.huntidAuth.signIn();
+    }
+
+    /* Back from Google: reveal what they signed up for. */
+    window.addEventListener('huntid:auth', function (e) {
+      if (!e.detail.session) return;
+      updateHeaderAuth();
+
+      var pending = '';
+      try {
+        pending = localStorage.getItem('huntid_pending_url') || '';
+        localStorage.removeItem('huntid_pending_url');
+      } catch (err) {}
+
+      if (!pending) {
+        if (lastSearch) renderResults(lastSearch.scUrl, lastSearch.tracks, lastSearch.oembed);
+        return;
+      }
+
+      /* Straight back from Google: confirm, then hand over the mix they
+         signed up for, already unlocked. */
+      if (scInput)     scInput.value             = pending;
       if (formView)    formView.style.display    = 'none';
       if (successView) successView.style.display = '';
-      /* close after a beat, then reveal full tracklist */
-      setTimeout(function () {
-        closeModal();
-        updateHeaderAuth();
-        if (lastSearch) {
-          renderResults(lastSearch.scUrl, lastSearch.tracks, lastSearch.oembed);
-        }
-      }, 1800);
-    }
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      fetchAndRender(pending);
+      setTimeout(closeModal, 1800);
+    });
 
     var overlay     = document.getElementById('signup-modal');
     var closeBtn    = document.getElementById('modal-close');
@@ -3185,16 +3202,17 @@
       if (googleBtn) googleBtn.disabled = false;
     }
 
-    /* stub: real OAuth replaced with instant localStorage sign-in for LP demo */
-    function startGoogleAuth() { mockSignIn(); }
-
     /* ---- fetch helpers -------------------------------------------------- */
     function fetchTracks(scUrl) {
+      /* Signed in: send the real token so the search is logged against the
+         account and counts toward the plan, same as a search from the
+         extension. Anonymous visitors stay on the anon key. */
+      var s = session();
       return fetch(SUPA_URL + '/functions/v1/search-tracklist', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + SUPA_KEY,
+          'Authorization': 'Bearer ' + (s ? s.access_token : SUPA_KEY),
           'apikey': SUPA_KEY
         },
         body: JSON.stringify({ scUrl: scUrl })
@@ -3371,9 +3389,15 @@
         var oembed      = results[1];
         var tracks      = trackResult.tracks || [];
 
+        /* Anonymous searches are never metered, so this is an account that
+           has spent its free searches — an upgrade, not a sign-up. */
         if (trackResult.paywalled) {
-          showEmpty('Tracklist found — sign up to view it');
-          openModal(url, null, null);
+          showEmpty('');
+          resultBlock.innerHTML =
+            '<div class="result-empty"><strong>You\'ve used your free searches</strong>' +
+            'Upgrade to Pro for unlimited tracklists.' +
+            '<div style="margin-top:16px"><a class="result-gate-btn" href="/dashboard">Upgrade to Pro →</a></div></div>';
+          resultBlock.style.display = '';
           return;
         }
         if (!tracks.length) {
@@ -3420,6 +3444,46 @@
 
     updateHeaderAuth();
   })();
+</script>
+
+<!-- Auth. Same Supabase client and storage as /dashboard — signing in here
+     leaves the session the dashboard boots from, so the dashboard is simply
+     what an authenticated visitor has, not a place you sign in at. -->
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+const supabase = createClient(
+  "https://qhyebkofqjgzmmkpyalb.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoeWVia29mcWpnem1ta3B5YWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTc1NTksImV4cCI6MjA5NTAzMzU1OX0.jaCLLf65tHmWOfN6CFTDDNfToqaF-Ody0LTJsuPt_E8",
+)
+
+window.huntidAuth = {
+  session: null,
+  signIn: () => supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: window.location.origin + "/" },
+  }),
+}
+
+// Resolves the ?code= the OAuth redirect lands on before returning the session.
+const { data: { session } } = await supabase.auth.getSession()
+window.huntidAuth.session = session
+
+if (session && window.location.search.includes("code=")) {
+  history.replaceState(null, "", window.location.pathname)
+}
+
+// The row is written client-side on first login — there is no trigger on
+// auth.users — so a brand new account gets it here, at the moment it is made.
+if (session?.user) {
+  const { data: row } = await supabase
+    .from("users").select("id").eq("id", session.user.id).maybeSingle()
+  if (!row) {
+    await supabase.from("users").insert({ id: session.user.id, email: session.user.email })
+  }
+}
+
+window.dispatchEvent(new CustomEvent("huntid:auth", { detail: { session } }))
 </script>
 
 </body>
