@@ -136,6 +136,19 @@
   .nav-links a { transition: color 200ms; }
   .nav-links a:hover { color: var(--text); }
   .nav-spacer { flex: 1; }
+  .nav-dashboard-btn {
+    display: none;
+    align-items: center; gap: 6px;
+    height: 40px; padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-dim);
+    white-space: nowrap;
+    transition: color 150ms, border-color 150ms;
+  }
+  .nav-dashboard-btn:hover { color: var(--text); border-color: rgba(255,255,255,.3); }
+  .nav-dashboard-btn.visible { display: inline-flex; }
   .nav-pill {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 12px;
@@ -1835,7 +1848,10 @@
         <a href="#roadmap">Roadmap</a>
       </div>
       <div class="nav-spacer"></div>
-      <span class="nav-pill"><span class="dot"></span> Beta · 10 searches free</span>
+      <a href="https://huntid.app/dashboard" class="nav-dashboard-btn" id="nav-dashboard-btn">
+        Dashboard <span style="opacity:.6">→</span>
+      </a>
+      <span class="nav-pill" id="nav-beta-pill"><span class="dot"></span> Beta · 10 searches free</span>
       <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-primary" style="height: 40px; padding: 0 18px; font-size: 13px;" data-track-cws="nav">
         Add to Chrome
         <span class="arr">→</span>
@@ -3093,6 +3109,31 @@
     var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoeWVia29mcWpnem1ta3B5YWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTc1NTksImV4cCI6MjA5NTAzMzU1OX0.jaCLLf65tHmWOfN6CFTDDNfToqaF-Ody0LTJsuPt_E8';
     var FREE_VISIBLE = 4;
 
+    var STUB_EMAIL  = 'ruslan.zubchenko@gmail.com';
+    var lastSearch  = null; /* { scUrl, tracks, oembed } — saved to re-render after sign-in */
+
+    function isAuthed() {
+      try { return !!localStorage.getItem('huntid_stub_authed'); } catch (e) { return false; }
+    }
+
+    function updateHeaderAuth() {
+      var btn  = document.getElementById('nav-dashboard-btn');
+      var pill = document.getElementById('nav-beta-pill');
+      if (isAuthed()) {
+        if (btn)  btn.classList.add('visible');
+        if (pill) pill.style.display = 'none';
+      }
+    }
+
+    function mockSignIn() {
+      try { localStorage.setItem('huntid_stub_authed', '1'); } catch (e) {}
+      closeModal();
+      updateHeaderAuth();
+      if (lastSearch) {
+        renderResults(lastSearch.scUrl, lastSearch.tracks, lastSearch.oembed);
+      }
+    }
+
     var overlay     = document.getElementById('signup-modal');
     var closeBtn    = document.getElementById('modal-close');
     var googleBtn   = document.getElementById('modal-google-btn');
@@ -3138,11 +3179,8 @@
       if (googleBtn) googleBtn.disabled = false;
     }
 
-    function startGoogleAuth() {
-      if (googleBtn) { googleBtn.disabled = true; googleBtn.textContent = 'Redirecting…'; }
-      var redirectTo = window.location.origin + '/dashboard.html';
-      window.location.href = SUPA_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
-    }
+    /* stub: real OAuth replaced with instant localStorage sign-in for LP demo */
+    function startGoogleAuth() { mockSignIn(); }
 
     /* ---- fetch helpers -------------------------------------------------- */
     function fetchTracks(scUrl) {
@@ -3205,6 +3243,8 @@
 
     function renderResults(scUrl, tracks, oembed) {
       setStatus('');
+      lastSearch = { scUrl: scUrl, tracks: tracks, oembed: oembed };
+
       var title      = (oembed && oembed.title)        ? oembed.title        : scUrl;
       var artist     = (oembed && oembed.author_name)  ? oembed.author_name  : '';
       var thumb      = (oembed && oembed.thumbnail_url)
@@ -3216,8 +3256,9 @@
         title = title.slice(artist.length + 2).trim();
       }
 
-      var visible = tracks.slice(0, FREE_VISIBLE);
-      var hidden  = tracks.slice(FREE_VISIBLE);
+      var authed  = isAuthed();
+      var visible = authed ? tracks : tracks.slice(0, FREE_VISIBLE);
+      var hidden  = authed ? []     : tracks.slice(FREE_VISIBLE);
 
       var artworkHtml = thumb
         ? '<img class="result-artwork" src="' + escHtml(thumb) + '" alt="" loading="lazy">'
@@ -3370,6 +3411,8 @@
     if (overlay)   overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
     if (googleBtn) googleBtn.addEventListener('click', startGoogleAuth);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+    updateHeaderAuth();
   })();
 </script>
 
