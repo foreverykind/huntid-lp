@@ -3289,15 +3289,22 @@
     }
 
     /* ---- URL normalisation ---------------------------------------------- */
+    var SC_HOSTS = ['soundcloud.com', 'www.soundcloud.com', 'on.soundcloud.com', 'm.soundcloud.com'];
+
     function normalizeSCUrl(raw) {
       try {
-        var u = new URL(raw);
+        var u = new URL(raw.trim());
+        if (SC_HOSTS.indexOf(u.hostname) === -1) return raw.trim();
         /* keep only origin + pathname, drop all query params and hash */
         return u.origin + u.pathname.replace(/\/$/, '');
       } catch (e) {
-        /* not a valid URL — return as-is and let the API reject it */
-        return raw;
+        return raw.trim();
       }
+    }
+
+    function isSCUrl(url) {
+      try { return SC_HOSTS.indexOf(new URL(url).hostname) !== -1; }
+      catch (e) { return false; }
     }
 
     /* ---- main fetch flow ------------------------------------------------ */
@@ -3331,9 +3338,16 @@
     /* ---- event bindings ------------------------------------------------- */
     if (findBtn && scInput) {
       findBtn.addEventListener('click', function () {
-        var url = normalizeSCUrl((scInput.value || '').trim());
-        if (!url) { scInput.focus(); return; }
-        scInput.value = url;   /* show the clean URL back to the user */
+        var raw = (scInput.value || '').trim();
+        if (!raw) { scInput.focus(); return; }
+        var url = normalizeSCUrl(raw);
+        if (!isSCUrl(url)) {
+          resultBlock.style.display = '';
+          resultBlock.innerHTML = '<div class="result-empty"><strong>Not a SoundCloud URL</strong>Paste a link from soundcloud.com or the SoundCloud mobile app.</div>';
+          if (mixDivider) mixDivider.style.display = '';
+          return;
+        }
+        scInput.value = url;   /* show clean URL back in the input */
         fetchAndRender(url);
       });
       scInput.addEventListener('keydown', function (e) {
