@@ -1853,7 +1853,7 @@
         <a href="#roadmap">Roadmap</a>
       </div>
       <div class="nav-spacer"></div>
-      <button type="button" class="nav-signin-btn" id="nav-signin-btn">Sign in</button>
+      <button type="button" class="nav-signin-btn" id="nav-signin-btn">Sign up</button>
       <a href="/dashboard" class="nav-dashboard-btn" id="nav-dashboard-btn">
         Dashboard <span style="opacity:.6">→</span>
       </a>
@@ -3210,7 +3210,9 @@
     function openModal(url, artist, mix) {
       formView.style.display    = '';
       successView.style.display = 'none';
-      titleEl.textContent       = 'Sign up to see full tracklist';
+      /* Opened from the gate it names the reward; from the header there is
+         no mix behind it yet. */
+      titleEl.textContent = url ? 'Sign up to see full tracklist' : 'Create your HuntID account';
       if (googleBtn) googleBtn.disabled = false;
       modalUrl = url || '';
       if (artist) {
@@ -3475,14 +3477,9 @@
     if (googleBtn) googleBtn.addEventListener('click', startGoogleAuth);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
-    /* Returning visitors: no mix to gate on, so straight to Google. */
+    /* Same modal as the tracklist gate — one way to make an account. */
     var navSignin = document.getElementById('nav-signin-btn');
-    if (navSignin) navSignin.addEventListener('click', function () {
-      navSignin.disabled = true;
-      if (window.huntidAuth) window.huntidAuth.signIn().then(function (r) {
-        if (r && r.error) navSignin.disabled = false;
-      });
-    });
+    if (navSignin) navSignin.addEventListener('click', function () { openModal(null, null, null); });
   })();
 </script>
 
