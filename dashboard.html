@@ -155,6 +155,19 @@ button{font-family:inherit;cursor:pointer}
   .dtop{padding:0 16px;gap:10px}
   #email-label{display:none}
   .dbody{padding:24px 16px 64px}
+  .rw{padding:14px 16px}
+  /* A favourite carries three store links plus two icon buttons, none of
+     which shrink — on a phone that left the track name a single letter.
+     Name takes its own line, the buttons sit under it. */
+  .rw-stack{flex-wrap:wrap;gap:11px;align-items:flex-start}
+  /* basis 0, not auto: a long track name sets a wide basis and flex breaks
+     the line before it shrinks, dropping the buttons onto a row of their own. */
+  .rw-stack .rw-main{order:1;flex:1 1 0}
+  .rw-stack .rw-t{white-space:normal}
+  .rw-stack .rw-acts{order:2;margin-left:auto}
+  .rw-stack .buy{order:3;flex:1 1 100%;flex-wrap:wrap;gap:6px}
+  .rw-stack .buy a{font-size:10.5px;padding:7px 10px}
+  .rw-stack .ibtn{width:38px;height:38px}
 }
 @media(prefers-reduced-motion:reduce){.dsb,.dscrim{transition:none}}
 </style>
@@ -639,7 +652,7 @@ async function viewFav() {
   data.forEach((x) => {
     const name = x.artist + " — " + x.title
     const q = encodeURIComponent(name)
-    h += '<div class="rw"><div class="rw-main"><div class="rw-t">' + esc(name) + '</div><div class="rw-s"><span>saved ' + new Date(x.saved_at).toLocaleDateString() + '</span></div></div>' +
+    h += '<div class="rw rw-stack"><div class="rw-main"><div class="rw-t">' + esc(name) + '</div><div class="rw-s"><span>saved ' + new Date(x.saved_at).toLocaleDateString() + '</span></div></div>' +
       '<div class="buy"><a href="https://www.beatport.com/search?q=' + q + '" target="_blank" rel="noreferrer">Beatport</a><a href="https://bandcamp.com/search?q=' + q + '" target="_blank" rel="noreferrer">Bandcamp</a><a href="https://www.discogs.com/search/?q=' + q + '" target="_blank" rel="noreferrer">Discogs</a></div>' +
       '<div class="rw-acts"><button type="button" class="ibtn" title="Copy track name" data-copy="' + esc(name) + '">' + icoCopy + '</button>' +
       '<button type="button" class="ibtn dgr" title="Delete" data-del="' + x.id + '" data-name="' + esc(name) + '">' + icoTrash + '</button></div></div>'
