@@ -168,6 +168,18 @@ button{font-family:inherit;cursor:pointer}
   .rw-stack .buy{order:3;flex:1 1 100%;flex-wrap:wrap;gap:6px}
   .rw-stack .buy a{font-size:10.5px;padding:7px 10px}
   .rw-stack .ibtn{width:38px;height:38px}
+  /* Four columns do not fit a phone — Status was cut off past the right
+     edge and Description broke over four lines. Each charge becomes a
+     block: what it was, then when, how much, and whether it went through. */
+  .btbl,.btbl tbody{display:block}
+  .btbl thead{display:none}
+  .btbl tr{display:flex;flex-wrap:wrap;align-items:center;gap:9px;padding:14px 16px;border-bottom:1px solid var(--border)}
+  .btbl tbody tr:last-child{border-bottom:0}
+  .btbl td{display:block;padding:0;border:0}
+  .btbl td:nth-child(2){order:1;flex:1 1 100%;color:var(--text)}
+  .btbl td:nth-child(1){order:2;font-size:12.5px;color:var(--text-faint)}
+  .btbl td.amt{order:3;margin-left:auto}
+  .btbl td:nth-child(4){order:4}
 }
 @media(prefers-reduced-motion:reduce){.dsb,.dscrim{transition:none}}
 </style>
