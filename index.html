@@ -5,6 +5,14 @@
 <title>HuntID — That track you can't stop thinking about?</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="For the tracks Shazam can't find. HuntID finds tracklists for DJ mixes on SoundCloud — click any timecode to jump right there." />
+<!-- Chrome takes no extensions on mobile, so "Add to Chrome" is a dead end
+     there. Flagged before first paint so the header never shows it. -->
+<script>
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (navigator.maxTouchPoints > 1 && /Mac/i.test(navigator.userAgent))) {
+    document.documentElement.classList.add('no-ext');
+  }
+</script>
 <!-- Analytics consent gate: GA4 + PostHog load ONLY after the visitor accepts cookies -->
 <script>
   window.huntidLoadAnalytics = function () {
@@ -154,6 +162,16 @@
     color: var(--text); border-color: rgba(255,255,255,.3);
   }
   .nav-dashboard-btn.visible, .nav-signin-btn.visible { display: inline-flex; }
+  .no-ext [data-track-cws="nav"] { display: none; }
+  /* A CTA that has become a statement rather than an action. */
+  .cta-inert {
+    opacity: .5;
+    pointer-events: none;
+    background: var(--surface) !important;
+    color: var(--text-dim) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+  }
   .nav-pill {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 12px;
@@ -2983,6 +3001,7 @@
   document.querySelectorAll('[data-track-cws]').forEach(function(el) {
     el.addEventListener('click', function() {
       var loc = el.getAttribute('data-track-cws');
+      if (!loc) return; // repurposed on mobile — not an install click
       if (window.posthog) posthog.capture('cws_click', { location: loc });
       if (window.gtag) gtag('event', 'cws_click', { location: loc });
     });
@@ -3123,9 +3142,45 @@
     function session()  { return (window.huntidAuth && window.huntidAuth.session) || null; }
     function isAuthed() { return !!session(); }
 
+    /* Until the auth module resolves — and at all, if it never loads because
+       esm.sh is blocked — go by the session supabase-js persists here, so the
+       header always offers a way in rather than nothing. */
+    function likelyAuthed() {
+      if (authResolved) return isAuthed();
+      try { return !!localStorage.getItem('sb-qhyebkofqjgzmmkpyalb-auth-token'); }
+      catch (e) { return false; }
+    }
+
+    var NO_EXT = document.documentElement.classList.contains('no-ext');
+
+    /* A phone can't install the extension, so the page CTAs offer what does
+       work there — an account — and once you have one they stop pretending
+       to be buttons and just say where the extension lives. */
+    var extCtas = !NO_EXT ? [] : ['hero', 'pricing', 'final_cta']
+      .map(function (slot) { return document.querySelector('[data-track-cws="' + slot + '"]'); })
+      .filter(Boolean);
+
+    function syncExtensionCtas() {
+      if (!NO_EXT) return;
+      var authed = likelyAuthed();
+      extCtas.forEach(function (el) {
+        el.removeAttribute('href');
+        el.removeAttribute('target');
+        el.removeAttribute('rel');
+        el.removeAttribute('data-track-cws');
+        if (authed) {
+          el.textContent = 'Extension available only from desktop';
+          el.classList.add('cta-inert');
+        } else {
+          el.classList.remove('cta-inert');
+          el.innerHTML = 'Sign up <span class="arr">→</span>';
+          el.onclick = function () { openModal(null, null, null); };
+        }
+      });
+    }
+
     function updateHeaderAuth() {
-      if (!authResolved) return; /* neither button shows a guess */
-      var authed = isAuthed();
+      var authed = likelyAuthed();
       var dash   = document.getElementById('nav-dashboard-btn');
       var signin = document.getElementById('nav-signin-btn');
       var pill   = document.getElementById('nav-beta-pill');
@@ -3163,6 +3218,7 @@
     window.addEventListener('huntid:auth', function (e) {
       authResolved = true;
       updateHeaderAuth();
+      syncExtensionCtas();
       if (!e.detail.session) return;
 
       var pending = null;
@@ -3480,6 +3536,9 @@
     /* Same modal as the tracklist gate — one way to make an account. */
     var navSignin = document.getElementById('nav-signin-btn');
     if (navSignin) navSignin.addEventListener('click', function () { openModal(null, null, null); });
+
+    updateHeaderAuth();
+    syncExtensionCtas();
   })();
 </script>
 
