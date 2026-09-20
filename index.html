@@ -3032,7 +3032,7 @@
     <div class="modal-success" id="modal-success-view">
       <div class="modal-success-icon">✓</div>
       <h3>You're in!</h3>
-      <p>Taking you to your dashboard…</p>
+      <p>Full tracklist unlocked. Enjoy.</p>
     </div>
   </div>
 </div>
@@ -3127,11 +3127,17 @@
 
     function mockSignIn() {
       try { localStorage.setItem('huntid_stub_authed', '1'); } catch (e) {}
-      closeModal();
-      updateHeaderAuth();
-      if (lastSearch) {
-        renderResults(lastSearch.scUrl, lastSearch.tracks, lastSearch.oembed);
-      }
+      /* show success screen inside the modal */
+      if (formView)    formView.style.display    = 'none';
+      if (successView) successView.style.display = '';
+      /* close after a beat, then reveal full tracklist */
+      setTimeout(function () {
+        closeModal();
+        updateHeaderAuth();
+        if (lastSearch) {
+          renderResults(lastSearch.scUrl, lastSearch.tracks, lastSearch.oembed);
+        }
+      }, 1800);
     }
 
     var overlay     = document.getElementById('signup-modal');
