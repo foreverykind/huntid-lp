@@ -3288,6 +3288,18 @@
       gateObserver.observe(gateEl);
     }
 
+    /* ---- URL normalisation ---------------------------------------------- */
+    function normalizeSCUrl(raw) {
+      try {
+        var u = new URL(raw);
+        /* keep only origin + pathname, drop all query params and hash */
+        return u.origin + u.pathname.replace(/\/$/, '');
+      } catch (e) {
+        /* not a valid URL — return as-is and let the API reject it */
+        return raw;
+      }
+    }
+
     /* ---- main fetch flow ------------------------------------------------ */
     function fetchAndRender(url) {
       if (gateObserver) { gateObserver.disconnect(); gateObserver = null; }
@@ -3319,8 +3331,9 @@
     /* ---- event bindings ------------------------------------------------- */
     if (findBtn && scInput) {
       findBtn.addEventListener('click', function () {
-        var url = (scInput.value || '').trim();
+        var url = normalizeSCUrl((scInput.value || '').trim());
         if (!url) { scInput.focus(); return; }
+        scInput.value = url;   /* show the clean URL back to the user */
         fetchAndRender(url);
       });
       scInput.addEventListener('keydown', function (e) {
