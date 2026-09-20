@@ -544,24 +544,11 @@
     overflow: hidden;
     text-align: left;
   }
-  .result-loading {
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--text-dim);
-    font-size: 14px;
-  }
-  .result-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--accent);
-    animation: rdot 1.2s ease-in-out infinite;
-  }
-  .result-dot:nth-child(2) { animation-delay: .2s; }
-  .result-dot:nth-child(3) { animation-delay: .4s; }
-  @keyframes rdot {
-    0%,100% { opacity:.3; transform:scale(.8); }
-    50%      { opacity:1;  transform:scale(1); }
+  #search-status {
+    margin: 8px 4px 0;
+    font-size: 13px;
+    color: var(--text-faint);
+    min-height: 18px;
   }
   .result-empty {
     padding: 28px 20px;
@@ -1868,8 +1855,10 @@
           </button>
         </div>
 
+        <p id="search-status" style="display:none;" aria-live="polite"></p>
+
         <!-- dynamic search result injected here by JS -->
-        <div id="search-result" class="result-block" style="display:none;" aria-live="polite"></div>
+        <div id="search-result" class="result-block" style="display:none;"></div>
 
         <div class="mix-divider" id="mix-section-divider">or start with a featured mix</div>
 
@@ -3104,6 +3093,7 @@
     var scInput     = document.getElementById('sc-url-input');
     var findBtn     = document.getElementById('hero-find-btn');
     var resultBlock = document.getElementById('search-result');
+    var statusEl    = document.getElementById('search-status');
     var mixDivider  = document.getElementById('mix-section-divider');
 
     var gateObserver = null;
@@ -3167,25 +3157,23 @@
     }
 
     /* ---- rendering ------------------------------------------------------ */
+    function setStatus(text) {
+      if (!statusEl) return;
+      statusEl.textContent   = text || '';
+      statusEl.style.display = text ? '' : 'none';
+    }
+
     function showLoading() {
-      resultBlock.style.display = '';
-      resultBlock.innerHTML =
-        '<div class="result-loading">' +
-        '<span class="result-dot"></span>' +
-        '<span class="result-dot"></span>' +
-        '<span class="result-dot"></span>' +
-        '<span style="margin-left:6px">Finding tracklist…</span>' +
-        '</div>';
+      setStatus('Finding tracklist…');
+      resultBlock.style.display = 'none';
+      resultBlock.innerHTML = '';
       if (mixDivider) mixDivider.style.display = 'none';
-      resultBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function showEmpty(msg) {
-      resultBlock.innerHTML =
-        '<div class="result-empty">' +
-        '<strong>' + (msg || 'Tracklist not found') + '</strong>' +
-        'Try a different mix URL, or browse the featured mixes below.' +
-        '</div>';
+      setStatus(msg || 'Tracklist not found — try a different URL.');
+      resultBlock.style.display = 'none';
+      resultBlock.innerHTML = '';
       if (mixDivider) mixDivider.style.display = '';
     }
 
@@ -3204,6 +3192,7 @@
     }
 
     function renderResults(scUrl, tracks, oembed) {
+      setStatus('');
       var title      = (oembed && oembed.title)        ? oembed.title        : scUrl;
       var artist     = (oembed && oembed.author_name)  ? oembed.author_name  : '';
       var thumb      = (oembed && oembed.thumbnail_url)
