@@ -52,6 +52,11 @@ button{font-family:inherit;cursor:pointer}
 .dnav.on{background:var(--surface-3);color:var(--text);font-weight:500}
 .dnav.on svg{color:var(--accent);opacity:1}
 .dsb-foot{margin-top:auto;padding:18px 20px 0;font-family:"JetBrains Mono",monospace;font-size:9.5px;color:#5a5a5a;letter-spacing:0.06em;line-height:1.6}
+.dburger{display:none;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-9px;border:0;border-radius:9px;background:none;color:var(--text-dim);cursor:pointer;transition:background 140ms,color 140ms}
+.dburger:hover{background:var(--surface-2);color:var(--text)}
+.dscrim{position:fixed;inset:0;z-index:25;background:rgba(0,0,0,0.55);opacity:0;transition:opacity 200ms}
+.dscrim[hidden]{display:none}
+.dscrim.open{opacity:1}
 
 .dmain{display:flex;flex-direction:column;min-width:0;overflow:hidden}
 .dtop{height:64px;flex-shrink:0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:0 28px}
@@ -139,23 +144,19 @@ button{font-family:inherit;cursor:pointer}
 .tconf input:focus{border-color:var(--accent)}
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--surface-3);border:1px solid var(--border-strong);border-radius:9px;padding:10px 16px;font-size:12.5px;z-index:95;box-shadow:0 16px 40px -12px rgba(0,0,0,0.7);transition:opacity 200ms}
 .toast[hidden]{display:none}
-/* No room for a sidebar on a phone, but hiding it left the dashboard with
-   no navigation at all — so it becomes a scrollable strip of tabs instead.
-   The top bar goes: the active tab says where you are, and the account
-   e-mail is on the Account page itself. */
+/* No room for a sidebar on a phone: it becomes a drawer behind the burger
+   in the top bar, which is the navigation a phone user goes looking for
+   without having to be shown it. */
 @media(max-width:820px){
-  #app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
-  /* Tabs wrap rather than scroll sideways: a strip that runs off the edge
-     gives a phone no sign there is anything past it. min-width:0 because a
-     grid item otherwise stretches to fit its content instead of wrapping. */
-  .dsb{border-right:0;border-bottom:1px solid var(--border);padding:0;overflow:visible;min-width:0}
-  .dsb-brand{padding:14px 16px 10px}
-  .dsb-lbl,.dsb-foot,.dtop{display:none}
-  .dsb nav{flex-direction:row;flex-wrap:wrap;gap:6px;padding:0 16px 14px}
-  .dnav{width:auto;white-space:nowrap;padding:8px 12px;border:1px solid var(--border);font-size:12.5px;gap:8px}
-  .dnav .cnt{margin-left:2px}
-  .dbody{padding:22px 16px 64px}
+  #app{grid-template-columns:1fr}
+  .dsb{position:fixed;top:0;left:0;bottom:0;width:272px;max-width:82vw;z-index:30;transform:translateX(-100%);transition:transform 220ms cubic-bezier(.4,0,.2,1)}
+  .dsb.open{transform:none}
+  .dburger{display:inline-flex}
+  .dtop{padding:0 16px;gap:10px}
+  #email-label{display:none}
+  .dbody{padding:24px 16px 64px}
 }
+@media(prefers-reduced-motion:reduce){.dsb,.dscrim{transition:none}}
 </style>
 </head>
 <body>
@@ -174,8 +175,13 @@ button{font-family:inherit;cursor:pointer}
     <div class="dsb-foot">huntid.app/dashboard</div>
   </aside>
 
+  <div class="dscrim" id="dscrim" hidden></div>
+
   <div class="dmain">
     <div class="dtop">
+      <button type="button" class="dburger" id="dburger" aria-label="Open menu" aria-expanded="false" aria-controls="dnav">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"></path></svg>
+      </button>
       <span class="crumb" id="crumb">Account</span>
       <div class="du" id="du" hidden><span class="av" id="av"></span><span id="email-label"></span></div>
     </div>
@@ -265,6 +271,28 @@ function toast(msg) {
 }
 function closeModal() { mask.hidden = true; modal.innerHTML = "" }
 mask.addEventListener("click", (e) => { if (e.target === mask) closeModal() })
+
+// ---------- mobile drawer ----------
+
+const sidebar = document.querySelector(".dsb")
+const scrim = $("#dscrim")
+const burger = $("#dburger")
+
+function setMenu(open) {
+  sidebar.classList.toggle("open", open)
+  burger.setAttribute("aria-expanded", open ? "true" : "false")
+  if (open) {
+    scrim.hidden = false
+    requestAnimationFrame(() => scrim.classList.add("open")) // hidden→false must paint first to animate
+  } else {
+    scrim.classList.remove("open")
+    setTimeout(() => { if (!sidebar.classList.contains("open")) scrim.hidden = true }, 200)
+  }
+}
+
+burger.onclick = () => setMenu(!sidebar.classList.contains("open"))
+scrim.onclick = () => setMenu(false)
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { setMenu(false); closeModal() } })
 
 // ---------- boot: handoff exchange or existing session ----------
 
@@ -360,7 +388,7 @@ async function loadDashboard() {
 
   document.getElementById("dnav").addEventListener("click", (e) => {
     const b = e.target.closest(".dnav")
-    if (b) go(b.dataset.sec)
+    if (b) { go(b.dataset.sec); setMenu(false) }
   })
   document.getElementById("retry-btn").onclick = () => { showFull("handoff"); loadDashboard() }
 
