@@ -545,7 +545,7 @@
     text-align: left;
   }
   #search-status {
-    margin: 8px 4px 0;
+    margin: 16px 4px 12px;
     font-size: 13px;
     color: var(--text-faint);
     min-height: 18px;
@@ -3241,6 +3241,7 @@
       }
 
       resultBlock.innerHTML = html;
+      resultBlock.style.display = '';
       if (mixDivider) mixDivider.style.display = '';
 
       /* CTA button click */
