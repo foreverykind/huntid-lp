@@ -235,124 +235,307 @@
 
   /* ============================== hero */
   .hero {
-    padding-top: 32px;
-    padding-bottom: 32px;
+    padding-top: 56px;
+    padding-bottom: 80px;
   }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 24px;
-    align-items: stretch;
+  .hero-center {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
   }
-  .hero-card-left {
-    background: var(--surface);
-    border-radius: 32px;
-    padding: 56px 56px 48px;
-    border: 1px solid var(--border);
-    display: flex; flex-direction: column;
-  }
-  .hero-card-left h1 {
-    margin: 24px 0 0;
-    font-size: clamp(40px, 5.8vw, 76px);
+  .hero-center .eyebrow { justify-content: center; margin-bottom: 24px; }
+  .hero-center h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: clamp(44px, 6vw, 80px);
     font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    margin: 0 0 24px;
   }
-  .hero-card-left h1 .accent { color: var(--accent); }
+  .hero-center h1 .accent { color: var(--accent); }
   .hero-sub {
-    margin-top: 28px;
-    font-size: 17px; line-height: 1.55;
+    margin: 0 auto 48px;
+    font-size: 18px;
     color: var(--text-dim);
-    max-width: 520px;
+    max-width: 500px;
+    line-height: 1.55;
   }
-  .hero-cta-row {
-    margin-top: 40px;
-    display: flex; gap: 12px; flex-wrap: wrap;
-  }
-  .hero-meta {
-    margin-top: 40px;
-    display: flex; align-items: center; gap: 24px;
-    flex-wrap: wrap;
-    padding-top: 28px;
-    border-top: 1px solid var(--border);
-  }
-  .hero-meta .item {
-    font-size: 12px; color: var(--text-faint);
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .hero-meta .item .ck {
-    width: 14px; height: 14px; border-radius: 50%;
-    background: var(--accent-soft); color: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .hero-meta .item .ck svg { width: 8px; height: 8px; }
 
-  /* hero right — dark card with popup demo */
-  .hero-card-right {
-    background: #0a0a0a;
-    border-radius: 32px;
-    padding: 40px;
+  /* SoundCloud URL input */
+  .hero-input-wrap {
+    display: flex;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    padding: 6px 6px 6px 18px;
+    align-items: center;
+    max-width: 660px;
+    margin: 0 auto;
+    transition: border-color 220ms, box-shadow 220ms;
+  }
+  .hero-input-wrap:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .hero-input-wrap input {
+    flex: 1;
+    background: none;
+    border: 0;
+    outline: none;
+    color: var(--text);
+    font-family: "Geist", "Inter", system-ui, sans-serif;
+    font-size: 15px;
+    padding: 12px 0;
+    min-width: 0;
+  }
+  .hero-input-wrap input::placeholder { color: var(--text-faint); }
+  .hero-find-btn {
+    flex-shrink: 0;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 0 22px;
+    height: 48px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: "Geist", "Inter", system-ui, sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 200ms, transform 220ms cubic-bezier(.2,.9,.3,1.4);
+    white-space: nowrap;
+    box-shadow: 0 8px 22px -8px rgba(255,85,0,0.55);
+  }
+  .hero-find-btn:hover {
+    background: var(--accent-strong);
+    transform: translateY(-1px);
+  }
+
+  /* mix divider */
+  .mix-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px auto;
+    max-width: 660px;
+    color: var(--text-faint);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .mix-divider::before, .mix-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* mix cards grid */
+  .mix-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .mix-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 220ms, transform 220ms cubic-bezier(.2,.9,.3,1.4), box-shadow 200ms;
     position: relative;
     overflow: hidden;
-    border: 1px solid #1a1a1a;
-    display: flex; align-items: center; justify-content: center;
-    min-height: 560px;
+    display: flex;
+    flex-direction: column;
   }
-  .hero-card-right::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 50% 60% at 50% 50%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%);
-    opacity: 0.7;
-  }
-  .hero-card-right::after {
+  .mix-card::before {
     content: "";
     position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    opacity: 0.6;
-  }
-  .hero-waves {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 50%;
-    display: flex; align-items: flex-end; gap: 3px;
-    padding: 0 32px;
-    pointer-events: none;
-    opacity: 0.18;
-  }
-  .hero-waves i {
-    flex: 1;
-    background: linear-gradient(to top, var(--accent), transparent);
-    border-radius: 2px;
-    animation: wave 1.4s ease-in-out infinite;
-  }
-  @keyframes wave {
-    0%, 100% { transform: scaleY(0.5); }
-    50%      { transform: scaleY(1); }
-  }
-
-  /* state badge floating */
-  .state-badge {
-    position: absolute; top: 24px; left: 24px;
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 12px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    backdrop-filter: blur(8px);
-    border-radius: 999px;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 500;
-    z-index: 3;
+    background: radial-gradient(ellipse 100% 70% at 50% 120%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%);
+    opacity: 0;
     transition: opacity 300ms;
+    pointer-events: none;
   }
-  .state-badge .num {
+  .mix-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px -16px rgba(255,85,0,0.25), 0 4px 12px -4px rgba(0,0,0,0.3);
+  }
+  .mix-card:hover::before { opacity: 1; }
+  .mix-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    background: var(--accent-soft);
     color: var(--accent);
-    font-family: "JetBrains Mono", monospace;
+    border-radius: 999px;
     font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    width: fit-content;
   }
+  .mix-artist {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+    line-height: 1.25;
+  }
+  .mix-name {
+    font-size: 12px;
+    color: var(--text-faint);
+    line-height: 1.45;
+    flex: 1;
+    margin-bottom: 16px;
+  }
+  .mix-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  .mix-tracks {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .mix-try {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 200ms;
+  }
+  .mix-card:hover .mix-try { gap: 8px; }
+
+  /* ============================== sign-up modal */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    display: none;
+    align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%; max-width: 400px;
+    box-shadow: var(--shadow-popup);
+    position: relative;
+    animation: modal-in 300ms cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--surface-3);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text-dim); cursor: pointer; border: none;
+    font-size: 18px; line-height: 1;
+    transition: background 200ms;
+  }
+  .modal-close:hover { background: var(--border-strong); }
+  .modal-title {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.02em; margin: 0 0 6px;
+  }
+  .modal-sub {
+    font-size: 13px; color: var(--text-dim);
+    margin-bottom: 24px; line-height: 1.5;
+  }
+  .modal-mix-preview {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    font-size: 13px; color: var(--text-dim);
+    display: none;
+  }
+  .modal-mix-preview strong {
+    color: var(--text); display: block;
+    font-size: 14px; margin-bottom: 2px;
+  }
+  .modal-error {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: #f87171; border-radius: 8px;
+    padding: 10px 14px; font-size: 13px;
+    margin-bottom: 12px; display: none;
+  }
+  .modal-field { margin-bottom: 12px; }
+  .modal-field label {
+    display: block; font-size: 11px; font-weight: 600;
+    color: var(--text-dim); margin-bottom: 5px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .modal-field input {
+    width: 100%; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; font-size: 15px;
+    font-family: "Geist", "Inter", system-ui, sans-serif;
+    color: var(--text); outline: none; box-sizing: border-box;
+    transition: border-color 200ms, box-shadow 200ms;
+  }
+  .modal-field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .modal-submit {
+    width: 100%; height: 52px;
+    background: var(--accent); color: #fff; border: none;
+    border-radius: 12px; font-size: 15px; font-weight: 600;
+    font-family: "Geist", "Inter", system-ui, sans-serif;
+    cursor: pointer; margin-top: 8px;
+    transition: background 200ms, transform 220ms cubic-bezier(.2,.9,.3,1.4);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 8px 22px -8px rgba(255,85,0,0.5);
+  }
+  .modal-submit:hover:not(:disabled) { background: var(--accent-strong); transform: translateY(-1px); }
+  .modal-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .modal-switch {
+    margin-top: 16px; text-align: center;
+    font-size: 13px; color: var(--text-dim);
+  }
+  .modal-switch button {
+    color: var(--accent); font-size: 13px; font-weight: 500;
+    text-decoration: underline; text-underline-offset: 2px;
+    background: none; border: none; cursor: pointer; padding: 0;
+  }
+  .modal-success { text-align: center; display: none; padding: 8px 0; }
+  .modal-success-icon {
+    width: 52px; height: 52px;
+    background: var(--accent-soft); border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 16px; color: var(--accent); font-size: 24px;
+  }
+  .modal-success h3 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 20px; margin: 0 0 8px;
+  }
+  .modal-success p { font-size: 14px; color: var(--text-dim); margin: 0; }
 
   /* popup */
   .popup-stage {
@@ -1352,9 +1535,7 @@
 
   /* ============================== mobile */
   @media (max-width: 1000px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-card-left { padding: 40px 32px; }
-    .hero-card-right { min-height: 480px; padding: 32px; }
+    .mix-grid { grid-template-columns: 1fr 1fr; }
     .problem-grid, .how-grid, .quotes-grid { grid-template-columns: 1fr; }
     .feat-grid { grid-template-columns: 1fr; }
     .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
@@ -1366,8 +1547,10 @@
   @media (max-width: 600px) {
     .wrap { padding: 0 16px; }
     section { padding: 32px 0; }
-    .hero-card-left { padding: 32px 24px; border-radius: 24px; }
-    .hero-card-right { padding: 24px; border-radius: 24px; min-height: 540px; }
+    .mix-grid { grid-template-columns: 1fr; }
+    .hero-input-wrap { flex-wrap: wrap; padding: 10px; border-radius: 14px; gap: 10px; }
+    .hero-input-wrap input { width: 100%; padding: 8px 4px; }
+    .hero-find-btn { width: 100%; justify-content: center; }
     .problem-card, .final-card { border-radius: 24px; padding: 56px 24px; }
     .popup-stage, .popup { width: 320px; }
     .nav-links { display: none; }
@@ -1414,97 +1597,110 @@
   <!-- HERO -->
   <section class="hero" id="home">
     <div class="wrap">
-      <div class="hero-grid">
-        <div class="hero-card-left reveal">
-          <div class="eyebrow">
-            HuntID for SoundCloud
-            <span class="chip-new">NEW</span>
-          </div>
-          <h1 class="display"><span id="h1-word">Wondering</span><br/>what your favourite dj played?</h1>
-          <p class="hero-sub">
-            It's in the tracklist.
-          </p>
-          <p class="hero-sub" style="margin-top: 12px; font-size: 15px; color: var(--text-faint);">
-            HuntID finds and analyze tracklists for DJ mixes on SoundCloud.<br/>
-            Click any timecode — jump right to that moment.
-          </p>
-          <div class="hero-cta-row">
-            <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-primary btn-lg" data-track-cws="hero">
-              Add to Chrome — Free
-              <span class="arr">→</span>
-            </a>
-            <a href="#how" class="btn btn-outline btn-lg">See how it works</a>
-          </div>
-          <div class="hero-meta">
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> 10 searches free</span>
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> <span id="px-hero">$4.99</span>/mo after</span>
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> No credit card</span>
-          </div>
+      <div class="hero-center reveal">
+        <div class="eyebrow">
+          HuntID for SoundCloud
+          <span class="chip-new">BETA</span>
+        </div>
+        <h1>Paste a mix.<br/><span class="accent">Get every track.</span></h1>
+        <p class="hero-sub">
+          Drop any SoundCloud DJ mix link — we'll find the full tracklist in seconds.
+          No Shazam. No manual search.
+        </p>
+
+        <div class="hero-input-wrap" id="hero-url-wrap">
+          <input
+            type="url"
+            id="sc-url-input"
+            placeholder="soundcloud.com/artist/mix-name"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="hero-find-btn" id="hero-find-btn" type="button">
+            Find Tracklist
+            <span class="arr">→</span>
+          </button>
         </div>
 
-        <div class="hero-card-right reveal" data-delay="1">
-          <div class="hero-waves" id="hero-waves" aria-hidden="true"></div>
-          <div class="state-badge" id="state-badge">
-            <span class="num" id="state-num">01</span>
-            <span id="state-label">Idle on a mix</span>
+        <div class="mix-divider">or start with a featured mix</div>
+
+        <div class="mix-grid">
+          <div class="mix-card reveal" data-delay="0"
+               data-artist="Four Tet"
+               data-mix="Boiler Room · London"
+               data-url="soundcloud.com/boilerroom/four-tet-boiler-room-london-dj-set"
+               data-tracks="12" data-tag="Electronic">
+            <div class="mix-tag">Electronic</div>
+            <div class="mix-artist">Four Tet</div>
+            <div class="mix-name">Boiler Room · London DJ Set</div>
+            <div class="mix-footer">
+              <span class="mix-tracks">~12 tracks</span>
+              <span class="mix-try">Try this <span>→</span></span>
+            </div>
           </div>
-          <div class="popup-stage">
-            <div class="popup" id="popup-shell">
-              <div class="pop-head">
-                <span class="pop-mark" aria-hidden="true">
-                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-                    <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
-                    <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-                    <circle cx="7" cy="7" r="1.2" fill="white"/>
-                  </svg>
-                </span>
-                <span class="pop-title">Hunt<span class="id">ID</span></span>
-                <span class="pop-sep"></span>
-                <span class="pop-mix">Boiler Room · Palms Trax @ Hï Ibiza</span>
-              </div>
-              <div class="popup-body" id="popup-body">
-                <!-- find -->
-                <div class="state-view state-find" data-state="find">
-                  <button class="find-btn" type="button">
-                    <span class="ic">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>
-                    </span>
-                    Find Tracklist
-                  </button>
-                  <div class="find-status"><span class="ok"></span> System available</div>
-                </div>
-                <!-- loading -->
-                <div class="state-view state-loading" data-state="loading">
-                  <div class="eyes" aria-hidden="true">
-                    <span class="eye"></span><span class="eye"></span>
-                  </div>
-                  <div class="looking">Looking<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
-                </div>
-                <!-- tracklist -->
-                <div class="state-view state-tracklist" data-state="tracklist">
-                  <div class="tl-bar">
-                    <span>Tracklist</span>
-                    <span class="ct">15 TRACKS</span>
-                  </div>
-                  <div class="tl-rows">
-                    <div class="tl-rows-inner" id="tl-rows-inner"></div>
-                  </div>
-                </div>
-                <!-- now playing -->
-                <div class="state-view state-now" data-state="now">
-                  <div class="now-main">
-                    <div class="now-eyebrow">
-                      <span class="eq"><i></i><i></i><i></i></span>
-                      Now Playing
-                    </div>
-                    <div class="now-title"><span class="ar">Anz</span><span class="em">—</span><span class="ti">Last Before Lights</span></div>
-                    <div class="now-meta">19:55 <span class="faint">· track 05/15</span></div>
-                  </div>
-                  <button class="now-expand">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 5.5 3.5 3.5 3.5-3.5"/></svg>
-                  </button>
-                </div>
-              </div>
+          <div class="mix-card reveal" data-delay="1"
+               data-artist="Peggy Gou"
+               data-mix="Mixmag DJ Lab"
+               data-url="soundcloud.com/mixmag/peggy-gou-mixmag-dj-lab"
+               data-tracks="18" data-tag="House">
+            <div class="mix-tag">House</div>
+            <div class="mix-artist">Peggy Gou</div>
+            <div class="mix-name">Mixmag DJ Lab · Afro-house &amp; Disco</div>
+            <div class="mix-footer">
+              <span class="mix-tracks">~18 tracks</span>
+              <span class="mix-try">Try this <span>→</span></span>
+            </div>
+          </div>
+          <div class="mix-card reveal" data-delay="2"
+               data-artist="Bicep"
+               data-mix="Fabriclive 60"
+               data-url="soundcloud.com/fabriclondon/fabriclive60-bicep"
+               data-tracks="24" data-tag="Rave">
+            <div class="mix-tag">Rave</div>
+            <div class="mix-artist">Bicep</div>
+            <div class="mix-name">Fabriclive 60 · Melodic Rave</div>
+            <div class="mix-footer">
+              <span class="mix-tracks">~24 tracks</span>
+              <span class="mix-try">Try this <span>→</span></span>
+            </div>
+          </div>
+          <div class="mix-card reveal" data-delay="3"
+               data-artist="Floating Points"
+               data-mix="NTS Radio Session"
+               data-url="soundcloud.com/nts-live/floating-points"
+               data-tracks="16" data-tag="Leftfield">
+            <div class="mix-tag">Leftfield</div>
+            <div class="mix-artist">Floating Points</div>
+            <div class="mix-name">NTS Radio · Jazz &amp; Electronic</div>
+            <div class="mix-footer">
+              <span class="mix-tracks">~16 tracks</span>
+              <span class="mix-try">Try this <span>→</span></span>
+            </div>
+          </div>
+          <div class="mix-card reveal" data-delay="4"
+               data-artist="Amelie Lens"
+               data-mix="Exhale Radio #001"
+               data-url="soundcloud.com/amelie-lens/exhale-radio-001"
+               data-tracks="20" data-tag="Techno">
+            <div class="mix-tag">Techno</div>
+            <div class="mix-artist">Amelie Lens</div>
+            <div class="mix-name">Exhale Radio #001 · Hard Techno</div>
+            <div class="mix-footer">
+              <span class="mix-tracks">~20 tracks</span>
+              <span class="mix-try">Try this <span>→</span></span>
+            </div>
+          </div>
+          <div class="mix-card reveal" data-delay="5"
+               data-artist="DJ Koze"
+               data-mix="Late Night Tales"
+               data-url="soundcloud.com/late-night-tales/dj-koze"
+               data-tracks="15" data-tag="Melodic">
+            <div class="mix-tag">Melodic</div>
+            <div class="mix-artist">DJ Koze</div>
+            <div class="mix-name">Late Night Tales · Dreamy Selects</div>
+            <div class="mix-footer">
+              <span class="mix-tracks">~15 tracks</span>
+              <span class="mix-try">Try this <span>→</span></span>
             </div>
           </div>
         </div>
@@ -2182,20 +2378,6 @@
 </div>
 
 <script>
-  /* ----------------------- hero waves */
-  (function () {
-    const host = document.getElementById('hero-waves');
-    if (!host) return;
-    const N = 64;
-    let html = '';
-    for (let i = 0; i < N; i++) {
-      const delay = ((i * 0.06) % 1.4).toFixed(2);
-      const h = 16 + Math.abs(Math.sin(i * 0.34) * 80);
-      html += `<i style="animation-delay:-${delay}s; height:${h}px"></i>`;
-    }
-    host.innerHTML = html;
-  })();
-
   /* ----------------------- tracks data */
   const TRACKS = [
     { n: 1,  t: "00:00", a: "Roza Terenzi",       ti: "Modem Tan" },
@@ -2251,40 +2433,6 @@
     document.getElementById('btn-monthly').className = 'plan-btn' + (plan === 'monthly' ? ' plan-btn-active' : '');
     document.getElementById('btn-annual').className  = 'plan-btn' + (plan === 'annual'  ? ' plan-btn-active' : '');
   }
-
-  /* ----------------------- popup state cycle */
-  (function () {
-    const STATES = [
-      { id: 'find',      label: 'Idle on a mix',    h: 184, dur: 2200 },
-      { id: 'loading',   label: 'Searching',        h: 184, dur: 2000 },
-      { id: 'tracklist', label: 'Tracklist found',  h: 464, dur: 5800 },
-      { id: 'now',       label: 'Now playing',      h: 184, dur: 3000 }
-    ];
-    const shell = document.getElementById('popup-shell');
-    const numEl = document.getElementById('state-num');
-    const lblEl = document.getElementById('state-label');
-    const views = document.querySelectorAll('.state-view');
-    let idx = 0;
-
-    function show(i) {
-      const s = STATES[i];
-      shell.style.height = s.h + 'px';
-      views.forEach(v => v.classList.toggle('show', v.dataset.state === s.id));
-      numEl.textContent = String(i + 1).padStart(2, '0');
-      lblEl.textContent = s.label;
-    }
-
-    function tick() {
-      show(idx);
-      setTimeout(() => {
-        idx = (idx + 1) % STATES.length;
-        tick();
-      }, STATES[idx].dur);
-    }
-
-    // start
-    setTimeout(tick, 800);
-  })();
 
   /* ----------------------- hash routing */
   (function () {
@@ -2443,6 +2591,49 @@
   })();
 </script>
 
+<!-- ============================================================ SIGN-UP MODAL -->
+<div class="modal-overlay" id="signup-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+
+    <div id="modal-form-view">
+      <div class="modal-title" id="modal-title-text">Create your free account</div>
+      <div class="modal-sub">10 searches free · No credit card needed</div>
+
+      <div class="modal-mix-preview" id="modal-mix-preview">
+        <strong id="modal-mix-artist"></strong>
+        <span id="modal-mix-name"></span>
+      </div>
+
+      <div class="modal-error" id="modal-error"></div>
+
+      <div class="modal-field">
+        <label for="modal-email">Email</label>
+        <input type="email" id="modal-email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="modal-field">
+        <label for="modal-password">Password</label>
+        <input type="password" id="modal-password" placeholder="Min. 8 characters" autocomplete="new-password" />
+      </div>
+
+      <button class="modal-submit" id="modal-submit" type="button">
+        <span id="modal-submit-label">Create account — it's free</span>
+      </button>
+
+      <div class="modal-switch">
+        Already have an account?
+        <button type="button" id="modal-switch-btn">Sign in</button>
+      </div>
+    </div>
+
+    <div class="modal-success" id="modal-success-view">
+      <div class="modal-success-icon">✓</div>
+      <h3>You're in!</h3>
+      <p>Taking you to your dashboard…</p>
+    </div>
+  </div>
+</div>
+
 <!-- ============================================================ COOKIE CONSENT -->
 <div id="cookie-banner" class="cookie-banner" style="display: none;" role="dialog" aria-live="polite" aria-label="Cookie consent">
   <p>We use cookies for analytics (Google Analytics, PostHog) to understand how huntid.app is used. See our <a href="#privacy">Privacy Policy</a>.</p>
@@ -2505,6 +2696,150 @@
         }
       })
       .catch(function () {});
+  })();
+</script>
+
+<script>
+  /* ----------------------- hero sign-up modal */
+  (function () {
+    var SUPA_URL = 'https://qhyebkofqjgzmmkpyalb.supabase.co';
+    var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoeWVia29mcWpnem1ta3B5YWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTc1NTksImV4cCI6MjA5NTAzMzU1OX0.jaCLLf65tHmWOfN6CFTDDNfToqaF-Ody0LTJsuPt_E8';
+
+    var pendingUrl = '';
+    var isSignIn = false;
+
+    var overlay    = document.getElementById('signup-modal');
+    var closeBtn   = document.getElementById('modal-close');
+    var submitBtn  = document.getElementById('modal-submit');
+    var submitLbl  = document.getElementById('modal-submit-label');
+    var switchBtn  = document.getElementById('modal-switch-btn');
+    var errorEl    = document.getElementById('modal-error');
+    var mixPreview = document.getElementById('modal-mix-preview');
+    var mixArtist  = document.getElementById('modal-mix-artist');
+    var mixName    = document.getElementById('modal-mix-name');
+    var formView   = document.getElementById('modal-form-view');
+    var successView= document.getElementById('modal-success-view');
+    var titleEl    = document.getElementById('modal-title-text');
+    var scInput    = document.getElementById('sc-url-input');
+    var findBtn    = document.getElementById('hero-find-btn');
+
+    function openModal(url, artist, mix) {
+      pendingUrl = url || '';
+      errorEl.style.display = 'none';
+      formView.style.display = '';
+      successView.style.display = 'none';
+      if (artist) {
+        mixArtist.textContent = artist;
+        mixName.textContent   = mix || '';
+        mixPreview.style.display = 'block';
+      } else {
+        mixPreview.style.display = 'none';
+      }
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(function () {
+        var em = document.getElementById('modal-email');
+        if (em) em.focus();
+      }, 80);
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function setMode(signIn) {
+      isSignIn = signIn;
+      titleEl.textContent  = signIn ? 'Welcome back' : 'Create your free account';
+      submitLbl.textContent = signIn ? 'Sign in' : 'Create account — it\'s free';
+      switchBtn.textContent = signIn ? 'Create account' : 'Sign in';
+      var pw = document.getElementById('modal-password');
+      pw.placeholder    = signIn ? 'Your password' : 'Min. 8 characters';
+      pw.autocomplete   = signIn ? 'current-password' : 'new-password';
+      errorEl.style.display = 'none';
+    }
+
+    function showError(msg) {
+      errorEl.textContent   = msg;
+      errorEl.style.display = 'block';
+    }
+
+    function submit() {
+      var email    = (document.getElementById('modal-email').value || '').trim();
+      var password = document.getElementById('modal-password').value || '';
+      if (!email || !password) { showError('Please fill in both fields.'); return; }
+
+      submitBtn.disabled    = true;
+      submitLbl.textContent = isSignIn ? 'Signing in…' : 'Creating account…';
+      errorEl.style.display = 'none';
+
+      var endpoint = isSignIn
+        ? (SUPA_URL + '/auth/v1/token?grant_type=password')
+        : (SUPA_URL + '/auth/v1/signup');
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
+        body: JSON.stringify({ email: email, password: password })
+      })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (res) {
+        if (!res.ok) {
+          var msg = res.data.error_description || res.data.msg || res.data.message || 'Something went wrong.';
+          throw new Error(msg);
+        }
+        if (res.data.access_token) {
+          try {
+            localStorage.setItem('sb-qhyebkofqjgzmmkpyalb-auth-token', JSON.stringify({
+              access_token:  res.data.access_token,
+              refresh_token: res.data.refresh_token,
+              expires_at: Math.floor(Date.now() / 1000) + (res.data.expires_in || 3600)
+            }));
+          } catch (e) {}
+        }
+        formView.style.display    = 'none';
+        successView.style.display = 'block';
+        setTimeout(function () {
+          var dest = pendingUrl
+            ? ('dashboard.html?url=' + encodeURIComponent(pendingUrl))
+            : 'dashboard.html';
+          window.location.href = dest;
+        }, 1200);
+      })
+      .catch(function (err) {
+        showError(err.message);
+        submitBtn.disabled    = false;
+        submitLbl.textContent = isSignIn ? 'Sign in' : 'Create account — it\'s free';
+      });
+    }
+
+    /* bind hero URL input */
+    if (findBtn && scInput) {
+      findBtn.addEventListener('click', function () {
+        var url = (scInput.value || '').trim();
+        if (!url) { scInput.focus(); return; }
+        openModal(url, null, null);
+      });
+      scInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') findBtn.click();
+      });
+    }
+
+    /* bind mix cards */
+    document.querySelectorAll('.mix-card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        openModal(card.dataset.url, card.dataset.artist, card.dataset.mix);
+      });
+    });
+
+    /* modal controls */
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (overlay)  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+    if (switchBtn) switchBtn.addEventListener('click', function () { setMode(!isSignIn); });
+    if (submitBtn) submitBtn.addEventListener('click', submit);
+    var pwEl = document.getElementById('modal-password');
+    if (pwEl) pwEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); });
   })();
 </script>
 
