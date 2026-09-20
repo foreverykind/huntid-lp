@@ -544,11 +544,18 @@
     overflow: hidden;
     text-align: left;
   }
+  @keyframes status-pulse {
+    0%, 100% { opacity: 0.35; }
+    50%       { opacity: 1; }
+  }
   #search-status {
     margin: 16px 4px 12px;
     font-size: 13px;
     color: var(--text-faint);
     min-height: 18px;
+  }
+  #search-status.is-loading {
+    animation: status-pulse 1.4s ease-in-out infinite;
   }
   .result-empty {
     padding: 28px 20px;
@@ -3157,14 +3164,15 @@
     }
 
     /* ---- rendering ------------------------------------------------------ */
-    function setStatus(text) {
+    function setStatus(text, loading) {
       if (!statusEl) return;
       statusEl.textContent   = text || '';
       statusEl.style.display = text ? '' : 'none';
+      statusEl.classList.toggle('is-loading', !!loading);
     }
 
     function showLoading() {
-      setStatus('Finding tracklist…');
+      setStatus('Finding tracklist…', true);
       resultBlock.style.display = 'none';
       resultBlock.innerHTML = '';
       if (mixDivider) mixDivider.style.display = 'none';
@@ -3252,9 +3260,10 @@
         });
       }
 
-      /* scroll-into-view trigger */
+      /* scroll-into-view trigger — delay so the modal doesn't fire
+         if the gate element is already visible right after render */
       if (hidden.length > 0) {
-        setupGateObserver(scUrl, artist, title);
+        setTimeout(function () { setupGateObserver(scUrl, artist, title); }, 1200);
       }
     }
 
@@ -3275,7 +3284,7 @@
             }, 600);
           }
         });
-      }, { threshold: 0.4 });
+      }, { threshold: 0.2 });
       gateObserver.observe(gateEl);
     }
 
