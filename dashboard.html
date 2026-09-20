@@ -139,7 +139,23 @@ button{font-family:inherit;cursor:pointer}
 .tconf input:focus{border-color:var(--accent)}
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--surface-3);border:1px solid var(--border-strong);border-radius:9px;padding:10px 16px;font-size:12.5px;z-index:95;box-shadow:0 16px 40px -12px rgba(0,0,0,0.7);transition:opacity 200ms}
 .toast[hidden]{display:none}
-@media(max-width:820px){#app{grid-template-columns:1fr}.dsb{display:none}}
+/* No room for a sidebar on a phone, but hiding it left the dashboard with
+   no navigation at all — so it becomes a scrollable strip of tabs instead.
+   The top bar goes: the active tab says where you are, and the account
+   e-mail is on the Account page itself. */
+@media(max-width:820px){
+  #app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  /* min-width:0 or the grid item stretches to fit the tabs, leaving the
+     strip nothing to scroll and the last tabs clipped out of reach. */
+  .dsb{border-right:0;border-bottom:1px solid var(--border);padding:0;overflow:visible;min-width:0}
+  .dsb-brand{padding:14px 16px 10px}
+  .dsb-lbl,.dsb-foot,.dtop{display:none}
+  .dsb nav{flex-direction:row;gap:6px;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none}
+  .dsb nav::-webkit-scrollbar{display:none}
+  .dnav{width:auto;flex-shrink:0;white-space:nowrap;padding:8px 13px;border:1px solid var(--border);font-size:13px}
+  .dnav .cnt{margin-left:5px}
+  .dbody{padding:22px 16px 64px}
+}
 </style>
 </head>
 <body>
@@ -155,7 +171,7 @@ button{font-family:inherit;cursor:pointer}
       <button type="button" class="dnav" data-sec="analyzed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 6.5c1.3-1.6 2.7-1.6 4 0s2.7 1.6 4 0 2.7-1.6 4 0M2 10.5c1.3-1.6 2.7-1.6 4 0s2.7 1.6 4 0 2.7-1.6 4 0" stroke-linecap="round"></path></svg>Analyzed mixes<span class="cnt" data-cnt="analyzed"></span></button>
       <button type="button" class="dnav" data-sec="billing"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="2.4" width="10" height="11.2" rx="1.6"></rect><path d="M5.6 5.6h4.8M5.6 8h4.8M5.6 10.4h2.8" stroke-linecap="round"></path></svg>Billing history<span class="cnt" data-cnt="billing"></span></button>
     </nav>
-    <div class="dsb-foot">huntid.app/dashboard<br/>extension-only access</div>
+    <div class="dsb-foot">huntid.app/dashboard</div>
   </aside>
 
   <div class="dmain">
