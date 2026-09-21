@@ -3547,35 +3547,64 @@
     function startMixDrift(viewport, track) {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-      var SPEED = 30; /* px per second */
-      var paused = false, last = 0, resumeTimer = 0;
+      var BASE = 30;   /* the pace it settles back to, px per second */
+      var EASE = 5;    /* how sharply it reaches that pace, per second */
+
+      /* The position is kept here as a float. scrollLeft snaps to whole
+         pixels, and at this pace a frame is worth half of one — accumulating
+         in the DOM would round every step away and the strip would sit still. */
+      var pos = viewport.scrollLeft, written = pos;
+      var drift = BASE, last = 0;
+      var pressing = false, hovering = false, focused = false;
+
+      function held() { return pressing || hovering || focused; }
 
       function frame(now) {
-        var dt = last ? (now - last) / 1000 : 0;
+        var dt = last ? Math.min((now - last) / 1000, 0.05) : 0;
         last = now;
         var half = track.scrollWidth / 2;
-        if (half > 0) {
-          if (!paused) viewport.scrollLeft += SPEED * Math.min(dt, 0.1);
-          if (viewport.scrollLeft >= half) viewport.scrollLeft -= half;
+
+        if (dt > 0 && half > 0) {
+          /* A gap between what we wrote and what is there is the browser's
+             doing — a drag, or the momentum still running after one. */
+          var actual = viewport.scrollLeft;
+          var external = 0;
+          if (Math.abs(actual - written) > 0.5) {
+            external = (actual - pos) / dt;
+            pos = actual;
+          }
+
+          drift += ((held() ? 0 : BASE) - drift) * Math.min(1, dt * EASE);
+
+          /* Only ever top up to the drift speed. A flick outruns it, so we
+             add nothing and let it coast; as the momentum fades we fill the
+             gap and it settles back to its own pace without a seam. */
+          pos += Math.max(0, drift - Math.max(0, external)) * dt;
+
+          if (pos >= half) pos -= half;
+          viewport.scrollLeft = pos;
+          written = viewport.scrollLeft; /* read back whatever it snapped to */
         }
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
 
-      function hold()   { clearTimeout(resumeTimer); paused = true; }
-      function release(delay) {
-        clearTimeout(resumeTimer);
-        resumeTimer = setTimeout(function () { paused = false; }, delay);
+      function on(type, fn, passive) {
+        viewport.addEventListener(type, fn, passive ? { passive: true } : undefined);
       }
-
-      viewport.addEventListener('mouseenter', hold);
-      viewport.addEventListener('mouseleave', function () { release(0); });
-      viewport.addEventListener('focusin', hold);
-      viewport.addEventListener('focusout', function () { release(0); });
-      /* momentum keeps running well past touchend, so give it room */
-      viewport.addEventListener('touchstart', hold, { passive: true });
-      viewport.addEventListener('touchend', function () { release(2000); }, { passive: true });
-      viewport.addEventListener('touchcancel', function () { release(2000); }, { passive: true });
+      /* A finger resting on the strip stops it. Once the drag becomes a
+         scroll the browser fires pointercancel, and by then the momentum
+         is carrying it anyway. */
+      on('pointerdown', function () { pressing = true; }, true);
+      on('pointerup', function () { pressing = false; }, true);
+      on('pointercancel', function () { pressing = false; }, true);
+      on('touchstart', function () { pressing = true; }, true);
+      on('touchend', function () { pressing = false; }, true);
+      on('touchcancel', function () { pressing = false; }, true);
+      on('mouseenter', function () { hovering = true; });
+      on('mouseleave', function () { hovering = false; });
+      on('focusin', function () { focused = true; });
+      on('focusout', function () { focused = false; });
     }
 
     /* The marquee loops by running the row twice and shifting half its
