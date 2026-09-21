@@ -371,34 +371,32 @@
   }
 
   /* mix cards grid */
-  /* The row is rendered twice and shifted by exactly half its width, so the
-     loop has no seam. The -6px is half the gap, which translateX(-50%)
-     would otherwise leave behind. */
+  /* The row is rendered twice, and the drift is driven by the container's
+     own scroll rather than a transform — that way a finger moves it
+     natively, with momentum, and the loop still has no seam. */
   .mix-marquee {
     position: relative;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     padding: 4px 0;
     text-align: left;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* the page sets scroll-behavior:smooth, which would fight every frame */
+    scroll-behavior: auto;
+    /* a horizontal flick must not turn into browser back-navigation */
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
     -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
     mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
   }
+  .mix-marquee::-webkit-scrollbar { display: none; }
   .mix-track {
     display: flex;
     gap: 12px;
     width: max-content;
-    animation: mix-scroll 64s linear infinite;
-  }
-  .mix-marquee:hover .mix-track,
-  .mix-marquee:focus-within .mix-track { animation-play-state: paused; }
-  @keyframes mix-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(calc(-50% - 6px)); }
   }
   .mix-track .mix-card { width: 300px; flex-shrink: 0; }
-  @media (prefers-reduced-motion: reduce) {
-    .mix-track { animation: none; }
-    .mix-marquee { overflow-x: auto; }
-  }
   .mix-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -3542,6 +3540,44 @@
       });
     }
 
+    /* Nudging the container's own scrollLeft rather than animating a
+       transform, so a finger drags the strip natively and keeps its
+       momentum. Past the halfway mark it rewinds by exactly one copy,
+       which lands on identical content — the seam is never visible. */
+    function startMixDrift(viewport, track) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var SPEED = 30; /* px per second */
+      var paused = false, last = 0, resumeTimer = 0;
+
+      function frame(now) {
+        var dt = last ? (now - last) / 1000 : 0;
+        last = now;
+        var half = track.scrollWidth / 2;
+        if (half > 0) {
+          if (!paused) viewport.scrollLeft += SPEED * Math.min(dt, 0.1);
+          if (viewport.scrollLeft >= half) viewport.scrollLeft -= half;
+        }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+
+      function hold()   { clearTimeout(resumeTimer); paused = true; }
+      function release(delay) {
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(function () { paused = false; }, delay);
+      }
+
+      viewport.addEventListener('mouseenter', hold);
+      viewport.addEventListener('mouseleave', function () { release(0); });
+      viewport.addEventListener('focusin', hold);
+      viewport.addEventListener('focusout', function () { release(0); });
+      /* momentum keeps running well past touchend, so give it room */
+      viewport.addEventListener('touchstart', hold, { passive: true });
+      viewport.addEventListener('touchend', function () { release(2000); }, { passive: true });
+      viewport.addEventListener('touchcancel', function () { release(2000); }, { passive: true });
+    }
+
     /* The marquee loops by running the row twice and shifting half its
        width, so the second copy has to exist before anything is bound —
        the duplicates are real cards and open the same modal. */
@@ -3552,6 +3588,7 @@
         copy.setAttribute('aria-hidden', 'true');
         mixTrack.appendChild(copy);
       });
+      startMixDrift(mixTrack.parentNode, mixTrack);
     }
 
     /* mix cards still open modal directly */
