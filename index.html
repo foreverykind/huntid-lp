@@ -371,13 +371,33 @@
   }
 
   /* mix cards grid */
-  .mix-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    max-width: 960px;
-    margin: 0 auto;
+  /* The row is rendered twice and shifted by exactly half its width, so the
+     loop has no seam. The -6px is half the gap, which translateX(-50%)
+     would otherwise leave behind. */
+  .mix-marquee {
+    position: relative;
+    overflow: hidden;
+    padding: 4px 0;
     text-align: left;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  }
+  .mix-track {
+    display: flex;
+    gap: 12px;
+    width: max-content;
+    animation: mix-scroll 64s linear infinite;
+  }
+  .mix-marquee:hover .mix-track,
+  .mix-marquee:focus-within .mix-track { animation-play-state: paused; }
+  @keyframes mix-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(-50% - 6px)); }
+  }
+  .mix-track .mix-card { width: 300px; flex-shrink: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    .mix-track { animation: none; }
+    .mix-marquee { overflow-x: auto; }
   }
   .mix-card {
     background: var(--surface);
@@ -1815,7 +1835,6 @@
 
   /* ============================== mobile */
   @media (max-width: 1000px) {
-    .mix-grid { grid-template-columns: 1fr 1fr; }
     .hero-grid { grid-template-columns: 1fr; }
     .hero-card-left { padding: 40px 32px; }
     .hero-card-right { min-height: 480px; padding: 32px; }
@@ -1830,7 +1849,7 @@
   @media (max-width: 600px) {
     .wrap { padding: 0 16px; }
     section { padding: 32px 0; }
-    .mix-grid { grid-template-columns: 1fr; }
+    .mix-track .mix-card { width: 250px; }
     .hero-input-wrap { flex-wrap: wrap; padding: 10px; border-radius: 14px; gap: 10px; }
     .hero-input-wrap input { width: 100%; padding: 8px 4px; }
     .hero-find-btn { width: 100%; justify-content: center; }
@@ -1914,8 +1933,9 @@
 
         <div class="mix-divider" id="mix-section-divider">or start with a featured mix</div>
 
-        <div class="mix-grid">
-          <div class="mix-card reveal" data-delay="0"
+        <div class="mix-marquee reveal" data-delay="0">
+        <div class="mix-track" id="mix-track">
+          <div class="mix-card"
                data-artist="Four Tet"
                data-mix="Boiler Room · London"
                data-url="soundcloud.com/boilerroom/four-tet-boiler-room-london-dj-set"
@@ -1928,7 +1948,7 @@
               <span class="mix-try">Try this <span>→</span></span>
             </div>
           </div>
-          <div class="mix-card reveal" data-delay="1"
+          <div class="mix-card"
                data-artist="Peggy Gou"
                data-mix="Mixmag DJ Lab"
                data-url="soundcloud.com/mixmag/peggy-gou-mixmag-dj-lab"
@@ -1941,7 +1961,7 @@
               <span class="mix-try">Try this <span>→</span></span>
             </div>
           </div>
-          <div class="mix-card reveal" data-delay="2"
+          <div class="mix-card"
                data-artist="Bicep"
                data-mix="Fabriclive 60"
                data-url="soundcloud.com/fabriclondon/fabriclive60-bicep"
@@ -1954,7 +1974,7 @@
               <span class="mix-try">Try this <span>→</span></span>
             </div>
           </div>
-          <div class="mix-card reveal" data-delay="3"
+          <div class="mix-card"
                data-artist="Floating Points"
                data-mix="NTS Radio Session"
                data-url="soundcloud.com/nts-live/floating-points"
@@ -1967,7 +1987,7 @@
               <span class="mix-try">Try this <span>→</span></span>
             </div>
           </div>
-          <div class="mix-card reveal" data-delay="4"
+          <div class="mix-card"
                data-artist="Amelie Lens"
                data-mix="Exhale Radio #001"
                data-url="soundcloud.com/amelie-lens/exhale-radio-001"
@@ -1980,7 +2000,7 @@
               <span class="mix-try">Try this <span>→</span></span>
             </div>
           </div>
-          <div class="mix-card reveal" data-delay="5"
+          <div class="mix-card"
                data-artist="DJ Koze"
                data-mix="Late Night Tales"
                data-url="soundcloud.com/late-night-tales/dj-koze"
@@ -1993,6 +2013,7 @@
               <span class="mix-try">Try this <span>→</span></span>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -3518,6 +3539,18 @@
       });
       scInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') findBtn.click();
+      });
+    }
+
+    /* The marquee loops by running the row twice and shifting half its
+       width, so the second copy has to exist before anything is bound —
+       the duplicates are real cards and open the same modal. */
+    var mixTrack = document.getElementById('mix-track');
+    if (mixTrack) {
+      Array.prototype.slice.call(mixTrack.children).forEach(function (card) {
+        var copy = card.cloneNode(true);
+        copy.setAttribute('aria-hidden', 'true');
+        mixTrack.appendChild(copy);
       });
     }
 
