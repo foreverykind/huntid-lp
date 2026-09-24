@@ -490,11 +490,71 @@
     background: var(--surface);
     border: 1px solid var(--border-strong);
     border-radius: 24px;
-    padding: 40px;
-    width: 100%; max-width: 400px;
+    width: 100%; max-width: 720px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
     box-shadow: var(--shadow-popup);
     position: relative;
     animation: modal-in 300ms cubic-bezier(.22,1,.36,1);
+  }
+  /* What an account gets on the left, the one way to make it on the right. */
+  .modal-split { display: grid; grid-template-columns: 1fr 1fr; }
+  .modal-perks {
+    background: var(--surface-2);
+    border-right: 1px solid var(--border);
+    padding: 36px 32px;
+  }
+  .modal-perks-eyebrow {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 20px;
+  }
+  .modal-perks ul {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 15px;
+  }
+  .modal-perks li {
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 14px; font-weight: 500; line-height: 1.35;
+    color: var(--text); text-align: left;
+  }
+  .modal-perks li small {
+    display: block; margin-top: 2px;
+    font-size: 12.5px; font-weight: 400; color: var(--text-dim);
+  }
+  .modal-perks .ck {
+    flex-shrink: 0; margin-top: 1px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .modal-badge {
+    display: inline-block; margin-left: 6px; vertical-align: 1px;
+    padding: 2px 7px; border-radius: 5px;
+    background: var(--accent); color: #fff;
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .modal-auth {
+    padding: 44px 36px 32px;
+    display: flex; flex-direction: column; justify-content: center;
+    text-align: center;
+  }
+  .modal-auth .modal-google-btn { margin-top: 0; }
+  .modal-legal {
+    margin-top: 18px;
+    font-size: 11.5px; line-height: 1.5; color: var(--text-faint);
+  }
+  .modal-legal a { color: var(--text-dim); text-decoration: underline; text-underline-offset: 2px; }
+  .modal-legal a:hover { color: var(--text); }
+  /* Stacked on a phone, with the button first: it has to be reachable
+     without scrolling, and the perks read as the reason underneath. */
+  @media (max-width: 720px) {
+    .modal-split { grid-template-columns: 1fr; }
+    .modal-auth { order: -1; padding: 40px 24px 24px; }
+    .modal-perks { border-right: 0; border-top: 1px solid var(--border); padding: 22px 24px 26px; }
+    .modal-perks ul { gap: 11px; }
+    .modal-perks li small { display: none; }
   }
   @keyframes modal-in {
     from { opacity: 0; transform: translateY(16px) scale(0.97); }
@@ -532,31 +592,6 @@
     color: var(--text); display: block;
     font-size: 14px; margin-bottom: 2px;
   }
-  .modal-error {
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.25);
-    color: #f87171; border-radius: 8px;
-    padding: 10px 14px; font-size: 13px;
-    margin-bottom: 12px; display: none;
-  }
-  .modal-field { margin-bottom: 12px; }
-  .modal-field label {
-    display: block; font-size: 11px; font-weight: 600;
-    color: var(--text-dim); margin-bottom: 5px;
-    text-transform: uppercase; letter-spacing: 0.06em;
-  }
-  .modal-field input {
-    width: 100%; background: var(--surface-2);
-    border: 1px solid var(--border); border-radius: 10px;
-    padding: 12px 14px; font-size: 15px;
-    font-family: "Geist", "Inter", system-ui, sans-serif;
-    color: var(--text); outline: none; box-sizing: border-box;
-    transition: border-color 200ms, box-shadow 200ms;
-  }
-  .modal-field input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
-  }
   .modal-google-btn {
     width: 100%; height: 52px;
     background: #fff; color: #3c4043; border: 1px solid #dadce0;
@@ -571,12 +606,7 @@
     background: #f8f9fa;
     box-shadow: 0 2px 8px rgba(0,0,0,.18);
   }
-  .modal-divider {
-    margin-top: 16px; text-align: center;
-    font-size: 12px; color: var(--text-dim);
-    letter-spacing: 0.01em;
-  }
-  .modal-success { text-align: center; display: none; padding: 8px 0; }
+  .modal-success { text-align: center; display: none; padding: 56px 40px; }
   .modal-success-icon {
     width: 52px; height: 52px;
     background: var(--accent-soft); border-radius: 50%;
@@ -3053,26 +3083,46 @@
   <div class="modal-card">
     <button class="modal-close" id="modal-close" aria-label="Close">×</button>
 
-    <div id="modal-form-view">
-      <div class="modal-title" id="modal-title-text">Get your tracklist</div>
-      <div class="modal-sub">10 searches free · No credit card needed</div>
-
-      <div class="modal-mix-preview" id="modal-mix-preview">
-        <strong id="modal-mix-artist"></strong>
-        <span id="modal-mix-name"></span>
+    <div id="modal-form-view" class="modal-split">
+      <div class="modal-perks">
+        <div class="modal-perks-eyebrow">With a HuntID account</div>
+        <ul>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Find tracklists for any mix<small>Paste a SoundCloud link, get every track</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Jump to any track<small>Clickable timecodes in the player</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Save tracklists<small>Every mix you found, kept in one place</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Keep favourite tracks<small>Heart a track, find it again later</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Buy links for favourites<small>Beatport, Bandcamp, Traxsource</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Analyze any mix<span class="modal-badge">Advanced</span><small>No tracklist? Identify tracks from the audio</small></span></li>
+        </ul>
       </div>
 
-      <button class="modal-google-btn" id="modal-google-btn" type="button">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-          <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
-          <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
-          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
-        </svg>
-        Continue with Google
-      </button>
+      <div class="modal-auth">
+        <div class="modal-title" id="modal-title-text">Get your tracklist</div>
+        <div class="modal-sub">10 searches free · No credit card needed</div>
 
-      <div class="modal-divider">Free · No credit card · Cancel anytime</div>
+        <div class="modal-mix-preview" id="modal-mix-preview">
+          <strong id="modal-mix-artist"></strong>
+          <span id="modal-mix-name"></span>
+        </div>
+
+        <button class="modal-google-btn" id="modal-google-btn" type="button">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+            <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+            <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+          </svg>
+          Continue with Google
+        </button>
+
+        <!-- New tab: the legal pages replace the whole page by hash, which
+             would strand the open modal and the tracklist behind it. -->
+        <div class="modal-legal">
+          By continuing you accept our
+          <a href="/#terms" target="_blank" rel="noopener">Terms of Service</a> and
+          <a href="/#privacy" target="_blank" rel="noopener">Privacy Policy</a>.
+        </div>
+      </div>
     </div>
 
     <div class="modal-success" id="modal-success-view">
@@ -3253,7 +3303,9 @@
 
       if (scInput)     scInput.value             = pending.scUrl;
       if (formView)    formView.style.display    = 'none';
-      if (successView) successView.style.display = '';
+      /* 'block', not '': the stylesheet hides this view, so clearing the
+         inline style only hands it straight back to display:none. */
+      if (successView) successView.style.display = 'block';
       overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
 
