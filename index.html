@@ -504,6 +504,16 @@
     border-right: 1px solid var(--border);
     padding: 36px 32px;
   }
+  .modal-stat {
+    padding-bottom: 22px; margin-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-stat-num {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 26px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.1; color: var(--text);
+  }
+  .modal-stat-cap { margin-top: 4px; font-size: 14px; color: var(--accent); font-weight: 500; }
   .modal-perks-eyebrow {
     font-size: 11px; font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase;
@@ -555,6 +565,8 @@
     .modal-perks { border-right: 0; border-top: 1px solid var(--border); padding: 22px 24px 26px; }
     .modal-perks ul { gap: 11px; }
     .modal-perks li small { display: none; }
+    .modal-stat { padding-bottom: 16px; margin-bottom: 16px; }
+    .modal-stat-num { font-size: 22px; }
   }
   @keyframes modal-in {
     from { opacity: 0; transform: translateY(16px) scale(0.97); }
@@ -3085,6 +3097,10 @@
 
     <div id="modal-form-view" class="modal-split">
       <div class="modal-perks">
+        <div class="modal-stat">
+          <div class="modal-stat-num">1,000,000+ tracklists</div>
+          <div class="modal-stat-cap">just a few clicks away</div>
+        </div>
         <div class="modal-perks-eyebrow">With a HuntID account</div>
         <ul>
           <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Find tracklists for any mix<small>Paste a SoundCloud link, get every track</small></span></li>
