@@ -707,6 +707,13 @@
     font-size: 24px;
   }
   .result-meta { min-width: 0; }
+  .result-meta-grow { flex: 1; }
+  .result-skel {
+    background: var(--surface-2);
+    border-radius: 6px;
+    animation: status-pulse 1.4s ease-in-out infinite;
+  }
+  .result-skel-line { height: 12px; margin: 7px 0; }
   .result-meta-label {
     font-size: 11px; color: var(--text-faint);
     letter-spacing: .06em; text-transform: uppercase;
@@ -3454,10 +3461,63 @@
       statusEl.classList.toggle('is-loading', !!loading);
     }
 
-    function showLoading() {
-      setStatus('Finding tracklist…', true);
-      resultBlock.style.display = 'none';
-      resultBlock.innerHTML = '';
+    /* Searches can overlap; only the newest may touch the result block. */
+    var searchSeq = 0;
+
+    /* Title, uploader and artwork as the header shows them. */
+    function mixLabels(scUrl, oembed) {
+      var title  = cleanScTitle(oembed) || scUrl;
+      var artist = (oembed && oembed.author_name) ? oembed.author_name : '';
+      if (artist && title.toLowerCase().startsWith(artist.toLowerCase() + ' -')) {
+        title = title.slice(artist.length + 2).trim(); /* "Artist - Mix" */
+      }
+      /* oEmbed hands out 500px; the header shows 64px, so 300 covers 3x screens. */
+      var thumb = (oembed && oembed.thumbnail_url)
+        ? oembed.thumbnail_url.replace(/-(t500x500|large)(\.\w+)$/, '-t300x300$2')
+        : null;
+      return { title: title, artist: artist, thumb: thumb };
+    }
+
+    /* oembed === undefined means SoundCloud has not answered yet: skeleton. */
+    function headerHtml(scUrl, oembed, total) {
+      if (oembed === undefined) {
+        return '<div class="result-header" id="result-head">' +
+          '<div class="result-artwork result-skel"></div>' +
+          '<div class="result-meta result-meta-grow">' +
+            '<div class="result-meta-label">Tracklist</div>' +
+            '<div class="result-skel result-skel-line" style="width:62%"></div>' +
+            '<div class="result-skel result-skel-line" style="width:34%"></div>' +
+          '</div>' +
+        '</div>';
+      }
+      var m = mixLabels(scUrl, oembed);
+      return '<div class="result-header" id="result-head">' +
+        (m.thumb
+          ? '<img class="result-artwork" src="' + escHtml(m.thumb) + '" alt="">'
+          : '<div class="result-artwork-placeholder">♫</div>') +
+        '<div class="result-meta">' +
+          '<div class="result-meta-label">Tracklist</div>' +
+          '<div class="result-meta-title">' + escHtml(m.title) + '</div>' +
+          (m.artist ? '<div class="result-meta-artist">' + escHtml(m.artist) + '</div>' : '') +
+          '<div class="result-meta-count" id="result-count">' + (total ? total + ' tracks' : '') + '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    function setResultBody(html) {
+      var body = document.getElementById('result-body');
+      if (body) body.innerHTML = html;
+    }
+
+    /* The block goes up at once with a skeleton header and the search
+       under it; SoundCloud fills the header in a fraction of a second,
+       long before the tracklist arrives. */
+    function showSearching(url) {
+      setStatus('');
+      resultBlock.dataset.url = url;
+      resultBlock.innerHTML = headerHtml(url, undefined) +
+        '<div id="result-body"><div class="result-more-loading">Finding tracklist…</div></div>';
+      resultBlock.style.display = '';
     }
 
     function showEmpty(msg) {
@@ -3494,16 +3554,9 @@
       total = Math.max(total || 0, tracks.length);
       lastSearch = { scUrl: scUrl, tracks: tracks, oembed: oembed, total: total };
 
-      var title      = cleanScTitle(oembed) || scUrl;
-      var artist     = (oembed && oembed.author_name)  ? oembed.author_name  : '';
-      var thumb      = (oembed && oembed.thumbnail_url)
-        ? oembed.thumbnail_url.replace('-large', '-t300x300')
-        : null;
-
-      /* strip artist prefix from title if it's redundant ("Artist - Mix") */
-      if (artist && title.toLowerCase().startsWith(artist.toLowerCase() + ' -')) {
-        title = title.slice(artist.length + 2).trim();
-      }
+      var labels = mixLabels(scUrl, oembed);
+      var title  = labels.title;
+      var artist = labels.artist;
 
       var authed  = isAuthed();
       var visible = authed ? tracks : tracks.slice(0, FREE_VISIBLE);
@@ -3512,21 +3565,7 @@
          or the server did not accept the session and sent the preview only. */
       var pendingRest = authed ? total - tracks.length : 0;
 
-      var artworkHtml = thumb
-        ? '<img class="result-artwork" src="' + escHtml(thumb) + '" alt="" loading="lazy">'
-        : '<div class="result-artwork-placeholder">♫</div>';
-
-      var html = '<div class="result-header">' +
-        artworkHtml +
-        '<div class="result-meta">' +
-          '<div class="result-meta-label">Tracklist</div>' +
-          '<div class="result-meta-title">' + escHtml(title) + '</div>' +
-          (artist ? '<div class="result-meta-artist">' + escHtml(artist) + '</div>' : '') +
-          '<div class="result-meta-count">' + total + ' tracks</div>' +
-        '</div>' +
-        '</div>';
-
-      html += '<div class="result-tracks-visible">';
+      var html = '<div class="result-tracks-visible">';
       visible.forEach(function (t) { html += trackRowHtml(t); });
       html += '</div>';
 
@@ -3554,7 +3593,18 @@
           '</div>';
       }
 
-      resultBlock.innerHTML = html;
+      /* A header already showing this mix stays put — replacing it would
+         re-paint the artwork the moment the tracks land. */
+      var head = document.getElementById('result-head');
+      if (head && resultBlock.dataset.url === scUrl && !head.querySelector('.result-skel')) {
+        setResultBody(html);
+        var countEl = document.getElementById('result-count');
+        if (countEl) countEl.textContent = total + ' tracks';
+      } else {
+        resultBlock.innerHTML = headerHtml(scUrl, oembed || null, total) +
+          '<div id="result-body">' + html + '</div>';
+      }
+      resultBlock.dataset.url = scUrl;
       resultBlock.style.display = '';
       if (mixDivider) mixDivider.style.display = '';
 
@@ -3632,12 +3682,25 @@
     /* ---- main fetch flow ------------------------------------------------ */
     function fetchAndRender(url) {
       if (gateObserver) { gateObserver.disconnect(); gateObserver = null; }
-      showLoading();
+      var seq = ++searchSeq;
+      function current() { return seq === searchSeq; }
+      showSearching(url);
 
+      /* Stage one: the mix itself, from SoundCloud, in about a quarter second. */
+      var oembedP = fetchOembed(url).then(function (o) {
+        var head = document.getElementById('result-head');
+        if (o && current() && head && head.querySelector('.result-skel')) {
+          head.outerHTML = headerHtml(url, o, 0);
+        }
+        return o;
+      });
+
+      /* Stage two: the tracklist, under a header that is already there. */
       Promise.all([
         fetchTracks(url).catch(function () { return { tracks: [] }; }),
-        fetchOembed(url)
+        oembedP
       ]).then(function (results) {
+        if (!current()) return;
         var trackResult = results[0];
         var oembed      = results[1];
         var tracks      = trackResult.tracks || [];
@@ -3645,22 +3708,24 @@
         /* Anonymous searches are never metered, so this is an account that
            has spent its free searches — an upgrade, not a sign-up. */
         if (trackResult.paywalled) {
-          setStatus('');
           if (mixDivider) mixDivider.style.display = '';
-          resultBlock.innerHTML =
+          setResultBody(
             '<div class="result-empty"><strong>You\'ve used your free searches</strong>' +
             'Upgrade to Pro for unlimited tracklists.' +
-            '<div style="margin-top:16px"><a class="result-gate-btn" href="/dashboard">Upgrade to Pro →</a></div></div>';
-          resultBlock.style.display = '';
+            '<div style="margin-top:16px"><a class="result-gate-btn" href="/dashboard">Upgrade to Pro →</a></div></div>');
           return;
         }
         if (!tracks.length) {
-          showEmpty(null);
+          if (!oembed) { showEmpty(null); return; }
+          /* The mix is real and on screen — say it is the tracklist that is missing. */
+          if (mixDivider) mixDivider.style.display = '';
+          setResultBody('<div class="result-empty"><strong>No tracklist for this mix yet</strong>' +
+            'Nobody has put one together so far. Try another mix.</div>');
           return;
         }
         renderResults(url, tracks, oembed, trackResult.total);
       }).catch(function () {
-        showEmpty('Something went wrong. Try again.');
+        if (current()) showEmpty('Something went wrong. Try again.');
       });
     }
 
