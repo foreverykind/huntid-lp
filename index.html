@@ -482,6 +482,10 @@
     border-radius: 8px; object-fit: cover;
     background: var(--surface-3);
   }
+  .mix-art-empty {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-faint); font-size: 16px;
+  }
   .mix-clamp {
     display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
     overflow: hidden;
@@ -3454,6 +3458,19 @@
       return t.trim();
     }
 
+    /* When SoundCloud has not described a mix, its link still says a lot:
+       soundcloud.com/earthdogbk/jek-sr-2024 → "Jek Sr 2024" by "earthdogbk". */
+    function slugLabels(scUrl) {
+      try {
+        var parts = new URL(scUrl).pathname.split('/').filter(Boolean);
+        var words = function (x) { return decodeURIComponent(x || '').replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim(); };
+        var title = words(parts[1] || parts[0]).replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+        return { title: title || scUrl, author: words(parts[0]) };
+      } catch (e) {
+        return { title: scUrl, author: '' };
+      }
+    }
+
     function fetchOembed(scUrl) {
       return fetch('https://soundcloud.com/oembed?url=' + encodeURIComponent(scUrl) + '&format=json')
         .then(function (r) { return r.ok ? r.json() : null; })
@@ -3473,8 +3490,9 @@
 
     /* Title, uploader and artwork as the header shows them. */
     function mixLabels(scUrl, oembed) {
-      var title  = cleanScTitle(oembed) || scUrl;
-      var artist = (oembed && oembed.author_name) ? oembed.author_name : '';
+      var slug   = slugLabels(scUrl);
+      var title  = cleanScTitle(oembed) || slug.title;
+      var artist = (oembed && oembed.author_name) ? oembed.author_name : (oembed ? '' : slug.author);
       if (artist && title.toLowerCase().startsWith(artist.toLowerCase() + ' -')) {
         title = title.slice(artist.length + 2).trim(); /* "Artist - Mix" */
       }
@@ -3848,15 +3866,20 @@
       fetchAndRender(url);
     }
 
-    function topRatedCardHtml(row, o) {
-      /* oEmbed hands out the 500px artwork (~120 KB); the card shows 36px. */
-      var art = o.thumbnail_url
+    function topRatedCardHtml(row) {
+      /* Metadata comes cached from the server; without it, read the link. */
+      var o = row.title
+        ? { title: row.title, author_name: row.author, thumbnail_url: row.artwork_url }
+        : null;
+      var slug = slugLabels(row.sc_url);
+      /* SoundCloud's artwork is 500px (~120 KB); the card shows 36px. */
+      var art = o && o.thumbnail_url
         ? '<img class="mix-art" src="' + escHtml(o.thumbnail_url.replace(/-t500x500(\.\w+)$/, '-large$1')) + '" alt="">'
-        : '';
+        : '<div class="mix-art mix-art-empty">♪</div>';
       return '<div class="mix-card" data-url="' + escHtml(row.sc_url) + '">' +
         '<div class="mix-head">' + art + '<div class="mix-tag">Top rated</div></div>' +
-        '<div class="mix-artist mix-clamp">' + escHtml(cleanScTitle(o)) + '</div>' +
-        '<div class="mix-name">' + escHtml(o.author_name || '') + '</div>' +
+        '<div class="mix-artist mix-clamp">' + escHtml(o ? cleanScTitle(o) : slug.title) + '</div>' +
+        '<div class="mix-name">' + escHtml(o ? (o.author_name || '') : slug.author) + '</div>' +
         '<div class="mix-footer">' +
           '<span class="mix-tracks">' + (row.track_count ? row.track_count + ' tracks' : 'Full tracklist') + '</span>' +
           '<span class="mix-try">Try this <span>→</span></span>' +
@@ -3864,31 +3887,21 @@
       '</div>';
     }
 
-    /* The ten most recently top-rated mixes (featured_tracklists() in the
-       database). Anything short of a usable row keeps the static cards: an
-       error, fewer than four mixes, or SoundCloud not describing them. */
+    /* The ten most recently top-rated mixes, already described, from the
+       featured-tracklists function. Asking SoundCloud from the page meant ten
+       oEmbed calls per load, and SoundCloud throttles those per IP — once it
+       did, every card dropped and the strip fell back to placeholders.
+       Now only an unreachable function or fewer than four mixes do that. */
     var MIN_TOP_RATED = 4;
     function loadTopRated(track) {
-      fetch(SUPA_URL + '/rest/v1/rpc/featured_tracklists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY },
-        body: '{}'
-      })
-      .then(function (r) { return r.ok ? r.json() : []; })
-      .then(function (rows) {
-        if (!Array.isArray(rows) || rows.length < MIN_TOP_RATED) return;
-        return Promise.all(rows.map(function (row) {
-          return fetchOembed(row.sc_url).then(function (o) {
-            return o && o.title ? topRatedCardHtml(row, o) : null; /* gone or private on SoundCloud */
-          });
-        })).then(function (cards) {
-          cards = cards.filter(Boolean);
-          if (cards.length < MIN_TOP_RATED) return;
-          track.innerHTML = cards.join('');
+      fetch(SUPA_URL + '/functions/v1/featured-tracklists')
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (rows) {
+          if (!Array.isArray(rows) || rows.length < MIN_TOP_RATED) return;
+          track.innerHTML = rows.map(topRatedCardHtml).join('');
           loopTrack(track);
-        });
-      })
-      .catch(function () { /* the static cards stay */ });
+        })
+        .catch(function () { /* the static cards stay */ });
     }
 
     var mixTrack = document.getElementById('mix-track');
