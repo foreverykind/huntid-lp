@@ -713,7 +713,8 @@
     border-radius: 6px;
     animation: status-pulse 1.4s ease-in-out infinite;
   }
-  .result-skel-line { height: 12px; margin: 7px 0; }
+  /* Sits inside the real title/artist lines, so the skeleton is exactly as tall. */
+  .result-skel-text { display: inline-block; height: 0.8em; vertical-align: middle; }
   .result-meta-label {
     font-size: 11px; color: var(--text-faint);
     letter-spacing: .06em; text-transform: uppercase;
@@ -721,14 +722,20 @@
   }
   .result-meta-title {
     font-size: 15px; font-weight: 600; color: var(--text);
-    line-height: 1.3;
+    line-height: 1.3; min-height: 1.3em;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  /* Every line keeps its height even while empty. The header is drawn in
+     three passes — skeleton, then the mix, then the track count — and the
+     artwork is centred against these lines, so any line that grew would
+     move it. */
   .result-meta-artist {
     font-size: 13px; color: var(--text-dim); margin-top: 2px;
+    line-height: 1.5; min-height: 1.5em;
   }
   .result-meta-count {
     font-size: 12px; color: var(--text-faint); margin-top: 4px;
+    line-height: 1.5; min-height: 1.5em;
   }
   /* visible tracks */
   .result-tracks-visible { padding: 0 20px; }
@@ -3485,8 +3492,9 @@
           '<div class="result-artwork result-skel"></div>' +
           '<div class="result-meta result-meta-grow">' +
             '<div class="result-meta-label">Tracklist</div>' +
-            '<div class="result-skel result-skel-line" style="width:62%"></div>' +
-            '<div class="result-skel result-skel-line" style="width:34%"></div>' +
+            '<div class="result-meta-title"><span class="result-skel result-skel-text" style="width:62%"></span></div>' +
+            '<div class="result-meta-artist"><span class="result-skel result-skel-text" style="width:34%"></span></div>' +
+            '<div class="result-meta-count"></div>' +
           '</div>' +
         '</div>';
       }
@@ -3498,7 +3506,7 @@
         '<div class="result-meta">' +
           '<div class="result-meta-label">Tracklist</div>' +
           '<div class="result-meta-title">' + escHtml(m.title) + '</div>' +
-          (m.artist ? '<div class="result-meta-artist">' + escHtml(m.artist) + '</div>' : '') +
+          '<div class="result-meta-artist">' + escHtml(m.artist) + '</div>' +
           '<div class="result-meta-count" id="result-count">' + (total ? total + ' tracks' : '') + '</div>' +
         '</div>' +
       '</div>';
