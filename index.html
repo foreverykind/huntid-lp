@@ -474,6 +474,18 @@
     transition: gap 200ms;
   }
   .mix-card:hover .mix-try { gap: 8px; }
+  /* Top-rated cards carry real SoundCloud artwork and titles, which run long. */
+  .mix-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .mix-head .mix-tag { margin: 0; }
+  .mix-art {
+    width: 36px; height: 36px; flex-shrink: 0;
+    border-radius: 8px; object-fit: cover;
+    background: var(--surface-3);
+  }
+  .mix-clamp {
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
 
   /* ============================== sign-up modal */
   .modal-overlay {
@@ -3419,6 +3431,15 @@
       });
     }
 
+    /* SoundCloud's oEmbed title reads "Mix name by Uploader"; the uploader is
+       already shown on its own line, so the suffix only repeats it. */
+    function cleanScTitle(o) {
+      var t = (o && o.title) || '';
+      var by = o && o.author_name ? ' by ' + o.author_name : '';
+      if (by && t.slice(-by.length).toLowerCase() === by.toLowerCase()) t = t.slice(0, -by.length);
+      return t.trim();
+    }
+
     function fetchOembed(scUrl) {
       return fetch('https://soundcloud.com/oembed?url=' + encodeURIComponent(scUrl) + '&format=json')
         .then(function (r) { return r.ok ? r.json() : null; })
@@ -3473,7 +3494,7 @@
       total = Math.max(total || 0, tracks.length);
       lastSearch = { scUrl: scUrl, tracks: tracks, oembed: oembed, total: total };
 
-      var title      = (oembed && oembed.title)        ? oembed.title        : scUrl;
+      var title      = cleanScTitle(oembed) || scUrl;
       var artist     = (oembed && oembed.author_name)  ? oembed.author_name  : '';
       var thumb      = (oembed && oembed.thumbnail_url)
         ? oembed.thumbnail_url.replace('-large', '-t300x300')
@@ -3704,7 +3725,7 @@
              gap and it settles back to its own pace without a seam. */
           pos += Math.max(0, drift - Math.max(0, external)) * dt;
 
-          if (pos >= half) pos -= half;
+          if (pos >= half) pos %= half; /* %, not -=: the row can be swapped for a shorter one */
           viewport.scrollLeft = pos;
           written = viewport.scrollLeft; /* read back whatever it snapped to */
         }
@@ -3731,24 +3752,83 @@
     }
 
     /* The marquee loops by running the row twice and shifting half its
-       width, so the second copy has to exist before anything is bound —
-       the duplicates are real cards and open the same modal. */
-    var mixTrack = document.getElementById('mix-track');
-    if (mixTrack) {
-      Array.prototype.slice.call(mixTrack.children).forEach(function (card) {
+       width, so each change of cards has to be followed by a fresh copy. */
+    function loopTrack(track) {
+      Array.prototype.slice.call(track.querySelectorAll('[aria-hidden="true"]'))
+        .forEach(function (el) { el.remove(); });
+      Array.prototype.slice.call(track.children).forEach(function (card) {
         var copy = card.cloneNode(true);
         copy.setAttribute('aria-hidden', 'true');
-        mixTrack.appendChild(copy);
+        track.appendChild(copy);
       });
-      startMixDrift(mixTrack.parentNode, mixTrack);
     }
 
-    /* mix cards still open modal directly */
-    document.querySelectorAll('.mix-card').forEach(function (card) {
-      card.addEventListener('click', function () {
-        openModal(card.dataset.url, card.dataset.artist, card.dataset.mix);
+    /* A featured card is a ready-made search: the same path as pasting the
+       link — four tracks, then the gate — rather than a sign-up wall. */
+    function searchFeatured(url) {
+      if (!url) return;
+      if (!/^https?:\/\//.test(url)) url = 'https://' + url;
+      url = normalizeSCUrl(url);
+      if (scInput) scInput.value = url;
+      var wrap = document.getElementById('hero-url-wrap');
+      if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      fetchAndRender(url);
+    }
+
+    function topRatedCardHtml(row, o) {
+      /* oEmbed hands out the 500px artwork (~120 KB); the card shows 36px. */
+      var art = o.thumbnail_url
+        ? '<img class="mix-art" src="' + escHtml(o.thumbnail_url.replace(/-t500x500(\.\w+)$/, '-large$1')) + '" alt="">'
+        : '';
+      return '<div class="mix-card" data-url="' + escHtml(row.sc_url) + '">' +
+        '<div class="mix-head">' + art + '<div class="mix-tag">Top rated</div></div>' +
+        '<div class="mix-artist mix-clamp">' + escHtml(cleanScTitle(o)) + '</div>' +
+        '<div class="mix-name">' + escHtml(o.author_name || '') + '</div>' +
+        '<div class="mix-footer">' +
+          '<span class="mix-tracks">' + (row.track_count ? row.track_count + ' tracks' : 'Full tracklist') + '</span>' +
+          '<span class="mix-try">Try this <span>→</span></span>' +
+        '</div>' +
+      '</div>';
+    }
+
+    /* The ten most recently top-rated mixes (featured_tracklists() in the
+       database). Anything short of a usable row keeps the static cards: an
+       error, fewer than four mixes, or SoundCloud not describing them. */
+    var MIN_TOP_RATED = 4;
+    function loadTopRated(track) {
+      fetch(SUPA_URL + '/rest/v1/rpc/featured_tracklists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY },
+        body: '{}'
+      })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (rows) {
+        if (!Array.isArray(rows) || rows.length < MIN_TOP_RATED) return;
+        return Promise.all(rows.map(function (row) {
+          return fetchOembed(row.sc_url).then(function (o) {
+            return o && o.title ? topRatedCardHtml(row, o) : null; /* gone or private on SoundCloud */
+          });
+        })).then(function (cards) {
+          cards = cards.filter(Boolean);
+          if (cards.length < MIN_TOP_RATED) return;
+          track.innerHTML = cards.join('');
+          loopTrack(track);
+        });
+      })
+      .catch(function () { /* the static cards stay */ });
+    }
+
+    var mixTrack = document.getElementById('mix-track');
+    if (mixTrack) {
+      loopTrack(mixTrack);
+      startMixDrift(mixTrack.parentNode, mixTrack);
+      /* Delegated, so cards swapped in later need no binding of their own. */
+      mixTrack.addEventListener('click', function (e) {
+        var card = e.target.closest('.mix-card');
+        if (card) searchFeatured(card.dataset.url);
       });
-    });
+      loadTopRated(mixTrack);
+    }
 
     if (closeBtn)  closeBtn.addEventListener('click', closeModal);
     if (overlay)   overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
