@@ -79,83 +79,23 @@
   .display { font-weight: 700; letter-spacing: -0.03em; line-height: 1.03; color: var(--text-strong); }
   .mono { font-feature-settings: "tnum" 1; }
 
-  /* ============================== nav */
-  nav.top {
-    position: sticky; top: 0; z-index: 50;
-    background: color-mix(in oklab, var(--bg) 85%, transparent);
-    backdrop-filter: saturate(160%) blur(16px);
-    -webkit-backdrop-filter: saturate(160%) blur(16px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-row {
-    display: flex; align-items: center; gap: 32px;
-    height: 72px;
-  }
-  .brand {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 20px;
-    letter-spacing: -0.02em;
-  }
-  .brand-mark {
-    width: 28px; height: 28px; border-radius: 7px;
-    background: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .brand .id { color: var(--accent); }
-  .nav-links {
-    display: flex; align-items: center; gap: 28px;
-    font-size: 14px; font-weight: 500;
-    color: var(--text-dim);
-  }
-  .nav-links a { transition: color 200ms; }
-  .nav-links a:hover { color: var(--text); }
-  .nav-spacer { flex: 1; }
+  /* ============================== nav
+     .nav, .nav-row, .nav-links and .brand come from huntid.css. */
+  nav.nav { background: color-mix(in srgb, var(--bg) 90%, transparent); }
+  .grow { flex: 1; }
   /* Both stay hidden until the session resolves, so neither flashes the
      wrong state on load. */
-  .nav-dashboard-btn, .nav-signin-btn {
-    display: none;
-    align-items: center; gap: 6px;
-    height: 40px; padding: 0 16px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 13px; font-weight: 500;
-    color: var(--text-dim);
-    white-space: nowrap;
-    background: none; font-family: inherit; cursor: pointer;
-    transition: color 150ms, border-color 150ms;
-  }
-  .nav-dashboard-btn:hover, .nav-signin-btn:hover {
-    color: var(--text); border-color: rgba(255,255,255,.3);
-  }
-  .nav-dashboard-btn.visible, .nav-signin-btn.visible { display: inline-flex; }
+  .nav-auth:not(.visible) { display: none; }
   .no-ext [data-track-cws="nav"] { display: none; }
   /* A CTA that has become a statement rather than an action. */
   .cta-inert {
     opacity: .5;
     pointer-events: none;
-    background: var(--surface) !important;
+    background: var(--panel) !important;
     color: var(--text-dim) !important;
-    border: 1px solid var(--border) !important;
+    border: 1px solid var(--line) !important;
     box-shadow: none !important;
   }
-  .nav-pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--text-dim);
-  }
-  .nav-pill .dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 12px var(--accent);
-    animation: pulse 2.4s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.55; transform: scale(0.8); } }
 
   /* ============================== eyebrow */
   .eyebrow {
@@ -1494,40 +1434,13 @@
   }
 
   /* ============================== footer */
-  footer {
-    padding: 56px 0 40px;
-    border-top: 1px solid var(--border);
-    font-size: 14px;
-    color: var(--text-faint);
-    margin-top: 24px;
-  }
-  .foot-grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr 1fr;
-    gap: 48px;
-    margin-bottom: 48px;
-  }
-  .foot-col h4 {
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    margin: 0 0 16px;
-    letter-spacing: -0.005em;
-  }
-  .foot-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-  .foot-col a { color: var(--text-dim); transition: color 200ms; }
-  .foot-col a:hover { color: var(--accent); }
-  .foot-brand .brand { font-size: 22px; margin-bottom: 16px; }
-  .foot-brand p { color: var(--text-dim); max-width: 280px; font-size: 14px; line-height: 1.55; margin: 0 0 20px; }
-  .foot-bottom {
-    border-top: 1px solid var(--border);
-    padding-top: 28px;
-    display: flex; align-items: center; gap: 24px;
-    flex-wrap: wrap;
-    font-size: 12px;
-  }
-  .foot-fineprint { flex: 1; min-width: 240px; line-height: 1.6; color: var(--text-faint); font-size: 11px; }
+  footer { border-top: 1px solid var(--line); padding: 44px 0 34px; font-size: 13px; color: var(--text-faint); }
+  .foot { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+  .foot .brand { font-size: 16px; }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; }
+  .foot-links a { color: var(--text-dim); transition: color var(--t-base); }
+  .foot-links a:hover { color: var(--text); }
+  .fine { width: 100%; font-size: 11px; line-height: 1.6; color: var(--text-faint); border-top: 1px solid var(--line); padding-top: 20px; }
 
   /* ============================== reveal */
   .rv[data-delay="1"] { transition-delay: 70ms; }
@@ -1847,10 +1760,10 @@
     .roadmap-grid { grid-template-columns: 1fr; gap: 16px; }
     .problem-card { padding: 56px 32px; }
     .final-card { padding: 72px 32px; }
-    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
   }
   @media (max-width: 600px) {
-    .wrap { padding: 0 16px; }
+    .wrap { padding: 0 18px; }
     section { padding: 32px 0; }
     .mix-track .mix-card { width: 250px; }
     .hero-input-wrap { flex-wrap: wrap; padding: 10px; border-radius: 14px; gap: 10px; }
@@ -1860,11 +1773,8 @@
     .hero-card-right { padding: 24px; border-radius: 24px; min-height: 540px; }
     .problem-card, .final-card { border-radius: 24px; padding: 56px 24px; }
     .popup-stage, .popup { width: 320px; }
-    .nav-links { display: none; }
-    .nav-pill { display: none; }
     .compare th, .compare td { padding: 16px 18px; font-size: 13.5px; }
     .price-card { padding: 32px 24px; }
-    .foot-grid { grid-template-columns: 1fr; gap: 32px; }
   }
 </style>
 </head>
@@ -1874,34 +1784,18 @@
 <div id="page-main">
 
   <!-- NAV -->
-  <nav class="top">
+  <nav class="nav">
     <div class="wrap nav-row">
-      <a href="#home" class="brand">
-        <span class="brand-mark" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
-            <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
-            <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-            <circle cx="7" cy="7" r="1.2" fill="white"/>
-          </svg>
-        </span>
-        Hunt<span class="id">ID</span>
-      </a>
+      <a href="#home" class="brand"><span class="mk" aria-hidden="true"><svg viewBox="0 0 64 64" width="26" height="26" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span><span>Hunt<em>ID</em></span></a>
       <div class="nav-links">
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
         <a href="#pricing">Pricing</a>
-        <a href="#roadmap">Roadmap</a>
       </div>
-      <div class="nav-spacer"></div>
-      <button type="button" class="nav-signin-btn" id="nav-signin-btn">Sign in</button>
-      <a href="/dashboard" class="nav-dashboard-btn" id="nav-dashboard-btn">
-        Dashboard <span style="opacity:.6">→</span>
-      </a>
-      <span class="nav-pill" id="nav-beta-pill"><span class="dot"></span> Beta · 10 searches free</span>
-      <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p" style="height: 40px; padding: 0 18px; font-size: 13px;" data-track-cws="nav">
-        Add to Chrome
-        <span class="arr">→</span>
-      </a>
+      <div class="grow"></div>
+      <button type="button" class="btn btn-g btn-sm nav-auth" id="nav-signin-btn">Sign in</button>
+      <a href="/dashboard" class="btn btn-g btn-sm nav-auth" id="nav-dashboard-btn">Dashboard <span class="arr">→</span></a>
+      <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-sm" data-track-cws="nav">Add to Chrome <span class="arr">→</span></a>
     </div>
   </nav>
 
@@ -2425,52 +2319,19 @@
 
   <!-- FOOTER -->
   <footer>
-    <div class="wrap">
-      <div class="foot-grid">
-        <div class="foot-col foot-brand">
-          <div class="brand">
-            <span class="brand-mark" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
-                <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-                <circle cx="7" cy="7" r="1.2" fill="white"/>
-              </svg>
-            </span>
-            Hunt<span class="id">ID</span>
-          </div>
-          <p>The fastest way to find any track in any DJ mix on SoundCloud.</p>
-        </div>
-        <div class="foot-col">
-          <h4>Product</h4>
-          <ul>
-            <li><a href="#how">How it works</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#roadmap">Roadmap</a></li>
-          </ul>
-        </div>
-        <div class="foot-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="mailto:foreverykindofthing@gmail.com">Contact</a></li>
-            <li><a href="#privacy">Privacy Policy</a></li>
-            <li><a href="#terms">Terms of Service</a></li>
-            <li><a href="#refund">Refund Policy</a></li>
-          </ul>
-        </div>
-        <div class="foot-col">
-          <h4>Stay in the loop</h4>
-          <ul>
-            <li><a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener">Add to Chrome</a></li>
-          </ul>
-        </div>
+    <div class="wrap foot">
+      <a href="#home" class="brand"><span class="mk" aria-hidden="true"><svg viewBox="0 0 64 64" width="22" height="22" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span><span>Hunt<em>ID</em></span></a>
+      <div class="grow"></div>
+      <div class="foot-links">
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="mailto:foreverykindofthing@gmail.com">Contact</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#terms">Terms</a>
+        <a href="#refund">Refunds</a>
       </div>
-      <div class="foot-bottom">
-        <div>© 2026 HuntID · huntid.app</div>
-        <div class="foot-fineprint">
-          HuntID is not affiliated with SoundCloud Limited. SoundCloud is a trademark of SoundCloud Limited.
-        </div>
-      </div>
+      <div class="fine">© 2026 HuntID · huntid.app. Not affiliated with SoundCloud Limited or any festival named above. SoundCloud is a trademark of SoundCloud Limited. Festival names are used to describe where tracklisted sets are heard, not as endorsements.</div>
     </div>
   </footer>
 
@@ -3045,7 +2906,7 @@
     <div id="modal-form-view" class="modal-split">
       <div class="modal-perks">
         <div class="modal-stat">
-          <div class="modal-stat-num">1,000,000+ tracklists</div>
+          <div class="modal-stat-num"><span data-stat="tracklists">900K+</span> tracklists</div>
           <div class="modal-stat-cap">just a few clicks away</div>
         </div>
         <div class="modal-perks-eyebrow">With a HuntID account</div>
@@ -3055,7 +2916,7 @@
           <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Save tracklists<small>Every mix you found, kept in one place</small></span></li>
           <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Keep favourite tracks<small>Heart a track, find it again later</small></span></li>
           <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Buy links for favourites<small>Beatport, Bandcamp, Traxsource</small></span></li>
-          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Analyze any mix<span class="modal-badge">Advanced</span><small>No tracklist? Identify tracks from the audio</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Analyze any mix<span class="modal-badge">Launch soon</span><small>No tracklist? Identify tracks from the audio</small></span></li>
         </ul>
       </div>
 
@@ -3217,10 +3078,8 @@
       var authed = likelyAuthed();
       var dash   = document.getElementById('nav-dashboard-btn');
       var signin = document.getElementById('nav-signin-btn');
-      var pill   = document.getElementById('nav-beta-pill');
       if (dash)   dash.classList.toggle('visible', authed);
       if (signin) signin.classList.toggle('visible', !authed);
-      if (pill)   pill.style.display = authed ? 'none' : '';
     }
 
     /* Signing up IS the gate: the tracklist is what the visitor came for, so
