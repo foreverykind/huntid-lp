@@ -709,8 +709,17 @@
     .hero-copy { min-height: 0; }
     .flow-frame { min-height: 0; padding: 26px; }
   }
+  @media (max-width: 960px) {
+    .how-flow { grid-template-columns: minmax(0, 1fr); }
+    .step, .shot { min-width: 0; }
+    .glass-band { min-height: 0; }
+  }
   @media (max-width: 600px) {
     .hero-stats-mini { flex-wrap: wrap; gap: 18px 0; }
+    .stat-card { padding: 0 20px 0 0; border-right: 0; }
+    .nav-row { gap: 10px; }
+    .nav-row .btn-sm { padding: 0 12px; }
+    .nav-row .btn-sm .arr { display: none; }
   }
 
   /* ============================== story blocks: no "track ID?", features, analyze
