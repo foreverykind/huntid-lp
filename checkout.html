@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HuntID — Upgrade to Pro</title>
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0f0f0f;
-      color: #fff;
+      font-family: "Inter", system-ui, sans-serif;
+      background: #0b0f0d;
+      color: #f0f0f0;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -26,7 +27,7 @@
     }
     .logo-icon {
       width: 28px; height: 28px;
-      background: #ff5500;
+      background: #121815; border: 1px solid #2c3a34;
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
     }
@@ -40,23 +41,23 @@
       padding: 16px 18px;
       cursor: pointer;
       text-align: left;
-      background: #161616;
+      background: #121815;
       transition: border-color 160ms, background 160ms;
       position: relative;
     }
-    .plan:hover { border-color: #ff5500; background: #1a1212; }
+    .plan:hover { border-color: #4dff9e; background: #161e1a; }
     .plan-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
     .plan-name { font-size: 14px; font-weight: 600; }
     .plan-badge {
       font-size: 10px; font-weight: 700;
-      background: #ff5500; color: #fff;
+      background: #4dff9e; color: #04140b;
       padding: 2px 7px; border-radius: 99px;
     }
     .plan-price { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; }
     .plan-price span { font-size: 12px; font-weight: 400; color: #666; }
     .plan-note { font-size: 11px; color: #555; margin-top: 3px; }
     .hint { font-size: 12px; color: #444; }
-    .err { font-size: 13px; color: #ff5500; margin-top: 16px; }
+    .err { font-size: 13px; color: #ff6b6b; margin-top: 16px; }
   </style>
 </head>
 <body>
@@ -64,12 +65,12 @@
     <div class="logo">
       <div class="logo-icon">
         <svg width="14" height="14" viewBox="0 0 128 128" fill="none" aria-hidden="true">
-          <circle cx="64" cy="64" r="34" stroke="#fff" stroke-width="8"/>
-          <line x1="64" y1="14" x2="64" y2="34" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
-          <line x1="64" y1="94" x2="64" y2="114" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
-          <line x1="14" y1="64" x2="34" y2="64" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
-          <line x1="94" y1="64" x2="114" y2="64" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
-          <circle cx="64" cy="64" r="8" fill="#fff"/>
+          <circle cx="64" cy="64" r="34" stroke="#4dff9e" stroke-width="8"/>
+          <line x1="64" y1="14" x2="64" y2="34" stroke="#4dff9e" stroke-width="8" stroke-linecap="round"/>
+          <line x1="64" y1="94" x2="64" y2="114" stroke="#4dff9e" stroke-width="8" stroke-linecap="round"/>
+          <line x1="14" y1="64" x2="34" y2="64" stroke="#4dff9e" stroke-width="8" stroke-linecap="round"/>
+          <line x1="94" y1="64" x2="114" y2="64" stroke="#4dff9e" stroke-width="8" stroke-linecap="round"/>
+          <circle cx="64" cy="64" r="8" fill="#4dff9e"/>
         </svg>
       </div>
       <span class="logo-name">HuntID</span>
