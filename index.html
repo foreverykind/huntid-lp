@@ -895,6 +895,12 @@
 
   /* ============================== faq (.faq comes from huntid.css) */
   #faq .faq { max-width: 860px; }
+  /* Height is animated from script; clipping keeps the answer inside while it moves. */
+  #faq .faq details { overflow: hidden; }
+  #faq .faq summary::after { transition: transform var(--t-reveal) var(--ease); }
+  /* The icon follows where the item is heading, not the lagging open attribute. */
+  #faq .faq details[data-open] summary::after { transform: none; }
+  #faq .faq details[data-open="1"] summary::after { transform: rotate(45deg); }
 
   /* ============================== promo: the closing offer */
   .promo { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(28px, 4vw, 64px); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(34px, 4.2vw, 64px); background: var(--app-bg); }
@@ -1939,6 +1945,57 @@
     requestAnimationFrame(() => requestAnimationFrame(() => {
       reveals.forEach(el => io.observe(el));
     }));
+  })();
+
+  /* ----------------------- faq: one answer open at a time, opening and closing smoothly */
+  (function () {
+    const items = Array.from(document.querySelectorAll('#faq details'));
+    if (!items.length) return;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const DURATION = 320;
+    const EASE = 'cubic-bezier(.2,.6,.2,1)';
+    const running = new WeakMap();
+
+    // Collapsed height is the question alone; expanded is question and answer.
+    const closedHeight = d => d.querySelector('summary').offsetHeight + 'px';
+
+    function animate(d, from, to, done) {
+      const prev = running.get(d);
+      if (prev) prev.cancel();
+      const anim = d.animate({ height: [from, to] }, { duration: DURATION, easing: EASE });
+      running.set(d, anim);
+      anim.onfinish = () => { running.delete(d); done && done(); };
+      anim.oncancel = () => running.delete(d);
+    }
+
+    // Where each item is heading; d.open lags behind while a close animates.
+    items.forEach(d => { d.dataset.open = d.open ? '1' : '0'; });
+
+    function open(d) {
+      d.dataset.open = '1';
+      if (still.matches) { d.open = true; return; }
+      const from = d.offsetHeight + 'px';
+      d.open = true;
+      animate(d, from, d.scrollHeight + 'px');
+    }
+
+    function close(d) {
+      d.dataset.open = '0';
+      if (still.matches) { d.open = false; return; }
+      animate(d, d.offsetHeight + 'px', closedHeight(d), () => { d.open = false; });
+    }
+
+    items.forEach(d => {
+      d.querySelector('summary').addEventListener('click', e => {
+        e.preventDefault();
+        if (d.dataset.open !== '1') {
+          items.forEach(o => { if (o !== d && o.dataset.open === '1') close(o); });
+          open(d);
+        } else {
+          close(d);
+        }
+      });
+    });
   })();
 
   /* ----------------------- features: staged reveal, now-playing wave, analyze stages */
