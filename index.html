@@ -168,7 +168,7 @@
     gap: 8px;
     background: var(--surface);
     border: 1px solid var(--border-strong);
-    border-radius: 18px;
+    border-radius: var(--r-md);
     padding: 6px 6px 6px 18px;
     align-items: center;
     max-width: 660px;
@@ -196,24 +196,21 @@
     background: var(--accent);
     color: var(--on-accent);
     border: none;
-    border-radius: 12px;
+    border-radius: var(--r-btn);
     padding: 0 22px;
-    height: 48px;
-    font-size: 14px;
+    height: 46px;
+    font-size: 14.5px;
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    transition: background 200ms, transform 220ms cubic-bezier(.2,.9,.3,1.4);
+    gap: 9px;
+    transition: background var(--t-base);
     white-space: nowrap;
-    box-shadow: 0 8px 22px -8px color-mix(in srgb, var(--accent) 55%, transparent);
   }
-  .hero-find-btn:hover {
-    background: var(--accent-strong);
-    transform: translateY(-1px);
-  }
+  .hero-find-btn:hover { background: var(--accent-2); }
+  .hero-find-btn:hover .arr { transform: translateX(3px); }
 
   /* mix divider */
   .mix-divider {
@@ -261,100 +258,33 @@
     gap: 12px;
     width: max-content;
   }
-  .mix-track .mix-card { width: 300px; flex-shrink: 0; }
+  /* Featured mix cards take the design's "Recommended" card: artwork,
+     where it was played, what it is, and how many tracks are waiting. */
+  .mix-track .mix-card { width: 320px; flex-shrink: 0; }
   .mix-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
+    display: grid; grid-template-columns: 84px 1fr; gap: 14px; align-items: center;
+    padding: 10px; border-radius: 10px;
     cursor: pointer;
-    transition: border-color 220ms, transform 220ms cubic-bezier(.2,.9,.3,1.4), box-shadow 200ms;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    transition: background 160ms;
   }
-  .mix-card::before {
-    content: "";
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 100% 70% at 50% 120%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%);
-    opacity: 0;
-    transition: opacity 300ms;
-    pointer-events: none;
-  }
-  .mix-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-3px);
-    box-shadow: 0 16px 40px -16px color-mix(in srgb, var(--accent) 25%, transparent), 0 4px 12px -4px rgba(0,0,0,0.3);
-  }
-  .mix-card:hover::before { opacity: 1; }
-  .mix-tag {
-    display: inline-flex;
-    align-items: center;
-    padding: 3px 10px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 12px;
-    width: fit-content;
-  }
-  .mix-artist {
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 3px;
-    line-height: 1.25;
-  }
-  .mix-name {
-    font-size: 12px;
-    color: var(--text-faint);
-    line-height: 1.45;
-    flex: 1;
-    margin-bottom: 16px;
-  }
-  .mix-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
-  }
-  .mix-tracks {
-    font-feature-settings: "tnum" 1;
-    font-size: 11px;
-    color: var(--text-faint);
-  }
-  .mix-try {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: gap 200ms;
-  }
-  .mix-card:hover .mix-try { gap: 8px; }
-  /* Top-rated cards carry real SoundCloud artwork and titles, which run long. */
-  .mix-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .mix-head .mix-tag { margin: 0; }
+  .mix-card:hover { background: var(--panel); }
   .mix-art {
-    width: 36px; height: 36px; flex-shrink: 0;
-    border-radius: 8px; object-fit: cover;
-    background: var(--surface-3);
+    position: relative; width: 84px; height: 84px; border-radius: 6px; overflow: hidden;
+    background: var(--panel-2); border: 1px solid var(--line);
+    display: grid; place-items: center; color: var(--text-faint);
   }
-  .mix-art-empty {
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-faint); font-size: 16px;
+  .mix-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .mix-art .pl {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    background: rgba(0,0,0,.35); color: var(--text-strong);
+    opacity: 0; transition: opacity 160ms;
   }
-  .mix-clamp {
-    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
-    overflow: hidden;
-  }
+  .mix-card:hover .mix-art .pl { opacity: 1; }
+  .mix-b { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .mix-b .who { font-size: 13px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mix-b h3 { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.35;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .mix-stats { display: flex; align-items: center; gap: 5px; margin-top: 5px; font-size: 12px; color: var(--accent); font-feature-settings: "tnum" 1; }
 
   /* ============================== sign-up modal */
   .modal-overlay {
@@ -665,16 +595,15 @@
   }
   .result-gate-btn {
     background: var(--accent); color: var(--on-accent);
-    border: none; border-radius: 12px;
-    padding: 13px 28px;
-    font-size: 14px; font-weight: 600;
+    border: none; border-radius: var(--r-btn);
+    height: 46px; padding: 0 22px;
+    font-size: 14.5px; font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-    transition: background 150ms, transform 200ms cubic-bezier(.2,.9,.3,1.4);
-    box-shadow: 0 8px 22px -8px color-mix(in srgb, var(--accent) 55%, transparent);
+    display: flex; align-items: center; gap: 9px;
+    transition: background var(--t-base);
   }
-  .result-gate-btn:hover { background: var(--accent-strong); transform: translateY(-1px); }
+  .result-gate-btn:hover { background: var(--accent-2); }
 
   /* ============================== hero (original — kept below hero-cta) */
   .hero {
@@ -1765,7 +1694,7 @@
   @media (max-width: 600px) {
     .wrap { padding: 0 18px; }
     section { padding: 32px 0; }
-    .mix-track .mix-card { width: 250px; }
+    .mix-track .mix-card { width: 280px; }
     .hero-input-wrap { flex-wrap: wrap; padding: 10px; border-radius: 14px; gap: 10px; }
     .hero-input-wrap input { width: 100%; padding: 8px 4px; }
     .hero-find-btn { width: 100%; justify-content: center; }
@@ -1835,85 +1764,10 @@
            but the cards run the full .wrap width, flush with the hero below. -->
       <div class="mix-marquee rv" data-delay="0">
         <div class="mix-track" id="mix-track">
-          <div class="mix-card"
-               data-artist="Four Tet"
-               data-mix="Boiler Room · London"
-               data-url="soundcloud.com/boilerroom/four-tet-boiler-room-london-dj-set"
-               data-tracks="12" data-tag="Electronic">
-            <div class="mix-tag">Electronic</div>
-            <div class="mix-artist">Four Tet</div>
-            <div class="mix-name">Boiler Room · London DJ Set</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~12 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
+          <div class="mix-card" data-url="soundcloud.com/boilerroom/four-tet-boiler-room-london-dj-set">
+            <div class="mix-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span class="pl"><svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.2v9.6L10.4 6z"/></svg></span></div>
+            <div class="mix-b"><span class="who">Boiler Room</span><h3>Four Tet — London DJ Set</h3><div class="mix-stats"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 3.5h10M2 7h10M2 10.5h6"/></svg>~12 tracks</div></div>
           </div>
-          <div class="mix-card"
-               data-artist="Peggy Gou"
-               data-mix="Mixmag DJ Lab"
-               data-url="soundcloud.com/mixmag/peggy-gou-mixmag-dj-lab"
-               data-tracks="18" data-tag="House">
-            <div class="mix-tag">House</div>
-            <div class="mix-artist">Peggy Gou</div>
-            <div class="mix-name">Mixmag DJ Lab · Afro-house &amp; Disco</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~18 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-          <div class="mix-card"
-               data-artist="Bicep"
-               data-mix="Fabriclive 60"
-               data-url="soundcloud.com/fabriclondon/fabriclive60-bicep"
-               data-tracks="24" data-tag="Rave">
-            <div class="mix-tag">Rave</div>
-            <div class="mix-artist">Bicep</div>
-            <div class="mix-name">Fabriclive 60 · Melodic Rave</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~24 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-          <div class="mix-card"
-               data-artist="Floating Points"
-               data-mix="NTS Radio Session"
-               data-url="soundcloud.com/nts-live/floating-points"
-               data-tracks="16" data-tag="Leftfield">
-            <div class="mix-tag">Leftfield</div>
-            <div class="mix-artist">Floating Points</div>
-            <div class="mix-name">NTS Radio · Jazz &amp; Electronic</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~16 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-          <div class="mix-card"
-               data-artist="Amelie Lens"
-               data-mix="Exhale Radio #001"
-               data-url="soundcloud.com/amelie-lens/exhale-radio-001"
-               data-tracks="20" data-tag="Techno">
-            <div class="mix-tag">Techno</div>
-            <div class="mix-artist">Amelie Lens</div>
-            <div class="mix-name">Exhale Radio #001 · Hard Techno</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~20 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-          <div class="mix-card"
-               data-artist="DJ Koze"
-               data-mix="Late Night Tales"
-               data-url="soundcloud.com/late-night-tales/dj-koze"
-               data-tracks="15" data-tag="Melodic">
-            <div class="mix-tag">Melodic</div>
-            <div class="mix-artist">DJ Koze</div>
-            <div class="mix-name">Late Night Tales · Dreamy Selects</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~15 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -3638,17 +3492,17 @@
         ? { title: row.title, author_name: row.author, thumbnail_url: row.artwork_url }
         : null;
       var slug = slugLabels(row.sc_url);
-      /* SoundCloud's artwork is 500px (~120 KB); the card shows 36px. */
+      /* SoundCloud's artwork is 500px (~120 KB); -large is 100px, which is
+         what the 84px square needs. */
       var art = o && o.thumbnail_url
-        ? '<img class="mix-art" src="' + escHtml(o.thumbnail_url.replace(/-t500x500(\.\w+)$/, '-large$1')) + '" alt="">'
-        : '<div class="mix-art mix-art-empty">♪</div>';
+        ? '<img src="' + escHtml(o.thumbnail_url.replace(/-t500x500(\.\w+)$/, '-large$1')) + '" alt="" loading="lazy">'
+        : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>';
       return '<div class="mix-card" data-url="' + escHtml(row.sc_url) + '">' +
-        '<div class="mix-head">' + art + '<div class="mix-tag">Top rated</div></div>' +
-        '<div class="mix-artist mix-clamp">' + escHtml(o ? cleanScTitle(o) : slug.title) + '</div>' +
-        '<div class="mix-name">' + escHtml(o ? (o.author_name || '') : slug.author) + '</div>' +
-        '<div class="mix-footer">' +
-          '<span class="mix-tracks">' + (row.track_count ? row.track_count + ' tracks' : 'Full tracklist') + '</span>' +
-          '<span class="mix-try">Try this <span>→</span></span>' +
+        '<div class="mix-art">' + art + '<span class="pl"><svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.2v9.6L10.4 6z"/></svg></span></div>' +
+        '<div class="mix-b">' +
+          '<span class="who">' + escHtml(o ? (o.author_name || '') : slug.author) + '</span>' +
+          '<h3>' + escHtml(o ? cleanScTitle(o) : slug.title) + '</h3>' +
+          '<div class="mix-stats"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 3.5h10M2 7h10M2 10.5h6"/></svg>' + (row.track_count ? row.track_count + ' tracks' : 'Full tracklist') + '</div>' +
         '</div>' +
       '</div>';
     }
