@@ -46,204 +46,69 @@
   } catch (e) {}
 </script>
 <link rel="canonical" href="https://www.huntid.app/" />
+<script type="application/ld+json" id="ld-app">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"HuntID","applicationCategory":"BrowserApplication","operatingSystem":"Chrome","description":"Chrome extension that finds the tracklist of any DJ mix on SoundCloud.","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Pro monthly","price":"4.99","priceCurrency":"USD"},{"@type":"Offer","name":"Pro yearly","price":"39.99","priceCurrency":"USD"}]}
+</script>
 <link rel="icon" type="image/png" href="favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#181818" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/huntid.css?v=1" />
 <style>
-  /* ============================== tokens (dark default) */
+  /* ============================== legacy token aliases
+     Tokens come from huntid.css (Green v2). These names predate it and map
+     onto its tokens until the sections still using them are rebuilt. */
   :root {
-    --bg:        #0f0f0f;
-    --surface:   #1a1a1a;
-    --surface-2: #1f1f1f;
-    --surface-3: #252525;
-    --accent:    #ff5500;
-    --accent-soft: rgba(255, 85, 0, 0.10);
-    --accent-strong: #ff6a1f;
-    --text:      #ffffff;
-    --text-dim:  #b3b3b3;
-    --text-faint:#888888;
-    --border:    #2a2a2a;
-    --border-strong: #3a3a3a;
-    --ink:       #0f0f0f;   /* always-dark (for inverse card) */
-    --paper:     #f5f0e8;   /* warm "paper" for inverse card text */
-    --shadow-card: 0 1px 0 rgba(255,255,255,0.04) inset, 0 30px 80px -30px rgba(0,0,0,0.6);
-    --shadow-popup: 0 1px 0 rgba(255,255,255,0.06) inset, 0 40px 100px -20px rgba(0,0,0,0.7), 0 14px 30px -12px rgba(0,0,0,0.5);
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg:        #f3efe9;
-      --surface:   #ffffff;
-      --surface-2: #faf7f1;
-      --surface-3: #ece7dc;
-      --accent:    #ff5500;
-      --accent-soft: rgba(255, 85, 0, 0.10);
-      --accent-strong: #ff6a1f;
-      --text:      #111111;
-      --text-dim:  #555555;
-      --text-faint:#8a8a8a;
-      --border:    #e7e2d6;
-      --border-strong: #d6d0c1;
-      --ink:       #0f0f0f;
-      --paper:     #f5f0e8;
-      --shadow-card: 0 1px 0 rgba(255,255,255,0.7) inset, 0 30px 80px -30px rgba(40,30,10,0.18);
-      --shadow-popup: 0 1px 0 rgba(255,255,255,0.9) inset, 0 40px 100px -20px rgba(40,30,10,0.22), 0 14px 30px -12px rgba(40,30,10,0.12);
-    }
+    --surface:   var(--panel);
+    --surface-2: var(--panel-2);
+    --surface-3: var(--panel);
+    --accent-strong: var(--accent-2);
+    --border:    var(--line);
+    --border-strong: var(--line-strong);
+    --ink:       var(--bg);
+    --paper:     var(--text);
+    --shadow-card: var(--sh-mock);
+    --shadow-popup: var(--sh-pop);
   }
 
-  * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; overflow-x: hidden; width: 100%; }
   html { scroll-behavior: smooth; }
-  body {
-    font-family: "Geist", "Inter", system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    -webkit-font-smoothing: antialiased;
-    line-height: 1.5;
-    overflow-x: hidden;
-  }
+  body { overflow-x: hidden; }
   a { color: inherit; text-decoration: none; }
-  button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+  a:hover { color: inherit; }
 
-  .display { font-family: "Bricolage Grotesque", "Geist", sans-serif; font-weight: 600; letter-spacing: -0.025em; line-height: 1.02; }
-  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-feature-settings: "tnum" 1; }
+  .display { font-weight: 700; letter-spacing: -0.03em; line-height: 1.03; color: var(--text-strong); }
+  .mono { font-feature-settings: "tnum" 1; }
 
-  /* ============================== layout */
-  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
-
-  /* ============================== nav */
-  nav.top {
-    position: sticky; top: 0; z-index: 50;
-    background: color-mix(in oklab, var(--bg) 85%, transparent);
-    backdrop-filter: saturate(160%) blur(16px);
-    -webkit-backdrop-filter: saturate(160%) blur(16px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-row {
-    display: flex; align-items: center; gap: 32px;
-    height: 72px;
-  }
-  .brand {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-weight: 700;
-    font-size: 20px;
-    letter-spacing: -0.02em;
-  }
-  .brand-mark {
-    width: 28px; height: 28px; border-radius: 7px;
-    background: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .brand .id { color: var(--accent); }
-  .nav-links {
-    display: flex; align-items: center; gap: 28px;
-    font-size: 14px; font-weight: 500;
-    color: var(--text-dim);
-  }
-  .nav-links a { transition: color 200ms; }
-  .nav-links a:hover { color: var(--text); }
-  .nav-spacer { flex: 1; }
+  /* ============================== nav
+     .nav, .nav-row, .nav-links and .brand come from huntid.css. */
+  nav.nav { background: color-mix(in srgb, var(--bg) 90%, transparent); }
+  .grow { flex: 1; }
   /* Both stay hidden until the session resolves, so neither flashes the
      wrong state on load. */
-  .nav-dashboard-btn, .nav-signin-btn {
-    display: none;
-    align-items: center; gap: 6px;
-    height: 40px; padding: 0 16px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 13px; font-weight: 500;
-    color: var(--text-dim);
-    white-space: nowrap;
-    background: none; font-family: inherit; cursor: pointer;
-    transition: color 150ms, border-color 150ms;
-  }
-  .nav-dashboard-btn:hover, .nav-signin-btn:hover {
-    color: var(--text); border-color: rgba(255,255,255,.3);
-  }
-  .nav-dashboard-btn.visible, .nav-signin-btn.visible { display: inline-flex; }
+  .nav-auth:not(.visible) { display: none; }
   .no-ext [data-track-cws="nav"] { display: none; }
   /* A CTA that has become a statement rather than an action. */
   .cta-inert {
     opacity: .5;
     pointer-events: none;
-    background: var(--surface) !important;
+    background: var(--panel) !important;
     color: var(--text-dim) !important;
-    border: 1px solid var(--border) !important;
+    border: 1px solid var(--line) !important;
     box-shadow: none !important;
   }
-  .nav-pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--text-dim);
-  }
-  .nav-pill .dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 12px var(--accent);
-    animation: pulse 2.4s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.55; transform: scale(0.8); } }
-
-  /* ============================== buttons */
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    height: 48px; padding: 0 24px;
-    border-radius: 999px;
-    font-size: 14px; font-weight: 600;
-    transition: transform 220ms cubic-bezier(.2,.9,.3,1.4), background 220ms, color 220ms, box-shadow 220ms, border-color 220ms;
-    white-space: nowrap;
-    cursor: pointer;
-    will-change: transform;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 8px 22px -8px rgba(255,85,0,0.55);
-  }
-  .btn-primary:hover {
-    background: var(--accent-strong);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 14px 32px -8px rgba(255,85,0,0.6), 0 0 0 6px rgba(255,85,0,0.12);
-    transform: translateY(-1px);
-  }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border-strong);
-  }
-  .btn-outline:hover { background: var(--surface); border-color: var(--text-dim); }
-  .btn-on-dark.btn-outline {
-    color: #fff;
-    border-color: rgba(255,255,255,0.25);
-  }
-  .btn-on-dark.btn-outline:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.4);
-  }
-  .btn-lg { height: 56px; padding: 0 28px; font-size: 15px; }
-  .btn .arr {
-    display: inline-block;
-    transition: transform 240ms ease;
-  }
-  .btn:hover .arr { transform: translateX(4px); }
 
   /* ============================== eyebrow */
-  .eyebrow {
+  /* The search hero's eyebrow sits in a centred column with a chip beside it. */
+  .hero-cta .eyebrow {
     display: inline-flex; align-items: center; gap: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-dim);
+    margin-bottom: 0;
   }
   .eyebrow .chip-new {
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     padding: 3px 8px;
     border-radius: 999px;
     font-size: 10px;
@@ -252,22 +117,8 @@
   }
 
   /* ============================== sections */
-  section { padding: 56px 0; }
-
-  #h1-word {
-    display: inline-block;
-    color: var(--accent);
-  }
-  #h1-word::after {
-    content: '|';
-    color: var(--accent);
-    opacity: 1;
-    animation: h1-blink 0.6s step-end infinite;
-  }
-  @keyframes h1-blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
-  }
+  section { padding: var(--section-y) 0; }
+  @media (max-width: 960px) { section { padding: 64px 0; } }
 
   /* ============================== hero cta (new top section) */
   .hero-cta {
@@ -281,7 +132,7 @@
   }
   .hero-center .eyebrow { justify-content: center; margin-bottom: 24px; }
   .hero-center h1 {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: inherit;
     font-size: clamp(44px, 6vw, 80px);
     font-weight: 700;
     letter-spacing: -0.03em;
@@ -303,7 +154,7 @@
     gap: 8px;
     background: var(--surface);
     border: 1px solid var(--border-strong);
-    border-radius: 18px;
+    border-radius: var(--r-md);
     padding: 6px 6px 6px 18px;
     align-items: center;
     max-width: 660px;
@@ -320,7 +171,7 @@
     border: 0;
     outline: none;
     color: var(--text);
-    font-family: "Geist", "Inter", system-ui, sans-serif;
+    font-family: inherit;
     font-size: 15px;
     padding: 12px 0;
     min-width: 0;
@@ -329,26 +180,23 @@
   .hero-find-btn {
     flex-shrink: 0;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     border: none;
-    border-radius: 12px;
+    border-radius: var(--r-btn);
     padding: 0 22px;
-    height: 48px;
-    font-size: 14px;
+    height: 46px;
+    font-size: 14.5px;
     font-weight: 600;
-    font-family: "Geist", "Inter", system-ui, sans-serif;
+    font-family: inherit;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    transition: background 200ms, transform 220ms cubic-bezier(.2,.9,.3,1.4);
+    gap: 9px;
+    transition: background var(--t-base);
     white-space: nowrap;
-    box-shadow: 0 8px 22px -8px rgba(255,85,0,0.55);
   }
-  .hero-find-btn:hover {
-    background: var(--accent-strong);
-    transform: translateY(-1px);
-  }
+  .hero-find-btn:hover { background: var(--accent-2); }
+  .hero-find-btn:hover .arr { transform: translateX(3px); }
 
   /* mix divider */
   .mix-divider {
@@ -396,100 +244,33 @@
     gap: 12px;
     width: max-content;
   }
-  .mix-track .mix-card { width: 300px; flex-shrink: 0; }
+  /* Featured mix cards take the design's "Recommended" card: artwork,
+     where it was played, what it is, and how many tracks are waiting. */
+  .mix-track .mix-card { width: 320px; flex-shrink: 0; }
   .mix-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
+    display: grid; grid-template-columns: 84px 1fr; gap: 14px; align-items: center;
+    padding: 10px; border-radius: 10px;
     cursor: pointer;
-    transition: border-color 220ms, transform 220ms cubic-bezier(.2,.9,.3,1.4), box-shadow 200ms;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    transition: background 160ms;
   }
-  .mix-card::before {
-    content: "";
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 100% 70% at 50% 120%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%);
-    opacity: 0;
-    transition: opacity 300ms;
-    pointer-events: none;
-  }
-  .mix-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-3px);
-    box-shadow: 0 16px 40px -16px rgba(255,85,0,0.25), 0 4px 12px -4px rgba(0,0,0,0.3);
-  }
-  .mix-card:hover::before { opacity: 1; }
-  .mix-tag {
-    display: inline-flex;
-    align-items: center;
-    padding: 3px 10px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 12px;
-    width: fit-content;
-  }
-  .mix-artist {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 3px;
-    line-height: 1.25;
-  }
-  .mix-name {
-    font-size: 12px;
-    color: var(--text-faint);
-    line-height: 1.45;
-    flex: 1;
-    margin-bottom: 16px;
-  }
-  .mix-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
-  }
-  .mix-tracks {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    color: var(--text-faint);
-  }
-  .mix-try {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: gap 200ms;
-  }
-  .mix-card:hover .mix-try { gap: 8px; }
-  /* Top-rated cards carry real SoundCloud artwork and titles, which run long. */
-  .mix-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .mix-head .mix-tag { margin: 0; }
+  .mix-card:hover { background: var(--panel); }
   .mix-art {
-    width: 36px; height: 36px; flex-shrink: 0;
-    border-radius: 8px; object-fit: cover;
-    background: var(--surface-3);
+    position: relative; width: 84px; height: 84px; border-radius: 6px; overflow: hidden;
+    background: var(--panel-2); border: 1px solid var(--line);
+    display: grid; place-items: center; color: var(--text-faint);
   }
-  .mix-art-empty {
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-faint); font-size: 16px;
+  .mix-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .mix-art .pl {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    background: rgba(0,0,0,.35); color: var(--text-strong);
+    opacity: 0; transition: opacity 160ms;
   }
-  .mix-clamp {
-    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
-    overflow: hidden;
-  }
+  .mix-card:hover .mix-art .pl { opacity: 1; }
+  .mix-b { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .mix-b .who { font-size: 13px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mix-b h3 { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.35;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .mix-stats { display: flex; align-items: center; gap: 5px; margin-top: 5px; font-size: 12px; color: var(--accent); font-feature-settings: "tnum" 1; }
 
   /* ============================== sign-up modal */
   .modal-overlay {
@@ -525,7 +306,7 @@
     border-bottom: 1px solid var(--border);
   }
   .modal-stat-num {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: inherit;
     font-size: 26px; font-weight: 700; letter-spacing: -0.02em;
     line-height: 1.1; color: var(--text);
   }
@@ -557,7 +338,7 @@
   .modal-badge {
     display: inline-block; margin-left: 6px; vertical-align: 1px;
     padding: 2px 7px; border-radius: 5px;
-    background: var(--accent); color: #fff;
+    background: var(--accent); color: var(--on-accent);
     font-size: 9.5px; font-weight: 700;
     letter-spacing: 0.06em; text-transform: uppercase;
   }
@@ -599,7 +380,7 @@
   }
   .modal-close:hover { background: var(--border-strong); }
   .modal-title {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: inherit;
     font-size: 22px; font-weight: 700;
     letter-spacing: -0.02em; margin: 0 0 6px;
   }
@@ -624,7 +405,7 @@
     width: 100%; height: 52px;
     background: #fff; color: #3c4043; border: 1px solid #dadce0;
     border-radius: 12px; font-size: 15px; font-weight: 500;
-    font-family: "Geist", "Inter", system-ui, sans-serif;
+    font-family: inherit;
     cursor: pointer; margin-top: 20px;
     display: flex; align-items: center; justify-content: center; gap: 10px;
     transition: background 150ms, box-shadow 150ms;
@@ -642,7 +423,7 @@
     margin-bottom: 16px; color: var(--accent); font-size: 24px;
   }
   .modal-success h3 {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: inherit;
     font-size: 20px; margin: 0 0 8px;
   }
   .modal-success p { font-size: 14px; color: var(--text-dim); margin: 0; }
@@ -756,7 +537,7 @@
   .result-track-num {
     color: var(--text-faint);
     font-size: 12px;
-    font-family: "JetBrains Mono", monospace;
+    font-feature-settings: "tnum" 1;
     text-align: right;
     padding-top: 1px;
   }
@@ -799,832 +580,360 @@
     font-size: 13px; color: var(--text-dim);
   }
   .result-gate-btn {
-    background: var(--accent); color: #fff;
-    border: none; border-radius: 12px;
-    padding: 13px 28px;
-    font-size: 14px; font-weight: 600;
-    font-family: "Geist", "Inter", system-ui, sans-serif;
+    background: var(--accent); color: var(--on-accent);
+    border: none; border-radius: var(--r-btn);
+    height: 46px; padding: 0 22px;
+    font-size: 14.5px; font-weight: 600;
+    font-family: inherit;
     cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-    transition: background 150ms, transform 200ms cubic-bezier(.2,.9,.3,1.4);
-    box-shadow: 0 8px 22px -8px rgba(255,85,0,0.55);
+    display: flex; align-items: center; gap: 9px;
+    transition: background var(--t-base);
   }
-  .result-gate-btn:hover { background: var(--accent-strong); transform: translateY(-1px); }
+  .result-gate-btn:hover { background: var(--accent-2); }
 
-  /* ============================== hero (original — kept below hero-cta) */
-  .hero {
-    padding-top: 32px;
-    padding-bottom: 32px;
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 24px;
-    align-items: stretch;
-  }
-  .hero-card-left {
-    background: var(--surface);
-    border-radius: 32px;
-    padding: 56px 56px 48px;
-    border: 1px solid var(--border);
-    display: flex; flex-direction: column;
-  }
-  .hero-card-left h1 {
-    margin: 24px 0 0;
-    font-size: clamp(40px, 5.8vw, 76px);
-    font-weight: 700;
-  }
-  .hero-card-left h1 .accent { color: var(--accent); }
-  .hero-sub-orig {
-    margin-top: 28px;
-    font-size: 17px; line-height: 1.55;
-    color: var(--text-dim);
-    max-width: 520px;
-  }
-  .hero-cta-row {
-    margin-top: 40px;
-    display: flex; gap: 12px; flex-wrap: wrap;
-  }
-  .hero-meta {
-    margin-top: 40px;
-    display: flex; align-items: center; gap: 24px;
-    flex-wrap: wrap;
-    padding-top: 28px;
-    border-top: 1px solid var(--border);
-  }
-  .hero-meta .item {
-    font-size: 12px; color: var(--text-faint);
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .hero-meta .item .ck {
-    width: 14px; height: 14px; border-radius: 50%;
-    background: var(--accent-soft); color: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .hero-meta .item .ck svg { width: 8px; height: 8px; }
-  .hero-card-right {
-    background: #0a0a0a;
-    border-radius: 32px;
-    padding: 40px;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #1a1a1a;
-    display: flex; align-items: center; justify-content: center;
-    min-height: 560px;
-  }
-  .hero-card-right::before {
-    content: "";
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 50% 60% at 50% 50%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%);
-    opacity: 0.7;
-  }
-  .hero-card-right::after {
-    content: "";
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    opacity: 0.6;
-  }
-  .hero-waves {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 50%;
-    display: flex; align-items: flex-end; gap: 3px;
-    padding: 0 32px; pointer-events: none; opacity: 0.18;
-  }
-  .hero-waves i {
-    flex: 1;
-    background: linear-gradient(to top, var(--accent), transparent);
-    border-radius: 2px;
-    animation: wave 1.4s ease-in-out infinite;
-  }
-  @keyframes wave { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
-  .state-badge {
-    position: absolute; top: 24px; left: 24px;
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 12px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    backdrop-filter: blur(8px);
-    border-radius: 999px; color: #fff;
-    font-size: 11px; font-weight: 500;
-    z-index: 3; transition: opacity 300ms;
-  }
-  .state-badge .num {
-    color: var(--accent);
-    font-family: "JetBrains Mono", monospace; font-size: 10px;
-  }
+  /* ============================== section head (design system) */
+  .sh { max-width: 680px; margin-bottom: 52px; }
+  .sh h2 { font-size: clamp(38px, 4.8vw, 60px); color: var(--text-strong); }
+  .lede { color: var(--text-dim); font-size: 17px; max-width: 52ch; }
+  .sh .lede { margin-top: 14px; }
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  /* popup */
-  .popup-stage {
-    position: relative; z-index: 2;
-    width: 360px; max-width: 100%;
-  }
-  .popup {
-    width: 360px;
-    background: #141414;
-    border: 1px solid #2a2a2a;
-    border-radius: 14px;
-    overflow: hidden;
-    color: #fff;
-    box-shadow: var(--shadow-popup);
-    transition: height 480ms cubic-bezier(.22,1,.36,1);
-  }
-  .pop-head {
-    height: 44px;
-    display: flex; align-items: center; gap: 10px;
-    padding: 0 14px;
-    border-bottom: 1px solid #232323;
-    background: #0a0a0a;
-  }
-  .pop-mark {
-    width: 22px; height: 22px; border-radius: 6px;
-    background: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .pop-title {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-weight: 700; font-size: 14px;
-    letter-spacing: -0.01em;
-  }
-  .pop-title .id { color: var(--accent); }
-  .pop-sep { width: 1px; height: 12px; background: #2a2a2a; }
-  .pop-mix {
-    flex: 1; min-width: 0;
-    font-size: 11px; color: #888;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  /* popup body — variable per state */
-  .popup-body { position: relative; overflow: hidden; }
+  /* ============================== hero: the extension, running on a mix */
+  .hero { padding: 64px 0 40px; position: relative; overflow: hidden; }
+  .hero-glow { position: absolute; left: -14%; top: -10%; width: 640px; height: 640px; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 7%, transparent), transparent 68%); filter: blur(20px); pointer-events: none; z-index: -1; }
+  .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; align-items: stretch; }
+  .hero-copy { display: flex; flex-direction: column; justify-content: center; min-height: var(--h-lg); }
+  .hero-copy h1 { font-size: clamp(42px, 5.2vw, 64px); line-height: 1.03; letter-spacing: -.03em; font-weight: 700; color: var(--text-strong); }
+  .hero-copy .lede { margin-top: 20px; }
+  .hero-copy .ctas { margin-top: 32px; }
+  .hero-stats-mini { display: flex; margin-top: 36px; }
+  .stat-card { display: flex; flex-direction: column; gap: 8px; padding: 0 24px; border-right: 1px solid var(--line); }
+  .stat-card:first-child { padding-left: 0; }
+  .stat-card:last-child { border-right: 0; }
+  .stat-card h3 { font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 9px; }
+  .hero-stats-mini .stat-num { font-size: 26px; }
+  .feat-beta { display: inline-block; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent-border); border-radius: 4px; padding: 1px 5px; white-space: nowrap; }
+  .sync-scan { width: 26px; height: 26px; position: relative; flex-shrink: 0; }
+  .sync-scan .dot, .sync-scan .ring { position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; }
+  .sync-scan .dot { background: var(--accent); }
+  .sync-scan .ring { border: 1.5px solid var(--accent); animation: syncping 1.8s ease-out infinite; opacity: 0; }
+  .sync-scan .ring:nth-child(3) { animation-delay: .6s; }
+  @keyframes syncping { 0% { width: 8px; height: 8px; margin: -4px 0 0 -4px; opacity: .8; } 100% { width: 26px; height: 26px; margin: -13px 0 0 -13px; opacity: 0; } }
+  .eq-viz { display: flex; align-items: flex-end; gap: 4px; height: 26px; }
+  .eq-viz i { width: 5px; border-radius: 2px; background: var(--accent); animation: eqviz 1.3s ease-in-out infinite; }
+  @keyframes eqviz { 0%, 100% { height: 22%; } 50% { height: 100%; } }
 
-  .state-view {
-    position: absolute; inset: 0;
-    opacity: 0;
-    transition: opacity 380ms ease, transform 380ms ease;
-    transform: translateY(8px);
-    pointer-events: none;
+  .flow-frame { background: var(--app-bg); border-radius: var(--r-lg); padding: 40px; position: relative; overflow: hidden; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; min-height: var(--h-lg); }
+  .flow-frame::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(255,255,255,.04), transparent 70%); }
+  .flow-frame::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 40px 40px; -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, transparent 70%); mask-image: radial-gradient(ellipse at center, #000 0%, transparent 70%); opacity: .8; }
+  .hero-waves { position: absolute; left: 0; right: 0; bottom: 0; height: 45%; display: flex; align-items: flex-end; justify-content: space-between; gap: 1px; pointer-events: none; opacity: .18; z-index: 1; }
+  .hero-waves i { width: 3px; flex: 0 0 3px; background: var(--accent); border-radius: 2px; animation: wave 1.4s ease-in-out infinite; transform-origin: bottom; }
+  @keyframes wave { 0%, 100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }
+  .scan-sweep { position: absolute; left: 0; right: 0; height: 140px; z-index: 2; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 16%, transparent), transparent); animation: sweepup 6s ease-in-out infinite; pointer-events: none; }
+  @keyframes sweepup { 0% { transform: translateY(560px); } 50% { transform: translateY(-140px); } 100% { transform: translateY(560px); } }
+  .flow-wrap { position: relative; z-index: 2; max-width: 360px; margin: 0 auto; width: 100%; }
+  .flow-badge { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.06); border: 1px solid var(--line-strong); border-radius: var(--r-pill); padding: 6px 14px; font-size: 11px; color: var(--text-strong); margin-bottom: 14px; height: 29px; }
+  .flow-badge .num { color: var(--accent); font-weight: 700; flex-shrink: 0; font-feature-settings: "tnum" 1; }
+  .flow-badge span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .flow-shell { position: relative; background: var(--ext-bg); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--sh-mock); height: 340px; }
+  .flow-head { height: 46px; display: flex; align-items: center; gap: 10px; padding: 0 16px; background: var(--ext-head); border-bottom: 1px solid var(--ext-line); }
+  .flow-name { font-weight: 700; font-size: 14px; color: var(--text-strong); }
+  .flow-name em { font-style: normal; color: var(--accent); }
+  .flow-sep { width: 1px; height: 12px; background: var(--ext-line); }
+  .flow-mix { flex: 1; min-width: 0; font-size: 11px; color: var(--ext-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+  .flow-body { position: relative; overflow: hidden; height: calc(100% - 46px); }
+  .flow-view { position: absolute; inset: 0; opacity: 0; transform: translateY(8px); transition: opacity 380ms ease, transform 380ms ease; pointer-events: none; }
+  .flow-view.show { position: relative; opacity: 1; transform: none; pointer-events: auto; }
+  .flow-find, .flow-loading, .flow-now { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 0 24px; }
+  .flow-eyes { display: inline-flex; gap: 12px; animation: flowscan 2.4s ease-in-out infinite; }
+  .flow-eye { width: 14px; height: 14px; border-radius: 999px; background: var(--text-strong); position: relative; overflow: hidden; }
+  .flow-eye::after { content: ""; position: absolute; inset: 0; background: var(--ext-bg); transform: scaleY(0); animation: flowblink 3.6s ease-in-out infinite; }
+  @keyframes flowscan { 0%, 100% { transform: translateX(-6px); } 50% { transform: translateX(6px); } }
+  @keyframes flowblink { 0%, 92%, 100% { transform: scaleY(0); } 94%, 97% { transform: scaleY(1); } }
+  .flow-looking { font-size: 13px; color: var(--text-strong); }
+  .flow-dots span { opacity: 0; animation: flowdot 1.4s infinite; }
+  .flow-dots span:nth-child(2) { animation-delay: .2s; }
+  .flow-dots span:nth-child(3) { animation-delay: .4s; }
+  @keyframes flowdot { 0%, 80%, 100% { opacity: 0; } 30%, 60% { opacity: 1; } }
+  .flow-tracklist { height: 100%; display: flex; flex-direction: column; }
+  .flow-tracklist .ext-bar { flex-shrink: 0; }
+  .tl2-rows { flex: 1; overflow: hidden; }
+  .tl2-rows-in { animation: tl2scroll 18s linear infinite; }
+  @keyframes tl2scroll { 0%, 8% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+  .tl2-rows .tl-row { grid-template-columns: 22px 44px 1fr auto; }
+  .flow-now { flex-direction: row; text-align: left; gap: 14px; }
+  .now2-main { flex: 1; min-width: 0; }
+  .now2-eyebrow { font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+  .now2-title { font-size: 15px; font-weight: 600; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-strong); }
+  .now2-title span { color: var(--ext-dim); font-weight: 500; }
+  .now2-meta { font-size: 10px; color: var(--accent); margin-top: 4px; font-feature-settings: "tnum" 1; }
+  .now2-meta .faint { color: var(--ext-muted); }
+  .now2-expand { width: 36px; height: 36px; border-radius: var(--r-sm); border: 1px solid var(--ext-line); display: inline-flex; align-items: center; justify-content: center; color: var(--text-strong); flex-shrink: 0; }
+
+  /* ============================== how it works: three shots of the real UI */
+  .how-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .step { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px 22px 22px; }
+  .step .step-dot { margin-bottom: 16px; }
+  .step h3 { font-size: 19px; margin-bottom: 8px; color: var(--text-strong); }
+  .step p { font-size: 14px; color: var(--text-dim); flex: 1; }
+  .shot { margin-top: 20px; background: var(--ext-bg); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+  .shot-h { height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--ext-head); border-bottom: 1px solid var(--ext-line); }
+  .shot-h .m { width: 18px; height: 18px; display: inline-flex; flex-shrink: 0; }
+  .shot-h .n { font-weight: 700; font-size: 12px; color: var(--text-strong); flex-shrink: 0; }
+  .shot-h .n em { font-style: normal; color: var(--accent); }
+  .shot-h .x { flex: 1; min-width: 0; font-size: 10px; color: var(--ext-muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .shot-body { padding: 18px; min-height: 130px; display: flex; flex-direction: column; justify-content: center; }
+  .shot-status { margin-top: 12px; font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 7px; }
+  .shot-status .ok { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .shot-outcome { margin-top: 12px; font-size: 11px; color: var(--accent); display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .shot-outcome::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .lk { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 6px 0; }
+  .lk-dots { display: flex; gap: 14px; animation: lkeye 2.2s ease-in-out infinite; }
+  .lk-dots i { width: 13px; height: 13px; border-radius: 50%; background: var(--text-strong); }
+  @keyframes lkeye { 0%, 100% { transform: translateX(-9px); } 50% { transform: translateX(9px); } }
+  .lk-t { display: flex; align-items: baseline; gap: 9px; font-size: 15px; font-weight: 500; color: var(--text); }
+  .lk-e { display: flex; gap: 4px; }
+  .lk-e i { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); animation: lke 1.2s steps(1) infinite; }
+  .lk-e i:nth-child(2) { animation-delay: .4s; }
+  .lk-e i:nth-child(3) { animation-delay: .8s; }
+  @keyframes lke { 0%, 33% { opacity: 1; } 34%, 100% { opacity: .18; } }
+  .mock-row { display: flex; align-items: center; gap: 9px; padding: 11px 16px; border-bottom: 1px solid var(--ext-row-line); font-size: 12.5px; }
+  .mock-row:last-child { border-bottom: 0; }
+  .mock-row .heart { color: var(--accent); flex-shrink: 0; }
+  .mock-row .mt { flex: 1; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mock-row.on { background: var(--accent-soft); }
+  .mock-row.on .mt { color: var(--text); }
+  .mock-row .pill { font-size: 10px; color: var(--accent); border: 1px solid var(--line-strong); border-radius: var(--r-pill); padding: 2px 8px; flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; }
+  @media (max-width: 960px) {
+    .hero-grid, .how-flow { grid-template-columns: 1fr; }
+    .hero-copy { min-height: 0; }
+    .flow-frame { min-height: 0; padding: 26px; }
   }
-  .state-view.show {
-    position: relative;
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+  @media (max-width: 960px) {
+    .how-flow { grid-template-columns: minmax(0, 1fr); }
+    .step, .shot { min-width: 0; }
+    .glass-band { min-height: 0; }
+  }
+  @media (max-width: 600px) {
+    .hero-stats-mini { flex-wrap: wrap; gap: 18px 0; }
+    .stat-card { padding: 0 20px 0 0; border-right: 0; }
+    .nav-row { gap: 10px; }
+    .nav-row .btn-sm { padding: 0 12px; }
+    .nav-row .btn-sm .arr { display: none; }
   }
 
-  .state-find {
-    height: 140px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-    padding: 0 22px;
-  }
-  .find-btn {
-    width: 100%; height: 44px; border-radius: 8px;
-    background: var(--accent);
-    color: #fff; font-weight: 600; font-size: 14px;
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 8px 22px -8px rgba(255,85,0,0.5);
-  }
-  .find-btn .ic { display: inline-block; }
-  .find-status {
-    font-size: 11px; color: #888;
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .find-status .ok {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.6);
-  }
+  /* ============================== story blocks: no "track ID?", features, analyze
+     From the design, on the system's tokens. */
+  .grain{ position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.32;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44NScgbnVtT2N0YXZlcz0nMicgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbHRlcj0ndXJsKCNuKScvPjwvc3ZnPg==");background-size:180px 180px }
+  /* features, three columns, copy above an extension mock */
+  .feat-rows{ display:flex;flex-direction:column;gap:22px }
+  .feat-row{ position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;min-height:var(--h-lg);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--app-bg) }
+  .feat-row::before{ content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 58% 74% at 78% 12%,color-mix(in srgb, var(--accent) 16%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 70%) }
+  .feat-row:nth-child(even)::before{ background:radial-gradient(ellipse 58% 74% at 22% 12%,color-mix(in srgb, var(--accent) 16%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 70%) }
+  .feat-row:nth-child(even) .feat-copy{ order:2 }
+  .feat-copy{ position:relative;z-index:2;padding:clamp(34px,4.4vw,66px);display:flex;flex-direction:column;justify-content:center;gap:18px;align-items:flex-start }
+  .feat-copy h3{ color:var(--text-strong);font-size:clamp(30px,3.1vw,44px);line-height:1.1;letter-spacing:-.022em;max-width:16ch }
+  .feat-copy p{ color:var(--text-dim);font-size:16px;line-height:1.6;max-width:40ch }
+  .feat-pic{ position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:clamp(26px,3.4vw,56px);overflow:hidden }
+  .feat-pic .ext{ max-width:520px }
+  .feat-pic::before{ content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,color-mix(in srgb, var(--accent) 10%, transparent),transparent 70%) }
+  .feat-pic::after{ content:"";position:absolute;inset:0;background-image:linear-gradient(color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px);background-size:30px 30px;mask-image:radial-gradient(ellipse at center,#000,transparent 72%);-webkit-mask-image:radial-gradient(ellipse at center,#000,transparent 72%) }
+  /* shared extension shell used in feature cards */
+  .feat-pic .ext{ position:relative;z-index:2;width:100%;max-width:100%;background:var(--ext-bg);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;box-shadow:0 26px 54px -20px rgba(0,0,0,.8) }
+  .feat-pic .ext-h{ height:36px;display:flex;align-items:center;gap:7px;padding:0 11px;background:var(--ext-head);border-bottom:1px solid var(--ext-line) }
+  .feat-pic .ext-h .m{ width:17px;height:17px;display:inline-flex;flex-shrink:0 }
+  .feat-pic .ext-h .n{ font-weight:700;font-size:11.5px;color:var(--text-strong);flex-shrink:0;letter-spacing:-.01em }
+  .feat-pic .ext-h .n em{ font-style:normal;color:var(--accent) }
+  .feat-pic .ext-h .x{ flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:9.5px;color:var(--ext-faint);white-space:nowrap;overflow:hidden }
+  .feat-pic .ext-h .x span{ overflow:hidden;text-overflow:ellipsis }
+  .feat-pic .ext-b{ padding:0 }
+  /* f1, scrolling tracklist */
+  .f1-bar{ display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--ext-line);font-size:9.5px;color:var(--ext-muted);text-transform:uppercase;letter-spacing:.07em;background:var(--ext-bar) }
+  .f1-bar b{ color:var(--accent);background:var(--accent-soft);padding:2px 7px;border-radius:5px;font-weight:500;font-size:9.5px;text-transform:none;letter-spacing:0 }
+  .f1-rows{ height:330px;overflow:hidden }
+  .f1-in{ animation:f1scroll 20s linear infinite }
+  @keyframes f1scroll{ 0%,6%{ transform:translateY(0) }100%{ transform:translateY(-50%) } }
+  .f1-row{ display:grid;grid-template-columns:16px 36px 1fr;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--ext-row-line);font-size:11.5px }
+  .f1-row .n{ font-size:8.5px;color:var(--ext-faint);text-align:right;font-feature-settings:"tnum" 1 }
+  .f1-row .tc{ font-size:10px;color:var(--accent);font-feature-settings:"tnum" 1 }
+  .f1-row .tc.e{ color:var(--ext-faint) }
+  .f1-row .mt{ min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ext-dim) }
+  .f1-row.on{ background:var(--accent-soft) }
+  .f1-row.on .mt{ color:var(--text-strong);font-weight:600 }
+  .f1-row.on .n{ color:var(--accent) }
+  /* f2, now playing */
+  .f2-wrap{ padding:20px 16px;display:flex;flex-direction:column;gap:16px;height:360px;justify-content:center;box-sizing:border-box }
+  .f2-eyebrow{ font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-weight:700;display:inline-flex;align-items:center;gap:6px }
+  .f2-title{ font-size:12.5px;font-weight:600;color:var(--text-strong);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+  .f2-title span{ color:var(--ext-dim);font-weight:500 }
+  .f2-wave{ display:flex;align-items:flex-end;gap:2px;height:56px }
+  .f2-wave i{ flex:1;background:color-mix(in srgb, var(--accent) 22%, transparent);border-radius:1px;transition:background .3s }
+  .f2-wave i.p{ background:var(--accent) }
+  .f2-tcs{ display:flex;gap:5px;flex-wrap:wrap }
+  .f2-tc{ font-size:9.5px;color:var(--accent);border:1px solid color-mix(in srgb, var(--accent) 25%, transparent);background:var(--accent-soft);border-radius:5px;padding:3px 7px;font-feature-settings:"tnum" 1;transition:background .3s,color .3s }
+  .f2-tc.on{ background:var(--accent);color:var(--on-accent);font-weight:600 }
+  /* f3, audio recognition */
+  .f3-wrap{ padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:16px;height:360px;justify-content:center;box-sizing:border-box }
+  .f3-mic{ width:52px;height:52px;border-radius:50%;background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);display:grid;place-items:center;color:var(--accent);position:relative;flex-shrink:0 }
+  .f3-mic .rp{ position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--accent);animation:f3ping 2.4s ease-out infinite;opacity:0 }
+  .f3-mic .rp:nth-child(2){ animation-delay:.8s }
+  @keyframes f3ping{ 0%{ transform:scale(1);opacity:.7 }100%{ transform:scale(1.9);opacity:0 } }
+  .f3-bars{ display:flex;align-items:flex-end;gap:3px;height:28px }
+  .f3-bars i{ width:3px;border-radius:2px;background:var(--accent);animation:eqviz 1.2s ease-in-out infinite }
+  .f3-out{ width:100%;background:var(--ext-bar);border:1px solid var(--line);border-radius:9px;padding:10px 12px;text-align:left }
+  .f3-lbl{ font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:700 }
+  .f3-name{ font-size:11.5px;color:var(--text-strong);font-weight:600;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+  .f3-name span{ color:var(--ext-dim);font-weight:500 }
+  /* staged reveal */
+  .feat-row .feat-tag,.feat-row h3,.feat-row p{ opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.2,.7,.3,1),transform .6s cubic-bezier(.2,.7,.3,1) }
+  .feat-row .feat-pic{ opacity:0;transform:translateY(20px);transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1) }
+  .feat-row.in .feat-tag{ opacity:1;transform:none;transition-delay:60ms }
+  .feat-row.in h3{ opacity:1;transform:none;transition-delay:150ms }
+  .feat-row.in p{ opacity:1;transform:none;transition-delay:240ms }
+  .feat-row.in .feat-pic{ opacity:1;transform:none;transition-delay:320ms }
+  .feat-rows>.feat-row:nth-child(2) .feat-tag,.feat-rows>.feat-row:nth-child(2) h3,.feat-rows>.feat-row:nth-child(2) p,.feat-rows>.feat-row:nth-child(2) .feat-pic{ transition-duration:.66s }
+  @media (max-width:960px){ .feat-row{ grid-template-columns:1fr;min-height:0 }.feat-row:nth-child(even) .feat-copy{ order:0 }.feat-copy{ padding:34px 26px;min-height:0 }.feat-pic{ min-height:0;padding:26px 22px } }
+  .f4-wrap{ padding:14px 12px;display:flex;flex-direction:column;gap:9px }
+  .f4-item{ display:grid;grid-template-columns:40px 1fr auto;gap:11px;align-items:center;padding:11px;border:1px solid var(--ext-line);border-radius:9px;background:var(--ext-item) }
+  .f4-art{ width:40px;height:40px;border-radius:6px;background:linear-gradient(140deg,var(--app-panel-2),var(--app-panel));border:1px solid var(--ext-line) }
+  .f4-t{ font-size:12.5px;color:var(--text-strong);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+  .f4-s{ font-size:10px;color:var(--ext-muted);margin-top:3px;font-feature-settings:"tnum" 1 }
+  .f4-b{ font-size:9.5px;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 25%, transparent);border-radius:5px;padding:3px 8px;white-space:nowrap }
+  .glass-band{ position:relative;overflow:hidden;border:1px solid var(--line);border-radius:var(--r-lg);min-height:var(--h-lg);padding:clamp(64px,8vw,112px) clamp(24px,5vw,72px);display:flex;align-items:center;justify-content:center;text-align:center;background:var(--app-bg) }
+  .gb-photo{ position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:saturate(1.55) contrast(1.08);opacity:.92 }
+  .gb-screen{ position:absolute;inset:0;z-index:1;backdrop-filter:blur(2.5px);background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 20%),color-mix(in srgb, var(--app-bg) 56%, transparent) }
+  .glass-band::after{ content:"";position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.16) }
+  .gb-center{ position:relative;z-index:4;max-width:660px;margin:0 auto }
+  .gb-center::before{ content:"";position:absolute;left:50%;top:50%;width:min(150%,940px);height:160%;transform:translate(-50%,-50%);z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,color-mix(in srgb, var(--app-bg) 70%, transparent),color-mix(in srgb, var(--app-bg) 40%, transparent) 54%,transparent 78%) }
+  .gb-center h2{ font-size:clamp(32px,4.6vw,54px);color:var(--text-strong);line-height:1.06;letter-spacing:-.025em;max-width:19ch;margin:0 auto }
+  .gb-center p{ color:var(--text);font-size:17px;line-height:1.55;max-width:46ch;margin:18px auto 0;text-shadow:0 1px 16px rgba(0,0,0,.55) }
+  .gb-center .ctas,.gb-center .tid-cta{ display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:30px }
+  .gb-notes{ position:absolute;inset:0;z-index:2;pointer-events:none }
+  .note{ position:absolute;display:flex;gap:10px;align-items:flex-start;max-width:244px;padding:10px 13px;border-radius:14px;background:color-mix(in srgb, var(--app-bg) 72%, transparent);border:1px solid rgba(255,255,255,.1);box-shadow:0 18px 40px rgba(0,0,0,.45);backdrop-filter:blur(6px);text-align:left;animation:nfloat 7.5s ease-in-out infinite }
+  .note .av{ width:26px;height:26px;border-radius:50%;background:linear-gradient(140deg,var(--app-panel-2),var(--app-panel));border:1px solid rgba(255,255,255,.12);flex-shrink:0 }
+  .note b{ display:block;font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:.02em }
+  .note p{ margin:2px 0 0;font-size:13.5px;line-height:1.35;color:var(--text) }
+  .note.n1{ top:6%;left:3%;animation-delay:-.4s }
+  .note.n2{ top:12%;right:4%;animation-delay:-2.6s }
+  .note.n3{ top:26%;left:8%;opacity:.86;animation-delay:-4.1s }
+  .note.n4{ top:30%;right:7%;opacity:.86;animation-delay:-1.4s }
+  .note.n5{ top:47%;left:1%;animation-delay:-5.2s }
+  .note.n6{ top:52%;right:2%;animation-delay:-3.1s }
+  .note.n7{ bottom:25%;left:6%;opacity:.9;animation-delay:-6.3s }
+  .note.n8{ bottom:20%;right:5%;opacity:.9;animation-delay:-1.9s }
+  .note.n9{ bottom:6%;left:15%;animation-delay:-4.7s }
+  .note.n10{ bottom:4%;right:16%;animation-delay:-2.2s }
+  .note.n11{ top:4%;left:50%;margin-left:-150px;opacity:.85;animation-delay:-5.8s }
+  .note.n12{ bottom:9%;left:50%;margin-left:-118px;opacity:.9;animation-delay:-3.6s }
+  @keyframes nfloat{ 0%,100%{ transform:translateY(0) }50%{ transform:translateY(-9px) } }
+  @media (max-width:1180px){ .note.n3,.note.n4,.note.n11{ display:none } }
+  @media (max-width:1080px){ .note.n5,.note.n6,.note.n12{ display:none } }
+  @media (max-width:860px){ .gb-notes{ display:none } }
+  .feat-row.sf{ border-color:color-mix(in srgb, var(--accent) 34%, transparent);box-shadow:0 0 0 1px color-mix(in srgb, var(--accent) 7%, transparent),0 40px 90px rgba(0,0,0,.45) }
+  .feat-row.sf::before{ background:radial-gradient(ellipse 62% 82% at 18% 0%,color-mix(in srgb, var(--accent) 26%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 72%) }
+  .feat-row.sf .feat-copy h3{ max-width:14ch }
+  .feat-row.sf .feat-copy p{ font-size:17px;max-width:44ch }
+  .an-wrap{ position:relative;height:360px;padding:22px 16px;box-sizing:border-box }
+  .an-stage{ position:absolute;inset:22px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease;pointer-events:none }
+  .an-stage.on{ opacity:1;transform:none }
+  .an-stage .f3-out{ width:100% }
+  .an-note{ font-size:10.5px;letter-spacing:.02em;color:var(--text-dim);text-align:center }
+  .an-note b{ color:var(--text);font-weight:600 }
+  .f4-div{ display:flex;align-items:center;gap:9px;padding:8px 2px 2px;font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-faint);font-weight:700 }
+  .f4-div::after{ content:"";flex:1;height:1px;background:var(--ext-line) }
+  .f4-nav{ display:flex;gap:4px;padding:0 0 4px }
+  .f4-nv{ display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;color:var(--ext-muted);padding:5px 8px;border-radius:6px;border:1px solid transparent;white-space:nowrap }
+  .f4-nv em{ font-style:normal;font-size:9px;color:var(--ext-muted);font-feature-settings:"tnum" 1 }
+  .f4-nv.on{ color:var(--text-strong);background:var(--accent-soft);border-color:color-mix(in srgb, var(--accent) 24%, transparent) }
+  .f4-nv.on em{ color:var(--accent) }
+  .f4-rw{ display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 11px;border:1px solid var(--ext-line);border-radius:9px;background:var(--ext-item) }
+  .f4-main{ min-width:0 }
+  .f4-rw .f4-s span{ color:var(--ext-faint);margin:0 2px }
+  .f4-acts{ display:flex;gap:5px }
+  .f4-ib{ display:flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:5px;border:1px solid var(--ext-line);color:var(--ext-muted);background:var(--ext-bg) }
+  .f4-buy{ display:flex;gap:5px;flex-wrap:wrap;margin-top:7px }
+  .f4-buy span{ font-size:9px;color:var(--accent);border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);background:var(--accent-soft);border-radius:5px;padding:3px 6px }
+  .f4-l{ display:inline-flex;align-items:center;gap:5px;font-size:9.5px;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 7px;background:var(--ext-bg) }
+  .f4-l i{ width:6px;height:6px;border-radius:50%;flex-shrink:0 }
+  /* The mock's timecodes are plain text, not the system's .tc chip. */
+  .f1-row .tc { border: 0; background: none; padding: 0; white-space: nowrap; }
+  .gb-center .tid-cta { display: flex; justify-content: center; margin-top: 30px; }
+  .feat-tag .feat-beta { margin-left: 2px; }
 
-  .state-loading {
-    height: 140px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-    padding: 0 22px;
-  }
-  .eyes { display: inline-flex; gap: 12px; animation: scan 2.4s ease-in-out infinite; }
-  .eye { width: 14px; height: 14px; border-radius: 999px; background: #fff; position: relative; overflow: hidden; }
-  .eye::after {
-    content: ""; position: absolute; inset: 0;
-    background: #141414;
-    transform: scaleY(0);
-    animation: blink 3.6s ease-in-out infinite;
-  }
-  @keyframes scan { 0%, 100% { transform: translateX(-6px); } 50% { transform: translateX(6px); } }
-  @keyframes blink { 0%, 92%, 100% { transform: scaleY(0); } 94%, 97% { transform: scaleY(1); } }
-  .looking { font-size: 13px; color: #fff; }
-  .dots span { opacity: 0; animation: dotp 1.4s infinite; }
-  .dots span:nth-child(1) { animation-delay: 0s; }
-  .dots span:nth-child(2) { animation-delay: 0.2s; }
-  .dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes dotp { 0%, 80%, 100% { opacity: 0; } 30%, 60% { opacity: 1; } }
+  /* ============================== testimonials */
+  .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .quote { margin: 0; display: flex; flex-direction: column; gap: 18px; }
+  .quote .stars { color: var(--accent); letter-spacing: 2px; font-size: 13px; }
+  .quote blockquote { margin: 0; font-size: 17px; line-height: 1.5; color: var(--text); flex: 1; }
+  .quote .by { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  .quote .av { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); border: 1px solid var(--accent-border); color: var(--accent); font-weight: 600; }
+  .quote .who { color: var(--text); font-weight: 500; }
+  .quote .loc { color: var(--text-faint); }
 
-  .state-tracklist {
-    height: 420px;
-  }
-  .tl-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 9px 14px;
-    border-bottom: 1px solid #232323;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 9.5px; color: #666;
-    text-transform: uppercase; letter-spacing: 0.1em;
-    background: #1a1a1a;
-  }
-  .tl-bar .ct { color: var(--accent); background: var(--accent-soft); padding: 2px 6px; border-radius: 4px; font-size: 9px; }
-  .tl-rows { max-height: 380px; overflow: hidden; position: relative; }
-  .tl-rows-inner { animation: tl-scroll 18s linear infinite; }
-  @keyframes tl-scroll {
-    0%, 8% { transform: translateY(0); }
-    100%   { transform: translateY(-50%); }
-  }
-  .tl-row {
-    display: grid;
-    grid-template-columns: 22px 50px 1fr auto;
-    align-items: center; gap: 10px;
-    padding: 10px 14px;
-    border-bottom: 1px solid #232323;
-    font-size: 12px;
-  }
-  .tl-row.active { background: var(--accent-soft); }
-  .tl-row.unknown { opacity: 0.5; }
-  .tl-row .n { font-family: "JetBrains Mono", monospace; font-size: 9.5px; color: #666; text-align: right; }
-  .tl-row.active .n { color: var(--accent); }
-  .tl-row .tc { font-family: "JetBrains Mono", monospace; font-size: 10.5px; color: var(--accent); }
-  .tl-row .tc.empty { color: #666; }
-  .tl-row .meta { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #b3b3b3; }
-  .tl-row .meta .ar { color: #b3b3b3; }
-  .tl-row .meta .ti { color: #fff; }
-  .tl-row .meta .em { color: #666; margin: 0 6px; }
-  .tl-row.active .meta .ar, .tl-row.active .meta .ti { color: #fff; font-weight: 600; }
-  .eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
-  .eq i {
-    width: 2px; background: var(--accent); border-radius: 1px;
-    animation: eq 1s ease-in-out infinite;
-  }
-  .eq i:nth-child(1) { animation-delay: -0.4s; }
-  .eq i:nth-child(2) { animation-delay: -0.2s; }
-  .eq i:nth-child(3) { animation-delay: -0.6s; }
-  .eq i:nth-child(4) { animation-delay: -0.1s; }
-  @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 12px; } }
+  /* ============================== pricing: Free and Pro, billed monthly or yearly
+     .pc, .amt, .plist and .tagpill come from huntid.css. */
+  #pricing .sh { margin-left: auto; margin-right: auto; text-align: center; }
+  #pricing .sh .lede { margin-left: auto; margin-right: auto; }
+  .bill { display: flex; width: max-content; gap: 4px; padding: 4px; margin: 0 auto 26px; border: 1px solid var(--line); background: var(--panel); border-radius: var(--r-pill); }
+  .bill-b { font-size: 13px; font-weight: 600; color: var(--text-dim); border-radius: var(--r-pill); padding: 9px 18px; display: inline-flex; align-items: center; gap: 8px; transition: background var(--t-base), color var(--t-base); }
+  .bill-b.on { background: var(--accent); color: var(--on-accent); }
+  .bill-save { font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; background: color-mix(in srgb, var(--on-accent) 16%, transparent); border-radius: var(--r-pill); padding: 2px 7px; }
+  .bill-b:not(.on) .bill-save { background: var(--accent-soft); color: var(--accent); }
+  .prices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 840px; margin: 0 auto; }
+  .amt { color: var(--text); }
+  .amt-compare { display: flex; align-items: baseline; gap: 10px; margin: 2px 0 4px; }
+  .amt-was { font-size: 14px; color: var(--text-faint); text-decoration: line-through; }
+  .pc .sub { font-size: 13px; color: var(--text-dim); min-height: 34px; }
+  .plist li { color: var(--text); }
+  .pc .btn { width: 100%; }
+  .pc-note { font-size: 12px; color: var(--text-faint); text-align: center; margin-top: 12px; }
 
-  .state-now {
-    height: 140px;
-    display: flex; align-items: center;
-    padding: 0 18px;
-    gap: 14px;
-  }
-  .now-main { flex: 1; min-width: 0; }
-  .now-eyebrow {
-    font-size: 10px;
-    color: var(--accent);
-    text-transform: uppercase; letter-spacing: 0.14em;
-    font-weight: 700;
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .now-title {
-    font-size: 15px; font-weight: 600; margin-top: 6px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .now-title .ar { color: #b3b3b3; font-weight: 500; }
-  .now-title .em { color: #666; margin: 0 6px; }
-  .now-meta {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 10px; color: var(--accent);
-    margin-top: 4px;
-  }
-  .now-meta .faint { color: #666; }
-  .now-expand {
-    width: 36px; height: 36px; border-radius: 8px;
-    border: 1px solid #2a2a2a;
-    display: inline-flex; align-items: center; justify-content: center;
-    color: #fff;
-  }
+  /* ============================== faq (.faq comes from huntid.css) */
+  #faq .faq { max-width: 860px; }
 
-  /* ============================== ticker */
-  .ticker {
-    overflow: hidden;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    padding: 28px 0;
+  /* ============================== promo: the closing offer */
+  .promo { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(28px, 4vw, 64px); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(34px, 4.2vw, 64px); background: var(--app-bg); }
+  .promo::before { content: ""; position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 60% 80% at 12% 0%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 62%), linear-gradient(180deg, var(--app-panel-2), var(--app-bg) 70%); }
+  .promo > * { position: relative; z-index: 2; }
+  .promo-l { display: flex; flex-direction: column; justify-content: center; gap: 18px; align-items: flex-start; }
+  .promo-l h2 { font-size: clamp(28px, 3.4vw, 44px); line-height: 1.06; letter-spacing: -.025em; color: var(--text-strong); max-width: 17ch; }
+  .promo-l p { color: var(--text-dim); font-size: 16px; line-height: 1.55; max-width: 40ch; }
+  .promo-meta { font-size: 12px; color: var(--text-faint); }
+  .promo-r { border-left: 1px solid var(--line); padding-left: clamp(24px, 3vw, 44px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+  .promo-price { display: flex; align-items: baseline; gap: 8px; }
+  .pp-now { font-size: clamp(38px, 4.6vw, 56px); font-weight: 700; letter-spacing: -.03em; color: var(--accent); line-height: 1; }
+  .pp-per { font-size: 15px; color: var(--text-dim); }
+  .promo-was { font-size: 13px; color: var(--text-faint); margin-bottom: 14px; }
+  .promo-was s { color: var(--text-dim); }
+  .promo .plist { margin: 0; }
+  .promo .plist li { font-size: 14px; }
+  @media (max-width: 960px) {
+    .quotes { grid-template-columns: 1fr; }
   }
-  .ticker-track {
-    display: flex; gap: 64px;
-    animation: ticker 36s linear infinite;
-    width: max-content;
-  }
-  @keyframes ticker {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .ticker-item {
-    display: inline-flex; align-items: center; gap: 16px;
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-weight: 500;
-    font-size: 20px;
-    color: var(--text-dim);
-    letter-spacing: -0.01em;
-    white-space: nowrap;
-  }
-  .ticker-item .tc {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
-    color: var(--accent);
-    background: var(--accent-soft);
-    padding: 4px 10px;
-    border-radius: 999px;
-  }
-
-  /* ============================== section head */
-  .sec-head {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto 64px;
-  }
-  .sec-head .eyebrow { margin-bottom: 20px; }
-  .sec-head h2 {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: clamp(36px, 4.5vw, 60px);
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    line-height: 1.05;
-    margin: 0;
-  }
-  .sec-head h2 .accent { color: var(--accent); }
-  .sec-head p { font-size: 17px; color: var(--text-dim); margin-top: 18px; }
-
-  /* ============================== problem — dark inverse card */
-  .problem-card {
-    background: #0a0a0a;
-    border-radius: 32px;
-    padding: 80px 56px;
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-  }
-  .problem-card::before {
-    content: ""; position: absolute;
-    top: -100px; right: -100px;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, color-mix(in oklab, var(--accent) 30%, transparent), transparent 70%);
-    filter: blur(60px);
-    pointer-events: none;
-  }
-  .problem-card .sec-head h2 { color: #fff; }
-  .problem-card .sec-head h2 .accent { color: var(--accent); }
-  .problem-card .sec-head .eyebrow { color: rgba(255,255,255,0.7); }
-  .problem-grid {
-    position: relative; z-index: 1;
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  }
-  .pain {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px;
-    padding: 32px;
-    transition: transform 320ms ease, background 320ms, border-color 320ms;
-  }
-  .pain:hover {
-    transform: translateY(-4px);
-    background: rgba(255,255,255,0.06);
-    border-color: rgba(255,85,0,0.4);
-  }
-  .pain .pain-num {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--accent);
-    margin-bottom: 24px;
-  }
-  .pain h3 {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    margin: 0 0 12px;
-    letter-spacing: -0.015em;
-    line-height: 1.2;
-    color: #fff;
-  }
-  .pain p { font-size: 14.5px; color: rgba(255,255,255,0.6); line-height: 1.55; }
-
-  /* ============================== how — sticky 3-step */
-  .how-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-  .step-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 32px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 320ms, border-color 320ms, box-shadow 320ms;
-  }
-  .step-card:hover {
-    transform: translateY(-6px);
-    border-color: var(--accent);
-    box-shadow: var(--shadow-card);
-  }
-  .step-card .num-pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 12px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    border-radius: 999px;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    margin-bottom: 24px;
-  }
-  .step-card h3 {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0 0 8px;
-    line-height: 1.15;
-    letter-spacing: -0.015em;
-  }
-  .step-card p { font-size: 14.5px; color: var(--text-dim); line-height: 1.55; }
-  .step-mock {
-    margin-top: 28px;
-    background: #0a0a0a;
-    border: 1px solid #1a1a1a;
-    border-radius: 14px;
-    padding: 20px;
-    height: 160px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    overflow: hidden;
-    color: #fff;
-  }
-  .step-mock.s1 .find-btn { width: 100%; max-width: 220px; }
-  .step-mock.s3 { padding: 0; align-items: stretch; flex-direction: column; }
-  .step-mini {
-    display: grid;
-    grid-template-columns: 44px 1fr auto;
-    align-items: center; gap: 10px;
-    padding: 9px 14px;
-    border-bottom: 1px solid #1a1a1a;
-    font-size: 11px;
-  }
-  .step-mini:last-child { border-bottom: 0; }
-  .step-mini.active { background: var(--accent-soft); }
-  .step-mini .tc { font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--accent); }
-  .step-mini .label { color: #b3b3b3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .step-mini.active .label { color: #fff; font-weight: 600; }
-  .step-mini .cursor {
-    position: absolute;
-    width: 16px; height: 16px;
-    pointer-events: none;
-    transition: opacity 200ms;
-  }
-  /* cursor anim */
-  .s3-cursor {
-    position: absolute;
-    top: 0; left: 0;
-    width: 18px; height: 18px;
-    z-index: 2;
-    animation: cursor-fly 5s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes cursor-fly {
-    0%   { transform: translate(180px, 16px); opacity: 0; }
-    8%   { opacity: 1; }
-    35%  { transform: translate(50px, 16px) scale(1); }
-    40%  { transform: translate(50px, 16px) scale(0.85); }
-    45%  { transform: translate(50px, 16px) scale(1); }
-    75%  { transform: translate(50px, 78px) scale(1); }
-    80%  { transform: translate(50px, 78px) scale(0.85); }
-    85%  { transform: translate(50px, 78px) scale(1); }
-    100% { transform: translate(50px, 78px); opacity: 1; }
-  }
-
-  /* ============================== features */
-  .feat-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-  }
-  .feat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 40px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 320ms, transform 320ms, box-shadow 320ms;
-  }
-  .feat-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-    box-shadow: var(--shadow-card);
-  }
-  .feat-card .ico {
-    width: 48px; height: 48px;
-    border-radius: 12px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-    margin-bottom: 24px;
-  }
-  .feat-card h3 {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 26px;
-    font-weight: 600;
-    margin: 0 0 10px;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-  }
-  .feat-card p { font-size: 15px; color: var(--text-dim); line-height: 1.55; }
-
-  /* ============================== comparison */
-  .compare-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    overflow: hidden;
-  }
-  .compare {
-    width: 100%; border-collapse: separate; border-spacing: 0;
-  }
-  .compare th, .compare td {
-    padding: 22px 32px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    font-size: 15px;
-  }
-  .compare thead th {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-faint);
-    font-weight: 600;
-    background: var(--surface-2);
-  }
-  .compare thead th.huntid {
-    color: var(--accent);
-    background: var(--accent-soft);
-  }
-  .compare tbody tr:last-child td { border-bottom: 0; }
-  .compare td.col-h { color: var(--text); font-weight: 500; }
-  .compare td.col-o { color: var(--text-dim); width: 25%; text-align: center; }
-  .compare td.col-y { width: 25%; text-align: center; background: color-mix(in oklab, var(--accent) 6%, transparent); }
-  .check, .cross {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 26px; height: 26px; border-radius: 999px;
-  }
-  .check { background: var(--accent); color: #fff; }
-  .cross { border: 1px solid var(--border-strong); color: var(--text-faint); }
-
-  /* ============================== pricing */
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    max-width: 480px;
-    margin: 0 auto;
-    gap: 24px;
-  }
-  .price-card {
-    background: var(--surface);
-    border: 2px solid var(--accent);
-    border-radius: 28px;
-    padding: 40px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 0 0 6px var(--accent-soft), 0 30px 60px -20px rgba(255,85,0,0.3);
-  }
-  .price-card-free {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 28px;
-    padding: 40px;
-    text-align: center;
-    position: relative;
-  }
-  .price-tier {
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--text-faint);
-    margin-bottom: 16px;
-  }
-  .price-card .pill-badge {
-    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-    background: var(--accent);
-    color: #fff;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .price-card .price-big,
-  .price-card-free .price-big {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 88px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    margin: 16px 0 4px;
-  }
-  .price-card .price-sub,
-  .price-card-free .price-sub {
-    font-size: 14px; color: var(--text-dim);
-  }
-  .price-list {
-    margin: 32px 0; padding: 0;
-    list-style: none;
-    text-align: left;
-    display: flex; flex-direction: column; gap: 12px;
-  }
-  .price-list li {
-    display: flex; align-items: center; gap: 12px;
-    font-size: 14.5px;
-    color: var(--text);
-  }
-  .price-list li .ck {
-    flex-shrink: 0;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: var(--accent-soft); color: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .price-divider { height: 1px; background: var(--border); margin: 28px 0 20px; }
-  .price-after-lbl {
-    font-size: 11px; font-weight: 600;
-    color: var(--text-faint);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .price-after {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 24px; font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-  .price-after .per { font-size: 14px; color: var(--text-faint); font-weight: 400; }
-  .price-after-note { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
-  .price-card .btn { width: 100%; margin-top: 28px; }
-  .pricing-note {
-    margin-top: 24px;
-    font-size: 13px; color: var(--text-faint);
-    text-align: center;
-    max-width: 480px; margin-left: auto; margin-right: auto;
-  }
-
-  /* ============================== quotes */
-  .quotes-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  }
-  .qcard {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 36px;
-    transition: transform 320ms, border-color 320ms;
-  }
-  .qcard:hover {
-    transform: translateY(-4px);
-    border-color: var(--border-strong);
-  }
-  .qcard .q-stars { color: var(--accent); display: inline-flex; gap: 2px; margin-bottom: 18px; font-size: 14px; }
-  .qcard blockquote {
-    margin: 0;
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 19px;
-    font-weight: 500;
-    line-height: 1.4;
-    letter-spacing: -0.01em;
-    color: var(--text);
-  }
-  .qcard .by {
-    margin-top: 20px;
-    display: flex; align-items: center; gap: 12px;
-    font-size: 13px;
-  }
-  .qcard .by .avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--surface-3);
-    color: var(--text-dim);
-    display: inline-flex; align-items: center; justify-content: center;
-    font-weight: 600; font-size: 12px;
-  }
-  .qcard .by .who { color: var(--text); font-weight: 500; }
-  .qcard .by .loc { color: var(--text-faint); }
-  .illustrative-note { text-align: center; margin-top: 32px; font-size: 12px; color: var(--text-faint); font-style: italic; }
-
-  /* ============================== final CTA dark band */
-  .final-card {
-    background: #0a0a0a;
-    border-radius: 32px;
-    padding: 96px 56px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    color: #fff;
-  }
-  .final-card::before {
-    content: ""; position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, color-mix(in oklab, var(--accent) 35%, transparent), transparent 60%);
-    pointer-events: none;
-  }
-  .final-card::after {
-    content: ""; position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 50px 50px;
-    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    opacity: 0.5;
-    pointer-events: none;
-  }
-  .final-card > * { position: relative; z-index: 1; }
-  .final-card h2 {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: clamp(44px, 6vw, 84px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.02;
-    margin: 0 auto;
-    max-width: 900px;
-  }
-  .final-card h2 .accent { color: var(--accent); }
-  .final-card p {
-    margin: 24px auto 0;
-    max-width: 560px;
-    font-size: 18px;
-    color: rgba(255,255,255,0.75);
-  }
-  .final-card .ctas { margin-top: 40px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .final-card .cta-meta {
-    margin-top: 28px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.45);
-    font-family: "JetBrains Mono", monospace;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+  @media (max-width: 860px) {
+    .prices, .promo { grid-template-columns: 1fr; }
+    .promo-r { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; padding-top: 28px; }
   }
 
   /* ============================== footer */
-  footer {
-    padding: 56px 0 40px;
-    border-top: 1px solid var(--border);
-    font-size: 14px;
-    color: var(--text-faint);
-    margin-top: 24px;
-  }
-  .foot-grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr 1fr;
-    gap: 48px;
-    margin-bottom: 48px;
-  }
-  .foot-col h4 {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    margin: 0 0 16px;
-    letter-spacing: -0.005em;
-  }
-  .foot-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-  .foot-col a { color: var(--text-dim); transition: color 200ms; }
-  .foot-col a:hover { color: var(--accent); }
-  .foot-brand .brand { font-size: 22px; margin-bottom: 16px; }
-  .foot-brand p { color: var(--text-dim); max-width: 280px; font-size: 14px; line-height: 1.55; margin: 0 0 20px; }
-  .foot-bottom {
-    border-top: 1px solid var(--border);
-    padding-top: 28px;
-    display: flex; align-items: center; gap: 24px;
-    flex-wrap: wrap;
-    font-size: 12px;
-  }
-  .foot-fineprint { flex: 1; min-width: 240px; line-height: 1.6; color: var(--text-faint); font-size: 11px; }
+  footer { border-top: 1px solid var(--line); padding: 44px 0 34px; font-size: 13px; color: var(--text-faint); }
+  .foot { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+  .foot .brand { font-size: 16px; }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; }
+  .foot-links a { color: var(--text-dim); transition: color var(--t-base); }
+  .foot-links a:hover { color: var(--text); }
+  .fine { width: 100%; font-size: 11px; line-height: 1.6; color: var(--text-faint); border-top: 1px solid var(--line); padding-top: 20px; }
 
   /* ============================== reveal */
-  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 800ms cubic-bezier(.2,.6,.2,1), transform 800ms cubic-bezier(.2,.6,.2,1); }
-  .reveal.in { opacity: 1; transform: translateY(0); }
-  .reveal[data-delay="1"] { transition-delay: 80ms; }
-  .reveal[data-delay="2"] { transition-delay: 160ms; }
-  .reveal[data-delay="3"] { transition-delay: 240ms; }
-  .reveal[data-delay="4"] { transition-delay: 320ms; }
-
-  /* count-up */
-  .stat-num {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-weight: 700;
-    font-size: clamp(48px, 6vw, 84px);
-    letter-spacing: -0.035em;
-    line-height: 1;
-  }
+  .rv[data-delay="1"] { transition-delay: 70ms; }
+  .rv[data-delay="2"] { transition-delay: 140ms; }
+  .rv[data-delay="3"] { transition-delay: 210ms; }
+  .rv[data-delay="4"] { transition-delay: 280ms; }
 
   /* ============================== subpages */
   .subpage { padding: 64px 0 120px; }
   .subpage h1 {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: inherit;
     font-size: clamp(48px, 6vw, 76px);
     font-weight: 700;
     letter-spacing: -0.03em;
@@ -1636,7 +945,7 @@
     margin-top: 16px;
     font-size: 14px;
     color: var(--text-faint);
-    font-family: "JetBrains Mono", monospace;
+    font-feature-settings: "tnum" 1;
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
@@ -1658,14 +967,14 @@
   }
   .subpage-content article:last-child { border-bottom: 0; }
   .subpage-content article .n {
-    font-family: "JetBrains Mono", monospace;
+    font-feature-settings: "tnum" 1;
     font-size: 12px;
     color: var(--accent);
     font-weight: 600;
     letter-spacing: 0.06em;
   }
   .subpage-content article h2 {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: inherit;
     font-size: 20px;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -1711,35 +1020,11 @@
   }
   .cookie-banner .cookie-decline { background: transparent; color: var(--text-dim); }
   .cookie-banner .cookie-decline:hover { color: var(--text); border-color: var(--text-dim); }
-  .cookie-banner .cookie-accept { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .cookie-banner .cookie-accept { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
   .cookie-banner .cookie-accept:hover { filter: brightness(0.95); }
   @media (max-width: 520px) {
     .cookie-banner { flex-direction: column; align-items: stretch; }
     .cookie-banner .cookie-actions { justify-content: flex-end; }
-  }
-
-  /* ============================== one track block */
-  .one-track-block {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 48px 40px;
-    border-left: 3px solid var(--accent);
-    background: color-mix(in oklab, var(--accent) 5%, var(--surface));
-    border-radius: 0 16px 16px 0;
-  }
-  .one-track-title {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin: 0 0 16px;
-  }
-  .one-track-body {
-    font-size: 17px;
-    line-height: 1.65;
-    color: var(--text-dim);
-    font-style: italic;
-    margin: 0;
   }
 
   /* ============================== legal body content */
@@ -1759,189 +1044,17 @@
   }
   .subpage-content article .body .legal-table thead th { color: var(--text); font-weight: 600; background: color-mix(in oklab, var(--accent) 5%, var(--surface)); }
 
-  /* ============================== roadmap */
-  .roadmap-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-  .roadmap-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px;
-    transition: transform 320ms ease, border-color 320ms, box-shadow 320ms;
-  }
-  .roadmap-card.active {
-    border-color: rgba(255, 85, 0, 0.4);
-    box-shadow: 0 0 24px rgba(255, 85, 0, 0.08);
-  }
-  .roadmap-card:hover { transform: translateY(-4px); }
-
-  .rm-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-  .rm-badge.live {
-    background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    color: #22c55e;
-  }
-  .rm-badge.in-progress {
-    background: rgba(255, 85, 0, 0.1);
-    border: 1px solid rgba(255, 85, 0, 0.3);
-    color: #ff5500;
-  }
-  .rm-badge.planned {
-    background: rgba(136, 136, 136, 0.1);
-    border: 1px solid rgba(136, 136, 136, 0.2);
-    color: #888888;
-  }
-  .rm-dot {
-    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-  }
-  .rm-badge.live .rm-dot { background: #22c55e; }
-  .rm-badge.in-progress .rm-dot {
-    background: #ff5500;
-    animation: rm-pulse 1.5s ease-in-out infinite;
-  }
-  .rm-badge.planned .rm-dot { background: #888888; }
-  @keyframes rm-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.4); }
-  }
-
-  .roadmap-card h3 {
-    font-family: "Bricolage Grotesque", sans-serif;
-    font-size: 20px; font-weight: 600;
-    letter-spacing: -0.015em;
-    margin: 0 0 16px;
-  }
-
-  .rm-progress-label {
-    font-size: 10px; font-weight: 600;
-    color: var(--text-faint);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .rm-progress-track {
-    height: 6px;
-    background: var(--border);
-    border-radius: 999px;
-    margin-bottom: 20px;
-    overflow: hidden;
-  }
-  .rm-progress-fill {
-    height: 100%;
-    border-radius: 999px;
-    width: 0;
-  }
-  .rm-progress-fill.green { background: #22c55e; }
-  .rm-progress-fill.orange {
-    background: linear-gradient(90deg, #ff5500 0%, #ff7733 50%, #ff5500 100%);
-    background-size: 200% auto;
-    animation: rm-shimmer 2s linear infinite;
-  }
-  @keyframes rm-shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-
-  .rm-list {
-    list-style: none; padding: 0; margin: 0;
-    display: flex; flex-direction: column;
-  }
-  .rm-list li {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-    color: var(--text-dim);
-    line-height: 1.4;
-  }
-  .rm-list li:last-child { border-bottom: 0; }
-  .now-card .rm-list li { color: var(--text); }
-  .later-card .rm-list li { opacity: 0.7; }
-  .rm-list-icon { font-size: 14px; flex-shrink: 0; width: 18px; text-align: center; }
-
-  .rm-footer-note {
-    text-align: center;
-    margin-top: 32px;
-    font-size: 13px;
-    color: var(--text-faint);
-    line-height: 1.6;
-  }
-  .rm-footer-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
-
-  /* ============================== plan toggle */
-  .plan-toggle {
-    display: flex;
-    background: var(--surface-3);
-    border-radius: 999px;
-    padding: 4px; gap: 4px;
-    margin: 16px 0 20px;
-  }
-  .plan-btn {
-    flex: 1; height: 34px;
-    border-radius: 999px;
-    font-size: 13px; font-weight: 600;
-    color: var(--text-dim);
-    background: transparent;
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    transition: background 200ms, color 200ms;
-    font-family: inherit;
-  }
-  .plan-btn-active {
-    background: var(--surface);
-    color: var(--text);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-  }
-  .save-chip {
-    background: var(--accent);
-    color: #fff;
-    font-size: 10px; font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 999px;
-    letter-spacing: 0.05em;
-  }
-
   /* ============================== mobile */
   @media (max-width: 1000px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-card-left { padding: 40px 32px; }
-    .hero-card-right { min-height: 480px; padding: 32px; }
-    .problem-grid, .how-grid, .quotes-grid { grid-template-columns: 1fr; }
-    .feat-grid { grid-template-columns: 1fr; }
-    .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
-    .roadmap-grid { grid-template-columns: 1fr; gap: 16px; }
-    .problem-card { padding: 56px 32px; }
-    .final-card { padding: 72px 32px; }
-    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
   }
   @media (max-width: 600px) {
-    .wrap { padding: 0 16px; }
-    section { padding: 32px 0; }
-    .mix-track .mix-card { width: 250px; }
+    .wrap { padding: 0 18px; }
+    .mix-track .mix-card { width: 280px; }
     .hero-input-wrap { flex-wrap: wrap; padding: 10px; border-radius: 14px; gap: 10px; }
     .hero-input-wrap input { width: 100%; padding: 8px 4px; }
     .hero-find-btn { width: 100%; justify-content: center; }
-    .hero-card-left { padding: 32px 24px; border-radius: 24px; }
-    .hero-card-right { padding: 24px; border-radius: 24px; min-height: 540px; }
-    .problem-card, .final-card { border-radius: 24px; padding: 56px 24px; }
-    .popup-stage, .popup { width: 320px; }
-    .nav-links { display: none; }
-    .nav-pill { display: none; }
     .compare th, .compare td { padding: 16px 18px; font-size: 13.5px; }
-    .price-card { padding: 32px 24px; }
-    .foot-grid { grid-template-columns: 1fr; gap: 32px; }
   }
 </style>
 </head>
@@ -1951,41 +1064,25 @@
 <div id="page-main">
 
   <!-- NAV -->
-  <nav class="top">
+  <nav class="nav">
     <div class="wrap nav-row">
-      <a href="#home" class="brand">
-        <span class="brand-mark" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
-            <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
-            <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-            <circle cx="7" cy="7" r="1.2" fill="white"/>
-          </svg>
-        </span>
-        Hunt<span class="id">ID</span>
-      </a>
+      <a href="#home" class="brand"><span class="mk" aria-hidden="true"><svg viewBox="0 0 64 64" width="26" height="26" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span><span>Hunt<em>ID</em></span></a>
       <div class="nav-links">
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
         <a href="#pricing">Pricing</a>
-        <a href="#roadmap">Roadmap</a>
       </div>
-      <div class="nav-spacer"></div>
-      <button type="button" class="nav-signin-btn" id="nav-signin-btn">Sign in</button>
-      <a href="/dashboard" class="nav-dashboard-btn" id="nav-dashboard-btn">
-        Dashboard <span style="opacity:.6">→</span>
-      </a>
-      <span class="nav-pill" id="nav-beta-pill"><span class="dot"></span> Beta · 10 searches free</span>
-      <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-primary" style="height: 40px; padding: 0 18px; font-size: 13px;" data-track-cws="nav">
-        Add to Chrome
-        <span class="arr">→</span>
-      </a>
+      <div class="grow"></div>
+      <button type="button" class="btn btn-g btn-sm nav-auth" id="nav-signin-btn">Sign in</button>
+      <a href="/dashboard" class="btn btn-g btn-sm nav-auth" id="nav-dashboard-btn">Dashboard <span class="arr">→</span></a>
+      <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-sm" data-track-cws="nav">Add to Chrome <span class="arr">→</span></a>
     </div>
   </nav>
 
   <!-- HERO CTA — new top section with SoundCloud input + mix cards -->
   <section class="hero-cta" id="home">
     <div class="wrap">
-      <div class="hero-center reveal">
+      <div class="hero-center rv">
         <div class="eyebrow">
           HuntID for SoundCloud
           <span class="chip-new">BETA</span>
@@ -2016,179 +1113,78 @@
 
       <!-- Outside .hero-center on purpose: the search stays a narrow column,
            but the cards run the full .wrap width, flush with the hero below. -->
-      <div class="mix-marquee reveal" data-delay="0">
+      <div class="mix-marquee rv" data-delay="0">
         <div class="mix-track" id="mix-track">
-          <div class="mix-card"
-               data-artist="Four Tet"
-               data-mix="Boiler Room · London"
-               data-url="soundcloud.com/boilerroom/four-tet-boiler-room-london-dj-set"
-               data-tracks="12" data-tag="Electronic">
-            <div class="mix-tag">Electronic</div>
-            <div class="mix-artist">Four Tet</div>
-            <div class="mix-name">Boiler Room · London DJ Set</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~12 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
+          <div class="mix-card" data-url="soundcloud.com/boilerroom/four-tet-boiler-room-london-dj-set">
+            <div class="mix-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span class="pl"><svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.2v9.6L10.4 6z"/></svg></span></div>
+            <div class="mix-b"><span class="who">Boiler Room</span><h3>Four Tet — London DJ Set</h3><div class="mix-stats"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 3.5h10M2 7h10M2 10.5h6"/></svg>~12 tracks</div></div>
           </div>
-          <div class="mix-card"
-               data-artist="Peggy Gou"
-               data-mix="Mixmag DJ Lab"
-               data-url="soundcloud.com/mixmag/peggy-gou-mixmag-dj-lab"
-               data-tracks="18" data-tag="House">
-            <div class="mix-tag">House</div>
-            <div class="mix-artist">Peggy Gou</div>
-            <div class="mix-name">Mixmag DJ Lab · Afro-house &amp; Disco</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~18 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-          <div class="mix-card"
-               data-artist="Bicep"
-               data-mix="Fabriclive 60"
-               data-url="soundcloud.com/fabriclondon/fabriclive60-bicep"
-               data-tracks="24" data-tag="Rave">
-            <div class="mix-tag">Rave</div>
-            <div class="mix-artist">Bicep</div>
-            <div class="mix-name">Fabriclive 60 · Melodic Rave</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~24 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-          <div class="mix-card"
-               data-artist="Floating Points"
-               data-mix="NTS Radio Session"
-               data-url="soundcloud.com/nts-live/floating-points"
-               data-tracks="16" data-tag="Leftfield">
-            <div class="mix-tag">Leftfield</div>
-            <div class="mix-artist">Floating Points</div>
-            <div class="mix-name">NTS Radio · Jazz &amp; Electronic</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~16 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-          <div class="mix-card"
-               data-artist="Amelie Lens"
-               data-mix="Exhale Radio #001"
-               data-url="soundcloud.com/amelie-lens/exhale-radio-001"
-               data-tracks="20" data-tag="Techno">
-            <div class="mix-tag">Techno</div>
-            <div class="mix-artist">Amelie Lens</div>
-            <div class="mix-name">Exhale Radio #001 · Hard Techno</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~20 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-          <div class="mix-card"
-               data-artist="DJ Koze"
-               data-mix="Late Night Tales"
-               data-url="soundcloud.com/late-night-tales/dj-koze"
-               data-tracks="15" data-tag="Melodic">
-            <div class="mix-tag">Melodic</div>
-            <div class="mix-artist">DJ Koze</div>
-            <div class="mix-name">Late Night Tales · Dreamy Selects</div>
-            <div class="mix-footer">
-              <span class="mix-tracks">~15 tracks</span>
-              <span class="mix-try">Try this <span>→</span></span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- HERO — original two-column popup demo -->
+  <!-- HERO — the extension, running on a mix -->
   <section class="hero">
+    <div class="hero-glow"></div>
     <div class="wrap">
       <div class="hero-grid">
-        <div class="hero-card-left reveal">
-          <div class="eyebrow">
-            HuntID for SoundCloud
-            <span class="chip-new">NEW</span>
+        <div class="hero-copy rv">
+          <span class="eyebrow">Chrome extension for SoundCloud</span>
+          <h1>See the full tracklist for any SoundCloud mix</h1>
+          <p class="lede">Open a set, hit Find tracklist, and the full tracklist shows up right while you're listening — named, timecoded, linked to the source.</p>
+          <div class="ctas">
+            <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" data-track-cws="hero">Add to Chrome, free <span class="arr">→</span></a>
+            <a href="#how" class="btn btn-g btn-lg">See it in action</a>
           </div>
-          <h1 class="display"><span id="h1-word">Wondering</span><br/>what your favourite dj played?</h1>
-          <p class="hero-sub-orig">
-            It's in the tracklist.
-          </p>
-          <p class="hero-sub-orig" style="margin-top: 12px; font-size: 15px; color: var(--text-faint);">
-            HuntID finds and analyze tracklists for DJ mixes on SoundCloud.<br/>
-            Click any timecode — jump right to that moment.
-          </p>
-          <div class="hero-cta-row">
-            <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-primary btn-lg" data-track-cws="hero">
-              Add to Chrome — Free
-              <span class="arr">→</span>
-            </a>
-            <a href="#how" class="btn btn-outline btn-lg">See how it works</a>
-          </div>
-          <div class="hero-meta">
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> 10 searches free</span>
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> <span id="px-hero">$4.99</span>/mo after</span>
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> No credit card</span>
+          <div class="hero-stats-mini">
+            <article class="stat-card">
+              <div class="sync-scan"><span class="dot"></span><span class="ring"></span><span class="ring"></span></div>
+              <h3>10 searches free</h3>
+            </article>
+            <article class="stat-card">
+              <div class="stat-num" data-stat="tracklists">900K+</div>
+              <h3>Tracklists to search</h3>
+            </article>
+            <article class="stat-card">
+              <div class="eq-viz"><i style="animation-delay:-1.1s"></i><i style="animation-delay:-.5s"></i><i style="animation-delay:-.9s"></i><i style="animation-delay:-.2s"></i><i style="animation-delay:-.7s"></i><i style="animation-delay:-1.2s"></i></div>
+              <h3>Audio recognition <span class="feat-beta">Launch soon</span></h3>
+            </article>
           </div>
         </div>
 
-        <div class="hero-card-right reveal" data-delay="1">
-          <div class="hero-waves" id="hero-waves" aria-hidden="true"></div>
-          <div class="state-badge" id="state-badge">
-            <span class="num" id="state-num">01</span>
-            <span id="state-label">Idle on a mix</span>
-          </div>
-          <div class="popup-stage">
-            <div class="popup" id="popup-shell">
-              <div class="pop-head">
-                <span class="pop-mark" aria-hidden="true">
-                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-                    <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
-                    <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-                    <circle cx="7" cy="7" r="1.2" fill="white"/>
-                  </svg>
-                </span>
-                <span class="pop-title">Hunt<span class="id">ID</span></span>
-                <span class="pop-sep"></span>
-                <span class="pop-mix">Boiler Room · Palms Trax @ Hï Ibiza</span>
+        <div class="flow-frame rv" data-delay="1" aria-hidden="true">
+          <div class="scan-sweep"></div>
+          <div class="hero-waves" id="hero-waves"></div>
+          <div class="flow-wrap">
+            <div class="flow-badge"><span class="num" id="flow-num">01</span> <span id="flow-label">A set full of tracks you don't know yet</span></div>
+            <div class="flow-shell">
+              <div class="flow-head">
+                <span class="mk" style="width:22px;height:22px"><svg viewBox="0 0 64 64" width="22" height="22" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span>
+                <span class="flow-name">Hunt<em>ID</em></span>
+                <span class="flow-sep"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007zM87.204 109.25c8.951 39.59 4.918 74.557-.335 114.907a5.538 5.538 0 01-5.469 4.667 5.536 5.536 0 01-5.458-4.667c-4.78-39.799-8.742-75.589-.343-114.919a5.812 5.812 0 015.804-5.804 5.806 5.806 0 015.805 5.811l-.004.005zm-35.298-6.013c8.198 40.558 5.532 74.9-.209 115.597-.677 6.012-10.982 6.075-11.534 0-5.19-40.083-7.647-75.452-.208-115.597a6.026 6.026 0 015.981-5.368 5.995 5.995 0 015.97 5.368zm-35.633 19.661c8.596 26.903 5.659 48.761-.343 76.337a5.595 5.595 0 01-5.564 4.982 5.614 5.614 0 01-5.575-4.982c-5.19-27.036-7.293-49.364-.469-76.337.311-3.052 2.898-5.368 5.97-5.368a5.995 5.995 0 015.969 5.368h.012z"></path></svg>
+                <span class="flow-mix">Boiler Room · Palms Trax @ Hï Ibiza</span>
               </div>
-              <div class="popup-body" id="popup-body">
-                <div class="state-view state-find" data-state="find">
-                  <button class="find-btn" type="button">
-                    <span class="ic">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>
-                    </span>
-                    Find Tracklist
-                  </button>
-                  <div class="find-status"><span class="ok"></span> System available</div>
+              <div class="flow-body">
+                <div class="flow-view flow-find" data-state="find">
+                  <span class="ext-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>Find tracklist</span>
+                  <div class="ext-status"><span class="ok"></span>Mix detected</div>
                 </div>
-                <div class="state-view state-loading" data-state="loading">
-                  <div class="eyes" aria-hidden="true">
-                    <span class="eye"></span><span class="eye"></span>
-                  </div>
-                  <div class="looking">Looking<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+                <div class="flow-view flow-loading" data-state="loading">
+                  <div class="flow-eyes"><span class="flow-eye"></span><span class="flow-eye"></span></div>
+                  <div class="flow-looking">Looking<span class="flow-dots"><span>.</span><span>.</span><span>.</span></span></div>
                 </div>
-                <div class="state-view state-tracklist" data-state="tracklist">
-                  <div class="tl-bar">
-                    <span>Tracklist</span>
-                    <span class="ct">15 TRACKS</span>
-                  </div>
-                  <div class="tl-rows">
-                    <div class="tl-rows-inner" id="tl-rows-inner"></div>
-                  </div>
+                <div class="flow-view flow-tracklist" data-state="tracklist">
+                  <div class="ext-bar"><span>Tracklist</span><b>15 tracks</b></div>
+                  <div class="tl2-rows"><div class="tl2-rows-in" id="tl2-rows"></div></div>
                 </div>
-                <div class="state-view state-now" data-state="now">
-                  <div class="now-main">
-                    <div class="now-eyebrow">
-                      <span class="eq"><i></i><i></i><i></i></span>
-                      Now Playing
-                    </div>
-                    <div class="now-title"><span class="ar">Anz</span><span class="em">—</span><span class="ti">Last Before Lights</span></div>
-                    <div class="now-meta">19:55 <span class="faint">· track 05/15</span></div>
+                <div class="flow-view flow-now" data-state="now">
+                  <div class="now2-main">
+                    <div class="now2-eyebrow"><span class="eq"><i></i><i></i><i></i></span>Now playing</div>
+                    <div class="now2-title"><span>Anz —</span> Last Before Lights</div>
+                    <div class="now2-meta">19:55 <span class="faint">· track 05/15</span></div>
                   </div>
-                  <button class="now-expand">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 5.5 3.5 3.5 3.5-3.5"/></svg>
-                  </button>
+                  <span class="now2-expand"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 5.5 3.5 3.5 3.5-3.5"/></svg></span>
                 </div>
               </div>
             </div>
@@ -2198,35 +1194,31 @@
     </div>
   </section>
 
-  <!-- TICKER — bonus dynamic element -->
-  <div class="ticker reveal">
-    <div class="ticker-track" id="ticker-track"></div>
-  </div>
-
-  <!-- PROBLEM — dark inverse card -->
-  <section id="problem">
+  <!-- NO MORE "TRACK ID?" -->
+  <section id="no-track-id">
     <div class="wrap">
-      <div class="problem-card reveal">
-        <div class="sec-head">
-          <span class="eyebrow">The problem</span>
-          <h2 class="display">You hear it in a mix, comment "id?"<br/>and wait <span class="accent">forever</span>.</h2>
+      <div class="glass-band rv">
+        <img class="gb-photo" src="/assets/band-crowd.jpg" alt="" loading="lazy" onerror="this.remove()"/>
+        <div class="gb-screen"></div>
+        <div class="grain"></div>
+        <div class="gb-notes" aria-hidden="true">
+          <div class="note n1"><span class="av"></span><div><b>marek_dv</b><p>track ID?</p></div></div>
+          <div class="note n2"><span class="av"></span><div><b>luca.4am</b><p>track id ????</p></div></div>
+          <div class="note n3"><span class="av"></span><div><b>sofia_rmx</b><p>anyone knows what's playing here</p></div></div>
+          <div class="note n4"><span class="av"></span><div><b>night.owl</b><p>ID at 41:20 please</p></div></div>
+          <div class="note n5"><span class="av"></span><div><b>bass_pilgrim</b><p>what's this tune??</p></div></div>
+          <div class="note n6"><span class="av"></span><div><b>mira_k</b><p>someone drop the tracklist</p></div></div>
+          <div class="note n7"><span class="av"></span><div><b>dust_and_wax</b><p>still no ID after three years</p></div></div>
+          <div class="note n8"><span class="av"></span><div><b>kito.wav</b><p>TRACK ID PLEASE</p></div></div>
+          <div class="note n9"><span class="av"></span><div><b>999_ellis</b><p>what is this at 12:04</p></div></div>
+          <div class="note n10"><span class="av"></span><div><b>pattern_hunter</b><p>tracklist anyone?</p></div></div>
+          <div class="note n11"><span class="av"></span><div><b>low_end_theo</b><p>need the ID on this one</p></div></div>
+          <div class="note n12"><span class="av"></span><div><b>vinyl.moth</b><p>sos, track id</p></div></div>
         </div>
-        <div class="problem-grid">
-          <div class="pain reveal" data-delay="1">
-            <div class="pain-num">01</div>
-            <h3>Shazam can't get it</h3>
-            <p>DJ mixes layer and adjust tracks on top of each other. Audio recognition fails.</p>
-          </div>
-          <div class="pain reveal" data-delay="2">
-            <div class="pain-num">02</div>
-            <h3>You heard it. And it's gone.</h3>
-            <p>You were in the mix. You heard it. By the time you found it manually — the moment was already gone.</p>
-          </div>
-          <div class="pain reveal" data-delay="3">
-            <div class="pain-num">03</div>
-            <h3>Comments? Hopefully</h3>
-            <p>Tracklists in comments appears rarely.</p>
-          </div>
+        <div class="gb-center">
+          <h2>No more <span class="mark-accent">"track ID?"</span> in the comments.</h2>
+          <p>A new way to get back to the moment you liked, the full set, named, right where you heard it.</p>
+          <div class="tid-cta"><a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" data-track-cws="no_track_id">Add to Chrome, free <span class="arr">→</span></a></div>
         </div>
       </div>
     </div>
@@ -2235,57 +1227,44 @@
   <!-- HOW IT WORKS -->
   <section id="how">
     <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">How it works</span>
-        <h2 class="display">Three clicks. <span class="accent">Done.</span></h2>
-        <p>From a silent track ID to a clickable timecode in under three seconds.</p>
-      </div>
-      <div class="how-grid">
-        <div class="step-card reveal" data-delay="1">
-          <div class="num-pill"><span>STEP 01</span></div>
-          <h3>Open any DJ mix on SoundCloud</h3>
-          <p>HuntID detects mixes automatically. No setup.</p>
-          <div class="step-mock s1">
-            <button class="find-btn" type="button">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>
-              Find Tracklist
-            </button>
-          </div>
-        </div>
-        <div class="step-card reveal" data-delay="2">
-          <div class="num-pill"><span>STEP 02</span></div>
-          <h3>Hit Find Tracklist</h3>
-          <p>HuntID searches the tracklist instantly.</p>
-          <div class="step-mock">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
-              <div class="eyes" aria-hidden="true"><span class="eye"></span><span class="eye"></span></div>
-              <div class="looking" style="font-size: 13px;">Looking<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+      <div class="sh rv"><span class="eyebrow">How it works</span><h2>Three steps to hunt your sound.</h2></div>
+      <div class="how-flow">
+        <article class="step rv" data-delay="1">
+          <div class="step-dot">01</div>
+          <h3>Open any mix on SoundCloud</h3>
+          <p>HuntID activates the moment you hit play, nothing to configure.</p>
+          <div class="shot">
+            <div class="shot-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14" style="flex-shrink:0;opacity:.5;margin-right:7px;vertical-align:-1px"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Palms Trax, Boiler Room</span></span></div>
+            <div class="shot-body">
+              <div class="ext-btn"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>Find tracklist</div>
+              <div class="shot-status"><span class="ok"></span>Mix detected automatically</div>
             </div>
           </div>
-        </div>
-        <div class="step-card reveal" data-delay="3">
-          <div class="num-pill"><span>STEP 03</span></div>
-          <h3>Click any timecode</h3>
-          <p>Jump directly to that moment in the mix.</p>
-          <div class="step-mock s3">
-            <svg class="s3-cursor" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 3l14 9-7 1-3 7-4-17z" fill="#fff" stroke="#0a0a0a" stroke-width="1.2" stroke-linejoin="round"/>
-            </svg>
-            <div class="step-mini"><span class="tc">04:12</span><span class="label">DJ Boring — Sunday Avenue</span></div>
-            <div class="step-mini active"><span class="tc">09:48</span><span class="label">Avalon Emerson — Fluorescent Rush</span><span class="eq"><i></i><i></i><i></i></span></div>
-            <div class="step-mini"><span class="tc">14:30</span><span class="label">Skee Mask — VLI</span></div>
+        </article>
+        <article class="step rv" data-delay="2">
+          <div class="step-dot">02</div>
+          <h3>Hit Find tracklist</h3>
+          <p>We match the set against <span data-stat="tracklists">900K+</span> tracklisted mixes and return every track we can confirm.</p>
+          <div class="shot">
+            <div class="shot-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14" style="flex-shrink:0;opacity:.5;margin-right:7px;vertical-align:-1px"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Palms Trax, Boiler Room</span></span></div>
+            <div class="shot-body">
+              <div class="lk"><div class="lk-dots"><i></i><i></i></div><div class="lk-t">Looking<span class="lk-e"><i></i><i></i><i></i></span></div></div>
+              <div class="shot-outcome">Full tracklist, usually under 3 seconds</div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ONE TRACK WORTH IT -->
-  <section id="one-track">
-    <div class="wrap">
-      <div class="one-track-block reveal">
-        <p class="one-track-title">Audio recognition engines weren't designed for 2-hour underground sets. HuntID was.</p>
-        <p class="one-track-body">Not every mix, not every track — but a fast answer with a high hit rate for exactly the content that leaves every other tool silent.</p>
+        </article>
+        <article class="step rv" data-delay="3">
+          <div class="step-dot">03</div>
+          <h3>Save it, or go get it</h3>
+          <p>Favourite any track on the spot, or jump straight to where you buy it.</p>
+          <div class="shot">
+            <div class="shot-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14" style="flex-shrink:0;opacity:.5;margin-right:7px;vertical-align:-1px"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>15 tracks found</span></span></div>
+            <div class="shot-body" style="padding:0">
+              <div class="mock-row"><span class="mt">DJ Boring — Sunday Avenue</span><span class="pill"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>Beatport</span></div>
+              <div class="mock-row on"><span class="heart">♥</span><span class="mt">Avalon Emerson — Fluorescent Rush</span><span class="pill">Saved</span></div>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -2293,261 +1272,223 @@
   <!-- FEATURES -->
   <section id="features">
     <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">What's inside</span>
-        <h2 class="display">Everything you need.<br/><span style="color: var(--text-faint);">Nothing you don't.</span></h2>
-      </div>
-      <div class="feat-grid">
-        <div class="feat-card reveal" data-delay="1">
-          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-          <h3>Instant Tracklist</h3>
-          <p>Full tracklist in seconds. No tab switching, no manual search. Searches the moment you press the button.</p>
-        </div>
-        <div class="feat-card reveal" data-delay="2">
-          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-          <h3>Clickable Timecodes</h3>
-          <p>Every timecode is a button. Click — the mix jumps right there. No copying, no math, no manual seeking through a two-hour set.</p>
-        </div>
-        <div class="feat-card reveal" data-delay="3">
-          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg></div>
-          <h3>Now Playing</h3>
-          <p>Always know what's on right now. Current track highlighted automatically, synced to your playhead in real time.</p>
-        </div>
-        <div class="feat-card reveal" data-delay="4">
-          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/></svg></div>
-          <h3>One-click Copy</h3>
-          <p>Add any track to your collection instantly. Just click and buy.</p>
-        </div>
+      <div class="sh rv"><span class="eyebrow">What's inside</span><h2>Everything you need, right when you need it.</h2></div>
+      <div class="feat-rows">
+
+        <article class="feat-row">
+          <div class="feat-copy">
+            <span class="feat-tag"><span class="dot"></span>Tracklist</span>
+            <h3>Instant tracklist</h3>
+            <p><span data-stat="tracklists">900K+</span> tracklists from Dekmantel, Awakenings, Time Warp, Sónar, Dimensions, Houghton and Tomorrowland, plus Boiler Room, HÖR, NTS and Rinse FM shows — the full set in seconds, numbered and ordered, right where you're listening.</p>
+          </div>
+          <div class="feat-pic">
+            <div class="ext">
+              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Palms Trax, Boiler Room</span></span></div>
+              <div class="ext-b">
+                <div class="f1-bar"><span>Tracklist</span><b>15 tracks</b></div>
+                <div class="f1-rows"><div class="f1-in"><div class="f1-row"><span class="n">01</span><span class="tc">00:00</span><span class="mt">Roza Terenzi — Modem Tan</span></div><div class="f1-row"><span class="n">02</span><span class="tc">04:12</span><span class="mt">DJ Boring — Sunday Avenue</span></div><div class="f1-row on"><span class="n">03</span><span class="tc">09:48</span><span class="mt">Avalon Emerson — Fluorescent Rush</span></div><div class="f1-row"><span class="n">04</span><span class="tc">14:30</span><span class="mt">Skee Mask — VLI</span></div><div class="f1-row"><span class="n">05</span><span class="tc">19:55</span><span class="mt">Anz — Last Before Lights</span></div><div class="f1-row"><span class="n">06</span><span class="tc e">--:--</span><span class="mt">Unknown — ID</span></div><div class="f1-row"><span class="n">07</span><span class="tc">28:40</span><span class="mt">Nia Archives — Forbidden Feelingz</span></div><div class="f1-row"><span class="n">08</span><span class="tc">33:02</span><span class="mt">Overmono — So U Kno</span></div><div class="f1-row"><span class="n">01</span><span class="tc">00:00</span><span class="mt">Roza Terenzi — Modem Tan</span></div><div class="f1-row"><span class="n">02</span><span class="tc">04:12</span><span class="mt">DJ Boring — Sunday Avenue</span></div><div class="f1-row on"><span class="n">03</span><span class="tc">09:48</span><span class="mt">Avalon Emerson — Fluorescent Rush</span></div><div class="f1-row"><span class="n">04</span><span class="tc">14:30</span><span class="mt">Skee Mask — VLI</span></div><div class="f1-row"><span class="n">05</span><span class="tc">19:55</span><span class="mt">Anz — Last Before Lights</span></div><div class="f1-row"><span class="n">06</span><span class="tc e">--:--</span><span class="mt">Unknown — ID</span></div><div class="f1-row"><span class="n">07</span><span class="tc">28:40</span><span class="mt">Nia Archives — Forbidden Feelingz</span></div><div class="f1-row"><span class="n">08</span><span class="tc">33:02</span><span class="mt">Overmono — So U Kno</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        
+
+        <article class="feat-row">
+          <div class="feat-copy">
+            <span class="feat-tag"><span class="dot"></span>Now playing</span>
+            <h3>Know what's playing right now</h3>
+            <p>Catch a track the second it starts, or jump straight to any moment in the set, no scrubbing, no counting minutes.</p>
+          </div>
+          <div class="feat-pic">
+            <div class="ext">
+              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>19:55 · 05/15</span></span></div>
+              <div class="ext-b"><div class="f2-wrap">
+                <div class="f2-now">
+                  <div style="flex:1;min-width:0">
+                    <div class="f2-eyebrow"><span class="eq"><i></i><i></i><i></i></span>Now playing</div>
+                    <div class="f2-title"><span>Anz —</span> Last Before Lights</div>
+                  </div>
+                </div>
+                <div class="f2-wave" id="f2-wave"><i class="p" style="height:18%"></i><i class="p" style="height:43%"></i><i class="p" style="height:64%"></i><i class="p" style="height:79%"></i><i class="p" style="height:84%"></i><i class="p" style="height:79%"></i><i class="p" style="height:66%"></i><i class="p" style="height:48%"></i><i class="p" style="height:50%"></i><i class="p" style="height:72%"></i><i class="p" style="height:88%"></i><i class="p" style="height:96%"></i><i class="p" style="height:93%"></i><i class="p" style="height:81%"></i><i class="p" style="height:62%"></i><i class="p" style="height:41%"></i><i class="p" style="height:62%"></i><i class="p" style="height:78%"></i><i class="p" style="height:87%"></i><i class="" style="height:87%"></i><i class="" style="height:77%"></i><i class="" style="height:58%"></i><i class="" style="height:35%"></i><i class="" style="height:34%"></i><i class="" style="height:51%"></i><i class="" style="height:68%"></i><i class="" style="height:78%"></i><i class="" style="height:77%"></i><i class="" style="height:68%"></i><i class="" style="height:52%"></i><i class="" style="height:36%"></i><i class="" style="height:60%"></i><i class="" style="height:80%"></i><i class="" style="height:92%"></i><i class="" style="height:94%"></i><i class="" style="height:87%"></i><i class="" style="height:72%"></i><i class="" style="height:51%"></i><i class="" style="height:55%"></i><i class="" style="height:74%"></i><i class="" style="height:87%"></i><i class="" style="height:91%"></i><i class="" style="height:86%"></i><i class="" style="height:72%"></i></div>
+                <div class="f2-tcs" id="f2-tcs"><span class="f2-tc">04:12</span><span class="f2-tc">09:48</span><span class="f2-tc">14:30</span><span class="f2-tc on">19:55</span><span class="f2-tc">24:18</span></div>
+              </div></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="feat-row">
+          <div class="feat-copy">
+            <span class="feat-tag"><span class="dot"></span>Saved tracklists and favourites</span>
+            <h3>Nothing you found gets lost</h3>
+            <p>Save a tracklist from the extension and it lands in your account with the timecodes intact. Heart a single track and it goes to your favourites with the links you actually buy from.</p>
+          </div>
+          <div class="feat-pic">
+            <div class="ext">
+              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Your library · 128 sets</span></span></div>
+              <div class="ext-b"><div class="f4-wrap">
+                <div class="f4-nav"><span class="f4-nv on">Saved tracklists<em>4</em></span><span class="f4-nv">Favourites<em>5</em></span></div>
+                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Nachtbraker — Rush Hour Session 214</div><div class="f4-s">Rush Hour <span>·</span> 17 tracks <span>·</span> saved Jul 21, 2026</div></div><div class="f4-acts"><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5.5 2.5H2.5v9h9v-3" stroke-linecap="round"></path><path d="M8.5 2.5h3v3M11.5 2.5 7 7" stroke-linecap="round"></path></svg></span><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2.8 4.2h8.4M5.6 4.2V2.8h2.8v1.4M4.2 4.2l.5 7h4.6l.5-7"></path></svg></span></div></div>
+                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Late Bloom — Basement Tapes vol. 6</div><div class="f4-s">basementtapes <span>·</span> 12 tracks <span>·</span> saved Jul 18, 2026</div></div><div class="f4-acts"><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5.5 2.5H2.5v9h9v-3" stroke-linecap="round"></path><path d="M8.5 2.5h3v3M11.5 2.5 7 7" stroke-linecap="round"></path></svg></span><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2.8 4.2h8.4M5.6 4.2V2.8h2.8v1.4M4.2 4.2l.5 7h4.6l.5-7"></path></svg></span></div></div>
+                <div class="f4-div"><span>Favourites</span></div>
+                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Meridian — Slow Tide (Dub)</div><div class="f4-s">from Dust Radio 088</div><div class="f4-buy"><span>Beatport</span><span>Bandcamp</span><span>Discogs</span></div></div></div>
+                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Orso — Halfway Lights</div><div class="f4-s">from Solar Dock</div><div class="f4-buy"><span>Beatport</span><span>Bandcamp</span><span>Discogs</span></div></div></div>
+              </div></div>
+            </div>
+          </div>
+        </article>
+
+        
+
       </div>
     </div>
   </section>
 
-  <!-- PRICING -->
-  <section id="pricing">
+  <!-- ANALYZE — launching soon -->
+  <section id="analyze">
     <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Pricing</span>
-        <h2 class="display">Simple <span class="accent">pricing</span>.</h2>
-        <p>First 10 searches free. No credit card. No time limit.</p>
-      </div>
-      <div class="pricing-grid">
-
-        <!-- PRO -->
-        <div class="price-card reveal">
-          <div class="pill-badge">Pro</div>
-          <div class="plan-toggle">
-            <button class="plan-btn plan-btn-active" id="btn-monthly" onclick="setPlan('monthly')">Monthly</button>
-            <button class="plan-btn" id="btn-annual" onclick="setPlan('annual')">Annual <span class="save-chip" id="px-save">Save 33%</span></button>
+      <div class="sh rv"><span class="eyebrow">When there is no tracklist anywhere</span><h2>Some sets nobody ever wrote down.</h2><p class="lede">A basement b2b, a friend's upload from 2019, a set that never got posted. No database has it, so the comments stay unanswered.</p></div>
+      <article class="feat-row sf">
+          <div class="feat-copy">
+            <span class="feat-tag"><span class="dot"></span>Audio recognition<span class="feat-beta">Launch soon</span></span>
+            <h3>Analyze the mix itself</h3>
+            <p>Coming soon: hit Analyze and HuntID listens to the set, track by track, and names what it recognises straight from the audio. The tracklist that never existed gets written the first time someone asks.</p>
           </div>
-          <div id="plan-monthly-price">
-            <div class="price-big" id="px-monthly">$4.99</div>
-            <div class="price-sub">/ month</div>
+          <div class="feat-pic">
+            <div class="ext">
+              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Listening…</span></span></div>
+              <div class="ext-b"><div class="f3-wrap an-wrap" id="an-wrap">
+                <div class="an-stage on" data-s="0"><div class="lk-dots"><i></i><i></i></div><div class="lk-t">Looking<span class="lk-e"><i></i><i></i><i></i></span></div><div class="an-note">No tracklist found for this set</div></div>
+                <div class="an-stage" data-s="1"><div class="f3-mic"><span class="rp"></span><span class="rp"></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div><div class="f3-bars"><i style="animation-delay:-0.00s"></i><i style="animation-delay:-0.17s"></i><i style="animation-delay:-0.34s"></i><i style="animation-delay:-0.51s"></i><i style="animation-delay:-0.68s"></i><i style="animation-delay:-0.85s"></i><i style="animation-delay:-1.02s"></i><i style="animation-delay:-1.19s"></i><i style="animation-delay:-1.36s"></i><i style="animation-delay:-1.53s"></i><i style="animation-delay:-1.70s"></i></div><div class="an-note"><b>Analyzing audio</b> 07:41 of 1:58:00</div></div>
+                <div class="an-stage" data-s="2"><div class="f3-out"><div class="f3-lbl">Identified from audio</div><div class="f3-name"><span>Sherelle —</span> JUNGLE TEKNAH</div></div><div class="f3-out"><div class="f3-lbl">Identified from audio</div><div class="f3-name"><span>Anz —</span> Last Before Lights</div></div><div class="an-note">Tracklist written from the sound itself</div></div>
+              </div></div>
+            </div>
           </div>
-          <div id="plan-annual-price" style="display:none">
-            <div class="price-big" id="px-annual">$39.99</div>
-            <div class="price-sub">/ year · ≈ <span id="px-annual-eq">$3.33</span>/mo</div>
-          </div>
-          <div style="margin: 14px 0 0; font-size: 13px; color: var(--accent); font-weight: 600;">First 10 searches free — no card needed</div>
-          <ul class="price-list" style="text-align:left; margin-top: 24px;">
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Find Tracklist — unlimited searches</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Clickable timecodes</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Now Playing — always know what's on</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> One-click copy</li>
-            <li style="list-style:none; padding: 10px 0 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); display:flex; align-items:center; gap:8px;">
-              <span style="flex:1; height:1px; background: var(--accent-soft);"></span>
-              Advanced workflow
-              <span style="flex:1; height:1px; background: var(--accent-soft);"></span>
-            </li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Saved — all past tracklist searches</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Favourites — save tracks</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Buy links — Beatport, Bandcamp, Traxsource</li>
-          </ul>
-          <div class="price-after-note" style="margin-top: 16px;">Cancel anytime. No commitment.</div>
-        </div>
-
-      </div>
-      <div style="text-align: center; margin-top: 32px;">
-        <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="padding: 0 48px;" data-track-cws="pricing">
-          Start free — 10 searches included
-          <span class="arr">→</span>
-        </a>
-        <div class="pricing-note" style="margin-top: 16px;">
-          Install, try the full product, subscribe when it's worth it.
-        </div>
-      </div>
+        </article>
     </div>
   </section>
 
-  <!-- ROADMAP -->
-  <section id="roadmap">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Roadmap</span>
-        <h2 class="display">What's <span class="accent">coming.</span></h2>
-        <p>HuntID is actively developed. Here's where we're headed.</p>
-      </div>
-      <div class="roadmap-grid">
-
-        <!-- NOW -->
-        <div class="roadmap-card now-card reveal" data-delay="1">
-          <div class="rm-badge live"><span class="rm-dot"></span> Live</div>
-          <h3>v1 · Beta</h3>
-          <div class="rm-progress-label">Shipped</div>
-          <div class="rm-progress-track">
-            <div class="rm-progress-fill green" data-target="100"></div>
-          </div>
-          <ul class="rm-list">
-            <li><span class="rm-list-icon">✅</span> Instant tracklist search</li>
-            <li><span class="rm-list-icon">✅</span> Clickable timecodes</li>
-            <li><span class="rm-list-icon">✅</span> Now Playing view</li>
-            <li><span class="rm-list-icon">✅</span> One-click copy</li>
-            <li><span class="rm-list-icon">✅</span> Auto-detects mixes</li>
-            <li><span class="rm-list-icon">✅</span> Light &amp; dark theme</li>
-            <li><span class="rm-list-icon">✅</span> Tracklist quality rating</li>
-          </ul>
-        </div>
-
-        <!-- SOON -->
-        <div class="roadmap-card now-card reveal" data-delay="2">
-          <div class="rm-badge live"><span class="rm-dot"></span> Live</div>
-          <h3>Pro · <span id="px-roadmap">$4.99</span>/mo</h3>
-          <div class="rm-progress-label">Shipped</div>
-          <div class="rm-progress-track">
-            <div class="rm-progress-fill green" data-target="100"></div>
-          </div>
-          <ul class="rm-list">
-            <li><span class="rm-list-icon">✅</span> Unlimited searches</li>
-            <li><span class="rm-list-icon">✅</span> Save tracklist</li>
-            <li><span class="rm-list-icon">✅</span> Favourite — collect tracks</li>
-            <li><span class="rm-list-icon">✅</span> Buy links (Beatport, Bandcamp)</li>
-            <li><span class="rm-list-icon">✅</span> Better source coverage</li>
-          </ul>
-        </div>
-
-        <!-- LATER -->
-        <div class="roadmap-card soon-card active reveal" data-delay="3">
-          <div class="rm-badge planned"><span class="rm-dot"></span> Planned</div>
-          <h3>What's next</h3>
-          <div class="rm-progress-label">Planned</div>
-          <div class="rm-progress-track">
-            <div class="rm-progress-fill grey" data-target="0"></div>
-          </div>
-          <ul class="rm-list">
-            <li><span class="rm-list-icon">🔮</span> YouTube support</li>
-            <li><span class="rm-list-icon">🔮</span> Better source coverage</li>
-            <li><span class="rm-list-icon">🔮</span> Tracklist confidence score</li>
-            <li><span class="rm-list-icon">🔮</span> Analyze this set (Pro)</li>
-          </ul>
-        </div>
-
-      </div>
-      <p class="rm-footer-note">Roadmap is subject to change. Feature requests? <a href="mailto:foreverykindofthing@gmail.com">Let us know →</a></p>
-    </div>
-  </section>
-
-  <!-- QUOTES -->
+  <!-- TESTIMONIALS -->
   <section id="proof">
     <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Built for the underground</span>
-        <h2 class="display">Built for the <span class="accent">SoundCloud</span> underground.</h2>
-      </div>
-      <div class="quotes-grid">
-        <div class="qcard reveal" data-delay="1">
-          <div class="q-stars">★★★★★</div>
+      <div class="sh rv"><span class="eyebrow">Built for the underground</span><h2>Built for the <span class="hl">SoundCloud</span> underground.</h2></div>
+      <div class="quotes">
+        <figure class="card quote rv" data-delay="1">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
           <blockquote>Found that one track I'd been searching for months now. That's enough for me.</blockquote>
-          <div class="by">
-            <span class="avatar">R</span>
-            <div><div class="who">Russell</div><div class="loc">London, UK</div></div>
-          </div>
-        </div>
-        <div class="qcard reveal" data-delay="2">
-          <div class="q-stars">★★★★★</div>
+          <figcaption class="by"><span class="av">R</span><div><div class="who">Russell</div><div class="loc">London, UK</div></div></figcaption>
+        </figure>
+        <figure class="card quote rv" data-delay="2">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
           <blockquote>I used to spend up to an hour just looking for an id. Now I just click.</blockquote>
-          <div class="by">
-            <span class="avatar">L</span>
-            <div><div class="who">Lucasz</div><div class="loc">Warsaw, PL</div></div>
-          </div>
-        </div>
-        <div class="qcard reveal" data-delay="3">
-          <div class="q-stars">★★★★★</div>
+          <figcaption class="by"><span class="av">L</span><div><div class="who">Lucasz</div><div class="loc">Warsaw, PL</div></div></figcaption>
+        </figure>
+        <figure class="card quote rv" data-delay="3">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
           <blockquote>Heard a track, copied the name, found it in 30 seconds. This is exactly what was missing.</blockquote>
-          <div class="by">
-            <span class="avatar">M</span>
-            <div><div class="who">Marco</div><div class="loc">Berlin, DE</div></div>
-          </div>
-        </div>
+          <figcaption class="by"><span class="av">M</span><div><div class="who">Marco</div><div class="loc">Berlin, DE</div></div></figcaption>
+        </figure>
       </div>
-
     </div>
   </section>
 
-  <!-- FINAL CTA -->
-  <section id="install">
+  <!-- PRICING — amounts come from get-pricing; the markup holds the fallback -->
+  <section id="pricing">
     <div class="wrap">
-      <div class="final-card reveal">
-        <h2 class="display">That track is in there<br/><span class="accent">somewhere.</span></h2>
-        <p>Add HuntID. Find it.</p>
-        <div class="ctas">
-          <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-primary btn-lg" data-track-cws="final_cta">
-            Add to Chrome — Try free
-            <span class="arr">→</span>
-          </a>
-          <a href="#how" class="btn btn-outline btn-on-dark btn-lg">See how it works</a>
+      <div class="sh rv"><span class="eyebrow">Pricing</span><h2>Unlimited digging. <span class="hl">Find everything you're after.</span></h2><p class="lede">10 searches free. No credit card.</p></div>
+      <div class="bill rv" id="bill" role="group" aria-label="Billing period">
+        <button class="bill-b" data-bill="monthly" type="button">Monthly</button>
+        <button class="bill-b on" data-bill="annual" type="button">Yearly<span class="bill-save" data-price="save">Save 33%</span></button>
+      </div>
+      <div class="prices">
+        <div class="pc rv">
+          <div class="pc-top"><span class="pc-name">Free</span></div>
+          <div class="amt">$0</div>
+          <p class="sub">A free account, no card. Enough to try HuntID on your own mixes.</p>
+          <ul class="plist">
+            <li>10 searches, one time</li>
+            <li>Full tracklists with timecodes</li>
+            <li>Now Playing on any SoundCloud set</li>
+          </ul>
+          <button type="button" class="btn btn-g" id="pc-free-cta">Create free account</button>
         </div>
-        <div class="cta-meta">Chrome only · SoundCloud · No credit card required</div>
+        <div class="pc hi rv" data-delay="1">
+          <div class="pc-top"><span class="pc-name">Pro</span><span class="tagpill">Unlimited</span></div>
+          <div class="amt"><span id="pc-amt">$39.99</span><small id="pc-per"> /year</small></div>
+          <div class="amt-compare" id="pc-cmp"><span class="amt-was"><span data-price="was">$59.88</span>/yr</span><span class="amt-save" data-price="save">Save 33%</span></div>
+          <p class="sub" id="pc-sub">Billed once a year, the cheapest way to dig every night.</p>
+          <ul class="plist">
+            <li><span>Unlimited searches across <span data-stat="tracklists">900K+</span> tracklists</span></li>
+            <li>Clickable timecodes and Now Playing</li>
+            <li>Saved tracklists and favourites</li>
+            <li>Buy links: Beatport, Bandcamp, Traxsource</li>
+          </ul>
+          <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p" id="pc-cta" data-track-cws="pricing">Get Pro, $39.99/yr <span class="arr">→</span></a>
+          <div class="pc-note" id="pc-note">Billed yearly, $3.33 a month. Cancel any time.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sh rv"><span class="eyebrow">FAQ</span><h2>Questions worth answering.</h2></div>
+      <div class="faq rv">
+        <details open><summary>How does HuntID identify tracks in a DJ mix?</summary><p>It searches the set you're on against a catalogue of <span data-stat="tracklists">900K+</span> tracklisted mixes and returns every track it can confirm, with timecodes. Audio recognition, for sets that have no tracklist anywhere, is launching soon.</p></details>
+        <details><summary>Does it work on SoundCloud?</summary><p>Yes, SoundCloud mixes and live sets, inside Chrome. No uploads and no tab switching. More platforms are next.</p></details>
+        <details><summary>What do I get for free?</summary><p>A free account gives you 10 searches with full tracklists and timecodes. No card.</p></details>
+        <details><summary>What happens after 10 searches?</summary><p>Pro is <span data-price="monthly">$4.99</span> a month, or <span data-price="annual">$39.99</span> a year, for unlimited searches. Cancel any time.</p></details>
+        <details><summary>Does it run on mobile?</summary><p>HuntID is a Chrome extension, so it runs on desktop, which is where most digging happens anyway. On your phone you can create your free account now and install HuntID on your computer later.</p></details>
+        <details><summary>Is every track guaranteed?</summary><p>No, and HuntID won't pretend otherwise. Confirmed tracks are named; anything uncertain is flagged as unconfirmed rather than guessed.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMO — the closing offer -->
+  <section id="promo">
+    <div class="wrap">
+      <div class="promo rv">
+        <div class="promo-l">
+          <span class="brand"><span class="mk"><svg viewBox="0 0 64 64" width="26" height="26" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span><span>Hunt<em>ID</em></span></span>
+          <h2>Stop losing tracks you'll never find again.</h2>
+          <p>Free to try. Works right inside SoundCloud.</p>
+          <div class="ctas">
+            <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" data-track-cws="final_cta">Add to Chrome, free <span class="arr">→</span></a>
+            <a href="#pricing" class="btn btn-g btn-lg">See plans</a>
+          </div>
+          <div class="promo-meta">Chrome · SoundCloud · free account, 10 searches, no card</div>
+        </div>
+        <div class="promo-r">
+          <div class="promo-price"><span class="pp-now" data-price="annual">$39.99</span><span class="pp-per">/year</span></div>
+          <div class="promo-was" data-when-saving>Pro, billed yearly. <s><span data-price="was">$59.88</span></s> if paid monthly.</div>
+          <ul class="plist">
+            <li>Unlimited searches, no monthly cap</li>
+            <li>Full tracklists with clickable timecodes</li>
+            <li>Now Playing while the set runs</li>
+            <li>Saved tracklists and favourites</li>
+            <li>Buy links: Beatport, Bandcamp, Traxsource</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <div class="wrap">
-      <div class="foot-grid">
-        <div class="foot-col foot-brand">
-          <div class="brand">
-            <span class="brand-mark" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
-                <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-                <circle cx="7" cy="7" r="1.2" fill="white"/>
-              </svg>
-            </span>
-            Hunt<span class="id">ID</span>
-          </div>
-          <p>The fastest way to find any track in any DJ mix on SoundCloud.</p>
-        </div>
-        <div class="foot-col">
-          <h4>Product</h4>
-          <ul>
-            <li><a href="#how">How it works</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#roadmap">Roadmap</a></li>
-          </ul>
-        </div>
-        <div class="foot-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="mailto:foreverykindofthing@gmail.com">Contact</a></li>
-            <li><a href="#privacy">Privacy Policy</a></li>
-            <li><a href="#terms">Terms of Service</a></li>
-            <li><a href="#refund">Refund Policy</a></li>
-          </ul>
-        </div>
-        <div class="foot-col">
-          <h4>Stay in the loop</h4>
-          <ul>
-            <li><a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener">Add to Chrome</a></li>
-          </ul>
-        </div>
+    <div class="wrap foot">
+      <a href="#home" class="brand"><span class="mk" aria-hidden="true"><svg viewBox="0 0 64 64" width="22" height="22" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span><span>Hunt<em>ID</em></span></a>
+      <div class="grow"></div>
+      <div class="foot-links">
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="mailto:foreverykindofthing@gmail.com">Contact</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#terms">Terms</a>
+        <a href="#refund">Refunds</a>
       </div>
-      <div class="foot-bottom">
-        <div>© 2026 HuntID · huntid.app</div>
-        <div class="foot-fineprint">
-          HuntID is not affiliated with SoundCloud Limited. SoundCloud is a trademark of SoundCloud Limited.
-        </div>
-      </div>
+      <div class="fine">© 2026 HuntID · huntid.app. Not affiliated with SoundCloud Limited or any festival named above. SoundCloud is a trademark of SoundCloud Limited. Festival names are used to describe where tracklisted sets are heard, not as endorsements.</div>
     </div>
   </footer>
 
@@ -2728,7 +1669,7 @@
           <h2>Free and Pro plans</h2>
           <div class="body">
             <p><strong>Free to start:</strong> 10 tracklist searches included at no cost. After the free searches are used, a Pro subscription is required to continue.</p>
-            <p><strong>Pro plan:</strong> <span id="px-tos-m">$4.99</span>/month or <span id="px-tos-a">$39.99</span>/year, unlimited searches.</p>
+            <p><strong>Pro plan:</strong> <span data-price="monthly">$4.99</span>/month or <span data-price="annual">$39.99</span>/year, unlimited searches.</p>
             <p>Prices may change with 30 days notice to existing subscribers.</p>
           </div>
         </div>
@@ -2872,105 +1813,75 @@
   (function () {
     const host = document.getElementById('hero-waves');
     if (!host) return;
-    const N = 64;
     let html = '';
-    for (let i = 0; i < N; i++) {
-      const delay = ((i * 0.06) % 1.4).toFixed(2);
-      const h = 16 + Math.abs(Math.sin(i * 0.34) * 80);
-      html += `<i style="animation-delay:-${delay}s; height:${h}px"></i>`;
+    for (let i = 0; i < 110; i++) {
+      const delay = ((i * 0.045) % 1.4).toFixed(2);
+      const h = 40 + Math.abs(Math.sin(i * 0.22)) * 260 * (0.5 + 0.5 * Math.abs(Math.sin(i * 0.05)));
+      html += `<i style="animation-delay:-${delay}s;height:${h.toFixed(0)}px"></i>`;
     }
     host.innerHTML = html;
   })();
 
-  /* ----------------------- tracks data */
-  const TRACKS = [
-    { n: 1,  t: "00:00", a: "Roza Terenzi",       ti: "Modem Tan" },
-    { n: 2,  t: "04:12", a: "DJ Boring",          ti: "Sunday Avenue" },
-    { n: 3,  t: "09:48", a: "Avalon Emerson",     ti: "Fluorescent Rush" },
-    { n: 4,  t: "14:30", a: "Skee Mask",          ti: "VLI" },
-    { n: 5,  t: "19:55", a: "Anz",                ti: "Last Before Lights", active: true },
-    { n: 6,  t: "24:18", a: "Nia Archives",       ti: "Forbidden Feelingz" },
-    { n: 7,  t: null,    a: "Unknown",            ti: "ID — bootleg edit" },
-    { n: 8,  t: "33:02", a: "Jensen Interceptor", ti: "Bionic Symphony" },
-    { n: 9,  t: "38:44", a: "Sherelle",           ti: "JUNGLE TEKNAH" },
-    { n: 10, t: "43:11", a: "Overmono",           ti: "So U Kno" }
-  ];
-
-  /* ----------------------- popup tracklist (rows duplicated for seamless scroll) */
+  /* ----------------------- hero tracklist (rows run twice for a seamless scroll) */
   (function () {
-    const host = document.getElementById('tl-rows-inner');
+    const host = document.getElementById('tl2-rows');
     if (!host) return;
-    function rowHtml(t, i) {
-      const cls = ['tl-row'];
-      if (t.active) cls.push('active');
-      if (t.t === null) cls.push('unknown');
-      const tc = t.t === null
-        ? `<span class="tc empty">--:--</span>`
-        : `<span class="tc">${t.t}</span>`;
-      const eq = t.active ? `<span class="eq"><i></i><i></i><i></i><i></i></span>` : `<span></span>`;
-      return `
-        <div class="${cls.join(' ')}">
-          <span class="n">${String(t.n).padStart(2, '0')}</span>
-          ${tc}
-          <span class="meta"><span class="ar">${t.a}</span><span class="em">—</span><span class="ti">${t.ti}</span></span>
-          ${eq}
-        </div>`;
-    }
-    const all = TRACKS.concat(TRACKS).map(rowHtml).join('');
-    host.innerHTML = all;
+    const TRACKS = [
+      ['00:00', 'Roza Terenzi', 'Modem Tan'],
+      ['04:12', 'DJ Boring', 'Sunday Avenue'],
+      ['09:48', 'Avalon Emerson', 'Fluorescent Rush', true],
+      ['14:30', 'Skee Mask', 'VLI'],
+      ['19:55', 'Anz', 'Last Before Lights'],
+      ['24:18', 'Nia Archives', 'Forbidden Feelingz'],
+      [null, 'Unknown', 'ID, bootleg edit'],
+      ['33:02', 'Jensen Interceptor', 'Bionic Symphony'],
+      ['38:44', 'Sherelle', 'JUNGLE TEKNAH'],
+      ['43:11', 'Overmono', 'So U Kno']
+    ];
+    const row = (t, i) =>
+      `<div class="tl-row${t[3] ? ' on' : ''}${t[0] ? '' : ' unknown'}">` +
+        `<span class="n">${String(i % TRACKS.length + 1).padStart(2, '0')}</span>` +
+        `<span class="t${t[0] ? '' : ' empty'}">${t[0] || '--:--'}</span>` +
+        `<span class="mt">${t[1]} — ${t[2]}</span>` +
+        (t[3] ? '<span class="eq"><i></i><i></i><i></i></span>' : '<span></span>') +
+      `</div>`;
+    host.innerHTML = TRACKS.concat(TRACKS).map(row).join('');
   })();
 
-  /* ----------------------- ticker */
-  (function () {
-    const host = document.getElementById('ticker-track');
-    if (!host) return;
-    const items = TRACKS.filter(t => t.t).slice(0, 8).map(t =>
-      `<div class="ticker-item"><span class="tc">${t.t}</span> ${t.a} <span style="color: var(--text-faint);">—</span> ${t.ti}</div>`
-    );
-    host.innerHTML = (items.concat(items)).join('');
-  })();
-
-  /* ----------------------- plan toggle */
-  function setPlan(plan) {
-    document.getElementById('plan-monthly-price').style.display = plan === 'monthly' ? 'block' : 'none';
-    document.getElementById('plan-annual-price').style.display  = plan === 'annual'  ? 'block' : 'none';
-    document.getElementById('btn-monthly').className = 'plan-btn' + (plan === 'monthly' ? ' plan-btn-active' : '');
-    document.getElementById('btn-annual').className  = 'plan-btn' + (plan === 'annual'  ? ' plan-btn-active' : '');
-  }
-
-  /* ----------------------- popup state cycle */
+  /* ----------------------- hero state cycle: find → loading → tracklist → now playing */
   (function () {
     const STATES = [
-      { id: 'find',      label: 'Idle on a mix',    h: 184, dur: 2200 },
-      { id: 'loading',   label: 'Searching',        h: 184, dur: 2000 },
-      { id: 'tracklist', label: 'Tracklist found',  h: 464, dur: 5800 },
-      { id: 'now',       label: 'Now playing',      h: 184, dur: 3000 }
+      { id: 'find',      label: "A set full of tracks you don't know yet", dur: 2200 },
+      { id: 'loading',   label: 'Searching',       dur: 2000 },
+      { id: 'tracklist', label: 'Tracklist found', dur: 5800 },
+      { id: 'now',       label: 'Now playing',     dur: 3000 }
     ];
-    const shell = document.getElementById('popup-shell');
-    const numEl = document.getElementById('state-num');
-    const lblEl = document.getElementById('state-label');
-    const views = document.querySelectorAll('.state-view');
+    const numEl = document.getElementById('flow-num');
+    const lblEl = document.getElementById('flow-label');
+    const views = document.querySelectorAll('.flow-view');
+    if (!numEl || !views.length) return;
     let idx = 0;
-    if (!shell) return;
-
     function show(i) {
-      const s = STATES[i];
-      shell.style.height = s.h + 'px';
-      views.forEach(v => v.classList.toggle('show', v.dataset.state === s.id));
+      const st = STATES[i];
+      views.forEach(v => v.classList.toggle('show', v.dataset.state === st.id));
       numEl.textContent = String(i + 1).padStart(2, '0');
-      lblEl.textContent = s.label;
+      lblEl.textContent = st.label;
     }
-
     function tick() {
       show(idx);
-      setTimeout(() => {
-        idx = (idx + 1) % STATES.length;
-        tick();
-      }, STATES[idx].dur);
+      setTimeout(() => { idx = (idx + 1) % STATES.length; tick(); }, STATES[idx].dur);
     }
-
+    show(0);
     setTimeout(tick, 800);
   })();
+
+  /* ----------------------- one catalogue size, everywhere it is quoted */
+  (function () {
+    const TRACKLISTS = '900K+';
+    document.querySelectorAll('[data-stat="tracklists"]').forEach(el => { el.textContent = TRACKLISTS; });
+  })();
+
+
 
   /* ----------------------- hash routing */
   (function () {
@@ -2999,7 +1910,7 @@
 
   /* ----------------------- reveal on scroll */
   (function () {
-    const reveals = Array.from(document.querySelectorAll('.reveal'));
+    const reveals = Array.from(document.querySelectorAll('.rv'));
     if (!reveals.length) return;
 
     if (!('IntersectionObserver' in window)) {
@@ -3024,78 +1935,43 @@
     }));
   })();
 
-  /* ----------------------- roadmap progress bars */
+  /* ----------------------- features: staged reveal, now-playing wave, analyze stages */
   (function () {
-    const fills = document.querySelectorAll('.rm-progress-fill[data-target]');
-    if (!fills.length) return;
-    if (!('IntersectionObserver' in window)) {
-      fills.forEach(f => { f.style.width = f.dataset.target + '%'; });
-      return;
-    }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          const target = parseInt(e.target.dataset.target, 10);
-          const dur = target === 100 ? 800 : 600;
-          e.target.style.transition = `width ${dur}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-          setTimeout(() => { e.target.style.width = target + '%'; }, 120);
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    fills.forEach(f => io.observe(f));
-  })();
-
-  /* ----------------------- magnetic CTA on primary buttons */
-  (function () {
-    const btns = document.querySelectorAll('.btn-primary');
-    btns.forEach(btn => {
-      btn.addEventListener('mousemove', (e) => {
-        const r = btn.getBoundingClientRect();
-        const x = e.clientX - r.left - r.width / 2;
-        const y = e.clientY - r.top - r.height / 2;
-        btn.style.transform = `translate(${x * 0.12}px, ${y * 0.18 - 1}px)`;
-      });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform = '';
-      });
-    });
-  })();
-</script>
-
-<script>
-  // H1 typewriter animation
-  (function() {
-    const words = ['Wondering', 'Curious', 'Chasing', 'Looking', 'Searching', 'Hunting'];
-    let wordIdx = 0, charIdx = 0, deleting = false;
-    const el = document.getElementById('h1-word');
-    if (!el) return;
-    el.textContent = '';
-
-    function tick() {
-      const word = words[wordIdx];
-      if (!deleting) {
-        charIdx++;
-        el.textContent = word.slice(0, charIdx);
-        if (charIdx === word.length) {
-          setTimeout(function() { deleting = true; tick(); }, 1600);
-          return;
-        }
-        setTimeout(tick, 75);
-      } else {
-        charIdx--;
-        el.textContent = word.slice(0, charIdx);
-        if (charIdx === 0) {
-          deleting = false;
-          wordIdx = (wordIdx + 1) % words.length;
-          setTimeout(tick, 300);
-          return;
-        }
-        setTimeout(tick, 35);
-      }
+    const rows = document.querySelectorAll('.feat-row');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }), { threshold: 0, rootMargin: '0px 0px -12% 0px' });
+      rows.forEach(r => io.observe(r));
+    } else {
+      rows.forEach(r => r.classList.add('in'));
     }
 
-    tick();
+    const tcs = document.querySelectorAll('#f2-tcs .f2-tc');
+    const wave = document.querySelectorAll('#f2-wave i');
+    if (tcs.length) {
+      let k = 3;
+      setInterval(() => {
+        k = (k + 1) % tcs.length;
+        tcs.forEach((t, i) => t.classList.toggle('on', i === k));
+        const cut = Math.round((k + 1) / tcs.length * wave.length);
+        wave.forEach((b, i) => b.classList.toggle('p', i < cut));
+      }, 2600);
+    }
+
+    const an = document.getElementById('an-wrap');
+    if (an) {
+      const stages = an.querySelectorAll('.an-stage');
+      const dur = [2600, 3400, 3600];
+      let si = 0;
+      (function next() {
+        setTimeout(() => {
+          si = (si + 1) % stages.length;
+          stages.forEach((st, i) => st.classList.toggle('on', i === si));
+          next();
+        }, dur[si]);
+      })();
+    }
   })();
 </script>
 
@@ -3138,7 +2014,7 @@
     <div id="modal-form-view" class="modal-split">
       <div class="modal-perks">
         <div class="modal-stat">
-          <div class="modal-stat-num">1,000,000+ tracklists</div>
+          <div class="modal-stat-num"><span data-stat="tracklists">900K+</span> tracklists</div>
           <div class="modal-stat-cap">just a few clicks away</div>
         </div>
         <div class="modal-perks-eyebrow">With a HuntID account</div>
@@ -3148,7 +2024,7 @@
           <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Save tracklists<small>Every mix you found, kept in one place</small></span></li>
           <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Keep favourite tracks<small>Heart a track, find it again later</small></span></li>
           <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Buy links for favourites<small>Beatport, Bandcamp, Traxsource</small></span></li>
-          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Analyze any mix<span class="modal-badge">Advanced</span><small>No tracklist? Identify tracks from the audio</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Analyze any mix<span class="modal-badge">Launch soon</span><small>No tracklist? Identify tracks from the audio</small></span></li>
         </ul>
       </div>
 
@@ -3228,27 +2104,76 @@
   // than blank. After this, repricing is a Paddle-only change: nothing on this
   // site or in the extension has to be redeployed.
   (function () {
-    var set = function (id, value) {
-      var el = document.getElementById(id);
-      if (el) el.textContent = value;
-    };
+    var P = { monthly: '$4.99', annual: '$39.99', annualMonthly: '$3.33', save: 33, currency: 'USD' };
+    var billing = 'annual';
+
+    var num = function (a) { return parseFloat(String(a).replace(/[^0-9.]/g, '')); };
+    var symbol = function (a) { return String(a).replace(/[0-9.,\s]/g, '') || '$'; };
+    // What a year costs on the monthly plan: the "was" beside the yearly price.
+    var was = function () { return symbol(P.monthly) + (num(P.monthly) * 12).toFixed(2); };
+    var each = function (sel, fn) { Array.prototype.forEach.call(document.querySelectorAll(sel), fn); };
+
+    function render() {
+      var saving = P.save > 0;
+      each('[data-price="monthly"]', function (el) { el.textContent = P.monthly; });
+      each('[data-price="annual"]',  function (el) { el.textContent = P.annual; });
+      each('[data-price="was"]',     function (el) { el.textContent = was(); });
+      // Hide rather than claim "Save 0%" if the two plans ever price flat.
+      each('[data-price="save"]', function (el) {
+        el.textContent = 'Save ' + P.save + '%';
+        el.style.display = saving ? '' : 'none';
+      });
+      each('[data-when-saving]', function (el) { el.style.display = saving ? '' : 'none'; });
+
+      var yearly = billing === 'annual';
+      var set = function (id, v) { var el = document.getElementById(id); if (el) el.textContent = v; };
+      set('pc-amt', yearly ? P.annual : P.monthly);
+      set('pc-per', yearly ? ' /year' : ' /month');
+      set('pc-sub', yearly ? 'Billed once a year, the cheapest way to dig every night.'
+                           : 'Month to month. Cancel whenever you like.');
+      set('pc-note', yearly ? 'Billed yearly, ' + P.annualMonthly + ' a month. Cancel any time.'
+                            : 'Billed monthly. Cancel any time.');
+      var cmp = document.getElementById('pc-cmp');
+      if (cmp) cmp.style.display = yearly && saving ? '' : 'none';
+      // On a phone the CTA has become "Sign up" and dropped its CWS slot; leave it be.
+      var cta = document.getElementById('pc-cta');
+      if (cta && cta.hasAttribute('data-track-cws')) {
+        cta.innerHTML = 'Get Pro, ' + (yearly ? P.annual + '/yr' : P.monthly + '/mo') + ' <span class="arr">→</span>';
+      }
+
+      var ld = document.getElementById('ld-app');
+      if (ld) {
+        try {
+          var data = JSON.parse(ld.textContent);
+          data.offers[1].price = String(num(P.monthly)); data.offers[1].priceCurrency = P.currency;
+          data.offers[2].price = String(num(P.annual));  data.offers[2].priceCurrency = P.currency;
+          ld.textContent = JSON.stringify(data);
+        } catch (e) {}
+      }
+    }
+
+    var bill = document.getElementById('bill');
+    if (bill) bill.addEventListener('click', function (e) {
+      var b = e.target.closest('.bill-b');
+      if (!b) return;
+      billing = b.dataset.bill;
+      each('.bill-b', function (x) { x.classList.toggle('on', x === b); });
+      render();
+    });
+
+    render();
     fetch('https://qhyebkofqjgzmmkpyalb.supabase.co/functions/v1/get-pricing')
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (p) {
         if (!p || !p.monthly || !p.annual) return;
-        set('px-hero', p.monthly.amount);
-        set('px-monthly', p.monthly.amount);
-        set('px-roadmap', p.monthly.amount);
-        set('px-tos-m', p.monthly.amount);
-        set('px-annual', p.annual.amount);
-        set('px-annual-eq', p.annual.monthly_equivalent);
-        set('px-tos-a', p.annual.amount);
-        var save = document.getElementById('px-save');
-        // Hide rather than claim "Save 0%" if the two plans ever price flat.
-        if (save) {
-          if (p.annual.save_percent > 0) save.textContent = 'Save ' + p.annual.save_percent + '%';
-          else save.style.display = 'none';
-        }
+        P = {
+          monthly: p.monthly.amount,
+          annual: p.annual.amount,
+          annualMonthly: p.annual.monthly_equivalent,
+          save: p.annual.save_percent,
+          currency: p.annual.currency || p.monthly.currency || 'USD'
+        };
+        render();
       })
       .catch(function () {});
   })();
@@ -3283,7 +2208,7 @@
     /* A phone can't install the extension, so the page CTAs offer what does
        work there — an account — and once you have one they stop pretending
        to be buttons and just say where the extension lives. */
-    var extCtas = !NO_EXT ? [] : ['hero', 'pricing', 'final_cta']
+    var extCtas = !NO_EXT ? [] : ['hero', 'no_track_id', 'pricing', 'final_cta']
       .map(function (slot) { return document.querySelector('[data-track-cws="' + slot + '"]'); })
       .filter(Boolean);
 
@@ -3310,10 +2235,8 @@
       var authed = likelyAuthed();
       var dash   = document.getElementById('nav-dashboard-btn');
       var signin = document.getElementById('nav-signin-btn');
-      var pill   = document.getElementById('nav-beta-pill');
       if (dash)   dash.classList.toggle('visible', authed);
       if (signin) signin.classList.toggle('visible', !authed);
-      if (pill)   pill.style.display = authed ? 'none' : '';
     }
 
     /* Signing up IS the gate: the tracklist is what the visitor came for, so
@@ -3872,17 +2795,17 @@
         ? { title: row.title, author_name: row.author, thumbnail_url: row.artwork_url }
         : null;
       var slug = slugLabels(row.sc_url);
-      /* SoundCloud's artwork is 500px (~120 KB); the card shows 36px. */
+      /* SoundCloud's artwork is 500px (~120 KB); -large is 100px, which is
+         what the 84px square needs. */
       var art = o && o.thumbnail_url
-        ? '<img class="mix-art" src="' + escHtml(o.thumbnail_url.replace(/-t500x500(\.\w+)$/, '-large$1')) + '" alt="">'
-        : '<div class="mix-art mix-art-empty">♪</div>';
+        ? '<img src="' + escHtml(o.thumbnail_url.replace(/-t500x500(\.\w+)$/, '-large$1')) + '" alt="" loading="lazy">'
+        : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>';
       return '<div class="mix-card" data-url="' + escHtml(row.sc_url) + '">' +
-        '<div class="mix-head">' + art + '<div class="mix-tag">Top rated</div></div>' +
-        '<div class="mix-artist mix-clamp">' + escHtml(o ? cleanScTitle(o) : slug.title) + '</div>' +
-        '<div class="mix-name">' + escHtml(o ? (o.author_name || '') : slug.author) + '</div>' +
-        '<div class="mix-footer">' +
-          '<span class="mix-tracks">' + (row.track_count ? row.track_count + ' tracks' : 'Full tracklist') + '</span>' +
-          '<span class="mix-try">Try this <span>→</span></span>' +
+        '<div class="mix-art">' + art + '<span class="pl"><svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.2v9.6L10.4 6z"/></svg></span></div>' +
+        '<div class="mix-b">' +
+          '<span class="who">' + escHtml(o ? (o.author_name || '') : slug.author) + '</span>' +
+          '<h3>' + escHtml(o ? cleanScTitle(o) : slug.title) + '</h3>' +
+          '<div class="mix-stats"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 3.5h10M2 7h10M2 10.5h6"/></svg>' + (row.track_count ? row.track_count + ' tracks' : 'Full tracklist') + '</div>' +
         '</div>' +
       '</div>';
     }
@@ -3924,6 +2847,11 @@
     /* Same modal as the tracklist gate — one way to make an account. */
     var navSignin = document.getElementById('nav-signin-btn');
     if (navSignin) navSignin.addEventListener('click', function () { openModal(null, null, null); });
+    var freeCta = document.getElementById('pc-free-cta');
+    if (freeCta) freeCta.addEventListener('click', function () {
+      if (likelyAuthed()) location.href = '/dashboard';
+      else openModal(null, null, null);
+    });
 
     updateHeaderAuth();
     syncExtensionCtas();
