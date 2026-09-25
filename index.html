@@ -98,13 +98,10 @@
   }
 
   /* ============================== eyebrow */
-  .eyebrow {
+  /* The search hero's eyebrow sits in a centred column with a chip beside it. */
+  .hero-cta .eyebrow {
     display: inline-flex; align-items: center; gap: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-dim);
+    margin-bottom: 0;
   }
   .eyebrow .chip-new {
     background: var(--accent);
@@ -118,21 +115,6 @@
 
   /* ============================== sections */
   section { padding: 56px 0; }
-
-  #h1-word {
-    display: inline-block;
-    color: var(--accent);
-  }
-  #h1-word::after {
-    content: '|';
-    color: var(--accent);
-    opacity: 1;
-    animation: h1-blink 0.6s step-end infinite;
-  }
-  @keyframes h1-blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
-  }
 
   /* ============================== hero cta (new top section) */
   .hero-cta {
@@ -605,327 +587,126 @@
   }
   .result-gate-btn:hover { background: var(--accent-2); }
 
-  /* ============================== hero (original — kept below hero-cta) */
-  .hero {
-    padding-top: 32px;
-    padding-bottom: 32px;
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 24px;
-    align-items: stretch;
-  }
-  .hero-card-left {
-    background: var(--surface);
-    border-radius: 32px;
-    padding: 56px 56px 48px;
-    border: 1px solid var(--border);
-    display: flex; flex-direction: column;
-  }
-  .hero-card-left h1 {
-    margin: 24px 0 0;
-    font-size: clamp(40px, 5.8vw, 76px);
-    font-weight: 700;
-  }
-  .hero-card-left h1 .accent { color: var(--accent); }
-  .hero-sub-orig {
-    margin-top: 28px;
-    font-size: 17px; line-height: 1.55;
-    color: var(--text-dim);
-    max-width: 520px;
-  }
-  .hero-cta-row {
-    margin-top: 40px;
-    display: flex; gap: 12px; flex-wrap: wrap;
-  }
-  .hero-meta {
-    margin-top: 40px;
-    display: flex; align-items: center; gap: 24px;
-    flex-wrap: wrap;
-    padding-top: 28px;
-    border-top: 1px solid var(--border);
-  }
-  .hero-meta .item {
-    font-size: 12px; color: var(--text-faint);
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .hero-meta .item .ck {
-    width: 14px; height: 14px; border-radius: 50%;
-    background: var(--accent-soft); color: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .hero-meta .item .ck svg { width: 8px; height: 8px; }
-  .hero-card-right {
-    background: #0a0a0a;
-    border-radius: 32px;
-    padding: 40px;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #1a1a1a;
-    display: flex; align-items: center; justify-content: center;
-    min-height: 560px;
-  }
-  .hero-card-right::before {
-    content: "";
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 50% 60% at 50% 50%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%);
-    opacity: 0.7;
-  }
-  .hero-card-right::after {
-    content: "";
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    opacity: 0.6;
-  }
-  .hero-waves {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 50%;
-    display: flex; align-items: flex-end; gap: 3px;
-    padding: 0 32px; pointer-events: none; opacity: 0.18;
-  }
-  .hero-waves i {
-    flex: 1;
-    background: linear-gradient(to top, var(--accent), transparent);
-    border-radius: 2px;
-    animation: wave 1.4s ease-in-out infinite;
-  }
-  @keyframes wave { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
-  .state-badge {
-    position: absolute; top: 24px; left: 24px;
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 12px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    backdrop-filter: blur(8px);
-    border-radius: 999px; color: #fff;
-    font-size: 11px; font-weight: 500;
-    z-index: 3; transition: opacity 300ms;
-  }
-  .state-badge .num {
-    color: var(--accent);
-    font-feature-settings: "tnum" 1; font-size: 10px;
-  }
+  /* ============================== section head (design system) */
+  .sh { max-width: 680px; margin-bottom: 52px; }
+  .sh h2 { font-size: clamp(38px, 4.8vw, 60px); color: var(--text-strong); }
+  .lede { color: var(--text-dim); font-size: 17px; max-width: 52ch; }
+  .sh .lede { margin-top: 14px; }
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  /* popup */
-  .popup-stage {
-    position: relative; z-index: 2;
-    width: 360px; max-width: 100%;
-  }
-  .popup {
-    width: 360px;
-    background: #141414;
-    border: 1px solid #2a2a2a;
-    border-radius: 14px;
-    overflow: hidden;
-    color: #fff;
-    box-shadow: var(--shadow-popup);
-    transition: height 480ms cubic-bezier(.22,1,.36,1);
-  }
-  .pop-head {
-    height: 44px;
-    display: flex; align-items: center; gap: 10px;
-    padding: 0 14px;
-    border-bottom: 1px solid #232323;
-    background: #0a0a0a;
-  }
-  .pop-mark {
-    width: 22px; height: 22px; border-radius: 6px;
-    background: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .pop-title {
-    font-family: inherit;
-    font-weight: 700; font-size: 14px;
-    letter-spacing: -0.01em;
-  }
-  .pop-title .id { color: var(--accent); }
-  .pop-sep { width: 1px; height: 12px; background: #2a2a2a; }
-  .pop-mix {
-    flex: 1; min-width: 0;
-    font-size: 11px; color: #888;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  /* popup body — variable per state */
-  .popup-body { position: relative; overflow: hidden; }
+  /* ============================== hero: the extension, running on a mix */
+  .hero { padding: 64px 0 40px; position: relative; overflow: hidden; }
+  .hero-glow { position: absolute; left: -14%; top: -10%; width: 640px; height: 640px; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 7%, transparent), transparent 68%); filter: blur(20px); pointer-events: none; z-index: -1; }
+  .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; align-items: stretch; }
+  .hero-copy { display: flex; flex-direction: column; justify-content: center; min-height: var(--h-lg); }
+  .hero-copy h1 { font-size: clamp(42px, 5.2vw, 64px); line-height: 1.03; letter-spacing: -.03em; font-weight: 700; color: var(--text-strong); }
+  .hero-copy .lede { margin-top: 20px; }
+  .hero-copy .ctas { margin-top: 32px; }
+  .hero-stats-mini { display: flex; margin-top: 36px; }
+  .stat-card { display: flex; flex-direction: column; gap: 8px; padding: 0 24px; border-right: 1px solid var(--line); }
+  .stat-card:first-child { padding-left: 0; }
+  .stat-card:last-child { border-right: 0; }
+  .stat-card h3 { font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 9px; }
+  .hero-stats-mini .stat-num { font-size: 26px; }
+  .feat-beta { display: inline-block; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent-border); border-radius: 4px; padding: 1px 5px; white-space: nowrap; }
+  .sync-scan { width: 26px; height: 26px; position: relative; flex-shrink: 0; }
+  .sync-scan .dot, .sync-scan .ring { position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; }
+  .sync-scan .dot { background: var(--accent); }
+  .sync-scan .ring { border: 1.5px solid var(--accent); animation: syncping 1.8s ease-out infinite; opacity: 0; }
+  .sync-scan .ring:nth-child(3) { animation-delay: .6s; }
+  @keyframes syncping { 0% { width: 8px; height: 8px; margin: -4px 0 0 -4px; opacity: .8; } 100% { width: 26px; height: 26px; margin: -13px 0 0 -13px; opacity: 0; } }
+  .eq-viz { display: flex; align-items: flex-end; gap: 4px; height: 26px; }
+  .eq-viz i { width: 5px; border-radius: 2px; background: var(--accent); animation: eqviz 1.3s ease-in-out infinite; }
+  @keyframes eqviz { 0%, 100% { height: 22%; } 50% { height: 100%; } }
 
-  .state-view {
-    position: absolute; inset: 0;
-    opacity: 0;
-    transition: opacity 380ms ease, transform 380ms ease;
-    transform: translateY(8px);
-    pointer-events: none;
-  }
-  .state-view.show {
-    position: relative;
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
+  .flow-frame { background: var(--app-bg); border-radius: var(--r-lg); padding: 40px; position: relative; overflow: hidden; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; min-height: var(--h-lg); }
+  .flow-frame::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(255,255,255,.04), transparent 70%); }
+  .flow-frame::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 40px 40px; -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, transparent 70%); mask-image: radial-gradient(ellipse at center, #000 0%, transparent 70%); opacity: .8; }
+  .hero-waves { position: absolute; left: 0; right: 0; bottom: 0; height: 45%; display: flex; align-items: flex-end; justify-content: space-between; gap: 1px; pointer-events: none; opacity: .18; z-index: 1; }
+  .hero-waves i { width: 3px; flex: 0 0 3px; background: var(--accent); border-radius: 2px; animation: wave 1.4s ease-in-out infinite; transform-origin: bottom; }
+  @keyframes wave { 0%, 100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }
+  .scan-sweep { position: absolute; left: 0; right: 0; height: 140px; z-index: 2; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 16%, transparent), transparent); animation: sweepup 6s ease-in-out infinite; pointer-events: none; }
+  @keyframes sweepup { 0% { transform: translateY(560px); } 50% { transform: translateY(-140px); } 100% { transform: translateY(560px); } }
+  .flow-wrap { position: relative; z-index: 2; max-width: 360px; margin: 0 auto; width: 100%; }
+  .flow-badge { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.06); border: 1px solid var(--line-strong); border-radius: var(--r-pill); padding: 6px 14px; font-size: 11px; color: var(--text-strong); margin-bottom: 14px; height: 29px; }
+  .flow-badge .num { color: var(--accent); font-weight: 700; flex-shrink: 0; font-feature-settings: "tnum" 1; }
+  .flow-badge span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .flow-shell { position: relative; background: var(--ext-bg); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--sh-mock); height: 340px; }
+  .flow-head { height: 46px; display: flex; align-items: center; gap: 10px; padding: 0 16px; background: var(--ext-head); border-bottom: 1px solid var(--ext-line); }
+  .flow-name { font-weight: 700; font-size: 14px; color: var(--text-strong); }
+  .flow-name em { font-style: normal; color: var(--accent); }
+  .flow-sep { width: 1px; height: 12px; background: var(--ext-line); }
+  .flow-mix { flex: 1; min-width: 0; font-size: 11px; color: var(--ext-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+  .flow-body { position: relative; overflow: hidden; height: calc(100% - 46px); }
+  .flow-view { position: absolute; inset: 0; opacity: 0; transform: translateY(8px); transition: opacity 380ms ease, transform 380ms ease; pointer-events: none; }
+  .flow-view.show { position: relative; opacity: 1; transform: none; pointer-events: auto; }
+  .flow-find, .flow-loading, .flow-now { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 0 24px; }
+  .flow-eyes { display: inline-flex; gap: 12px; animation: flowscan 2.4s ease-in-out infinite; }
+  .flow-eye { width: 14px; height: 14px; border-radius: 999px; background: var(--text-strong); position: relative; overflow: hidden; }
+  .flow-eye::after { content: ""; position: absolute; inset: 0; background: var(--ext-bg); transform: scaleY(0); animation: flowblink 3.6s ease-in-out infinite; }
+  @keyframes flowscan { 0%, 100% { transform: translateX(-6px); } 50% { transform: translateX(6px); } }
+  @keyframes flowblink { 0%, 92%, 100% { transform: scaleY(0); } 94%, 97% { transform: scaleY(1); } }
+  .flow-looking { font-size: 13px; color: var(--text-strong); }
+  .flow-dots span { opacity: 0; animation: flowdot 1.4s infinite; }
+  .flow-dots span:nth-child(2) { animation-delay: .2s; }
+  .flow-dots span:nth-child(3) { animation-delay: .4s; }
+  @keyframes flowdot { 0%, 80%, 100% { opacity: 0; } 30%, 60% { opacity: 1; } }
+  .flow-tracklist { height: 100%; display: flex; flex-direction: column; }
+  .flow-tracklist .ext-bar { flex-shrink: 0; }
+  .tl2-rows { flex: 1; overflow: hidden; }
+  .tl2-rows-in { animation: tl2scroll 18s linear infinite; }
+  @keyframes tl2scroll { 0%, 8% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+  .tl2-rows .tl-row { grid-template-columns: 22px 44px 1fr auto; }
+  .flow-now { flex-direction: row; text-align: left; gap: 14px; }
+  .now2-main { flex: 1; min-width: 0; }
+  .now2-eyebrow { font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+  .now2-title { font-size: 15px; font-weight: 600; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-strong); }
+  .now2-title span { color: var(--ext-dim); font-weight: 500; }
+  .now2-meta { font-size: 10px; color: var(--accent); margin-top: 4px; font-feature-settings: "tnum" 1; }
+  .now2-meta .faint { color: var(--ext-muted); }
+  .now2-expand { width: 36px; height: 36px; border-radius: var(--r-sm); border: 1px solid var(--ext-line); display: inline-flex; align-items: center; justify-content: center; color: var(--text-strong); flex-shrink: 0; }
 
-  .state-find {
-    height: 140px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-    padding: 0 22px;
+  /* ============================== how it works: three shots of the real UI */
+  .how-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .step { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px 22px 22px; }
+  .step .step-dot { margin-bottom: 16px; }
+  .step h3 { font-size: 19px; margin-bottom: 8px; color: var(--text-strong); }
+  .step p { font-size: 14px; color: var(--text-dim); flex: 1; }
+  .shot { margin-top: 20px; background: var(--ext-bg); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+  .shot-h { height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--ext-head); border-bottom: 1px solid var(--ext-line); }
+  .shot-h .m { width: 18px; height: 18px; display: inline-flex; flex-shrink: 0; }
+  .shot-h .n { font-weight: 700; font-size: 12px; color: var(--text-strong); flex-shrink: 0; }
+  .shot-h .n em { font-style: normal; color: var(--accent); }
+  .shot-h .x { flex: 1; min-width: 0; font-size: 10px; color: var(--ext-muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .shot-body { padding: 18px; min-height: 130px; display: flex; flex-direction: column; justify-content: center; }
+  .shot-status { margin-top: 12px; font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 7px; }
+  .shot-status .ok { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .shot-outcome { margin-top: 12px; font-size: 11px; color: var(--accent); display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .shot-outcome::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .lk { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 6px 0; }
+  .lk-dots { display: flex; gap: 14px; animation: lkeye 2.2s ease-in-out infinite; }
+  .lk-dots i { width: 13px; height: 13px; border-radius: 50%; background: var(--text-strong); }
+  @keyframes lkeye { 0%, 100% { transform: translateX(-9px); } 50% { transform: translateX(9px); } }
+  .lk-t { display: flex; align-items: baseline; gap: 9px; font-size: 15px; font-weight: 500; color: var(--text); }
+  .lk-e { display: flex; gap: 4px; }
+  .lk-e i { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); animation: lke 1.2s steps(1) infinite; }
+  .lk-e i:nth-child(2) { animation-delay: .4s; }
+  .lk-e i:nth-child(3) { animation-delay: .8s; }
+  @keyframes lke { 0%, 33% { opacity: 1; } 34%, 100% { opacity: .18; } }
+  .mock-row { display: flex; align-items: center; gap: 9px; padding: 11px 16px; border-bottom: 1px solid var(--ext-row-line); font-size: 12.5px; }
+  .mock-row:last-child { border-bottom: 0; }
+  .mock-row .heart { color: var(--accent); flex-shrink: 0; }
+  .mock-row .mt { flex: 1; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mock-row.on { background: var(--accent-soft); }
+  .mock-row.on .mt { color: var(--text); }
+  .mock-row .pill { font-size: 10px; color: var(--accent); border: 1px solid var(--line-strong); border-radius: var(--r-pill); padding: 2px 8px; flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; }
+  @media (max-width: 960px) {
+    .hero-grid, .how-flow { grid-template-columns: 1fr; }
+    .hero-copy { min-height: 0; }
+    .flow-frame { min-height: 0; padding: 26px; }
   }
-  .find-btn {
-    width: 100%; height: 44px; border-radius: 8px;
-    background: var(--accent);
-    color: var(--on-accent); font-weight: 600; font-size: 14px;
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 8px 22px -8px color-mix(in srgb, var(--accent) 50%, transparent);
-  }
-  .find-btn .ic { display: inline-block; }
-  .find-status {
-    font-size: 11px; color: #888;
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .find-status .ok {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.6);
-  }
-
-  .state-loading {
-    height: 140px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-    padding: 0 22px;
-  }
-  .eyes { display: inline-flex; gap: 12px; animation: scan 2.4s ease-in-out infinite; }
-  .eye { width: 14px; height: 14px; border-radius: 999px; background: #fff; position: relative; overflow: hidden; }
-  .eye::after {
-    content: ""; position: absolute; inset: 0;
-    background: #141414;
-    transform: scaleY(0);
-    animation: blink 3.6s ease-in-out infinite;
-  }
-  @keyframes scan { 0%, 100% { transform: translateX(-6px); } 50% { transform: translateX(6px); } }
-  @keyframes blink { 0%, 92%, 100% { transform: scaleY(0); } 94%, 97% { transform: scaleY(1); } }
-  .looking { font-size: 13px; color: #fff; }
-  .dots span { opacity: 0; animation: dotp 1.4s infinite; }
-  .dots span:nth-child(1) { animation-delay: 0s; }
-  .dots span:nth-child(2) { animation-delay: 0.2s; }
-  .dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes dotp { 0%, 80%, 100% { opacity: 0; } 30%, 60% { opacity: 1; } }
-
-  .state-tracklist {
-    height: 420px;
-  }
-  .tl-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 9px 14px;
-    border-bottom: 1px solid #232323;
-    font-feature-settings: "tnum" 1;
-    font-size: 9.5px; color: #666;
-    text-transform: uppercase; letter-spacing: 0.1em;
-    background: #1a1a1a;
-  }
-  .tl-bar .ct { color: var(--accent); background: var(--accent-soft); padding: 2px 6px; border-radius: 4px; font-size: 9px; }
-  .tl-rows { max-height: 380px; overflow: hidden; position: relative; }
-  .tl-rows-inner { animation: tl-scroll 18s linear infinite; }
-  @keyframes tl-scroll {
-    0%, 8% { transform: translateY(0); }
-    100%   { transform: translateY(-50%); }
-  }
-  .tl-row {
-    display: grid;
-    grid-template-columns: 22px 50px 1fr auto;
-    align-items: center; gap: 10px;
-    padding: 10px 14px;
-    border-bottom: 1px solid #232323;
-    font-size: 12px;
-  }
-  .tl-row.active { background: var(--accent-soft); }
-  .tl-row.unknown { opacity: 0.5; }
-  .tl-row .n { font-feature-settings: "tnum" 1; font-size: 9.5px; color: #666; text-align: right; }
-  .tl-row.active .n { color: var(--accent); }
-  .tl-row .tc { font-feature-settings: "tnum" 1; font-size: 10.5px; color: var(--accent); }
-  .tl-row .tc.empty { color: #666; }
-  .tl-row .meta { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #b3b3b3; }
-  .tl-row .meta .ar { color: #b3b3b3; }
-  .tl-row .meta .ti { color: #fff; }
-  .tl-row .meta .em { color: #666; margin: 0 6px; }
-  .tl-row.active .meta .ar, .tl-row.active .meta .ti { color: #fff; font-weight: 600; }
-  .eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
-  .eq i {
-    width: 2px; background: var(--accent); border-radius: 1px;
-    animation: eq 1s ease-in-out infinite;
-  }
-  .eq i:nth-child(1) { animation-delay: -0.4s; }
-  .eq i:nth-child(2) { animation-delay: -0.2s; }
-  .eq i:nth-child(3) { animation-delay: -0.6s; }
-  .eq i:nth-child(4) { animation-delay: -0.1s; }
-  @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 12px; } }
-
-  .state-now {
-    height: 140px;
-    display: flex; align-items: center;
-    padding: 0 18px;
-    gap: 14px;
-  }
-  .now-main { flex: 1; min-width: 0; }
-  .now-eyebrow {
-    font-size: 10px;
-    color: var(--accent);
-    text-transform: uppercase; letter-spacing: 0.14em;
-    font-weight: 700;
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .now-title {
-    font-size: 15px; font-weight: 600; margin-top: 6px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .now-title .ar { color: #b3b3b3; font-weight: 500; }
-  .now-title .em { color: #666; margin: 0 6px; }
-  .now-meta {
-    font-feature-settings: "tnum" 1;
-    font-size: 10px; color: var(--accent);
-    margin-top: 4px;
-  }
-  .now-meta .faint { color: #666; }
-  .now-expand {
-    width: 36px; height: 36px; border-radius: 8px;
-    border: 1px solid #2a2a2a;
-    display: inline-flex; align-items: center; justify-content: center;
-    color: #fff;
-  }
-
-  /* ============================== ticker */
-  .ticker {
-    overflow: hidden;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    padding: 28px 0;
-  }
-  .ticker-track {
-    display: flex; gap: 64px;
-    animation: ticker 36s linear infinite;
-    width: max-content;
-  }
-  @keyframes ticker {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .ticker-item {
-    display: inline-flex; align-items: center; gap: 16px;
-    font-family: inherit;
-    font-weight: 500;
-    font-size: 20px;
-    color: var(--text-dim);
-    letter-spacing: -0.01em;
-    white-space: nowrap;
-  }
-  .ticker-item .tc {
-    font-feature-settings: "tnum" 1;
-    font-size: 12px;
-    color: var(--accent);
-    background: var(--accent-soft);
-    padding: 4px 10px;
-    border-radius: 999px;
+  @media (max-width: 600px) {
+    .hero-stats-mini { flex-wrap: wrap; gap: 18px 0; }
   }
 
   /* ============================== section head */
@@ -999,101 +780,6 @@
     color: #fff;
   }
   .pain p { font-size: 14.5px; color: rgba(255,255,255,0.6); line-height: 1.55; }
-
-  /* ============================== how — sticky 3-step */
-  .how-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-  .step-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 32px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 320ms, border-color 320ms, box-shadow 320ms;
-  }
-  .step-card:hover {
-    transform: translateY(-6px);
-    border-color: var(--accent);
-    box-shadow: var(--shadow-card);
-  }
-  .step-card .num-pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 12px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    border-radius: 999px;
-    font-feature-settings: "tnum" 1;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    margin-bottom: 24px;
-  }
-  .step-card h3 {
-    font-family: inherit;
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0 0 8px;
-    line-height: 1.15;
-    letter-spacing: -0.015em;
-  }
-  .step-card p { font-size: 14.5px; color: var(--text-dim); line-height: 1.55; }
-  .step-mock {
-    margin-top: 28px;
-    background: #0a0a0a;
-    border: 1px solid #1a1a1a;
-    border-radius: 14px;
-    padding: 20px;
-    height: 160px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    overflow: hidden;
-    color: #fff;
-  }
-  .step-mock.s1 .find-btn { width: 100%; max-width: 220px; }
-  .step-mock.s3 { padding: 0; align-items: stretch; flex-direction: column; }
-  .step-mini {
-    display: grid;
-    grid-template-columns: 44px 1fr auto;
-    align-items: center; gap: 10px;
-    padding: 9px 14px;
-    border-bottom: 1px solid #1a1a1a;
-    font-size: 11px;
-  }
-  .step-mini:last-child { border-bottom: 0; }
-  .step-mini.active { background: var(--accent-soft); }
-  .step-mini .tc { font-feature-settings: "tnum" 1; font-size: 10px; color: var(--accent); }
-  .step-mini .label { color: #b3b3b3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .step-mini.active .label { color: #fff; font-weight: 600; }
-  .step-mini .cursor {
-    position: absolute;
-    width: 16px; height: 16px;
-    pointer-events: none;
-    transition: opacity 200ms;
-  }
-  /* cursor anim */
-  .s3-cursor {
-    position: absolute;
-    top: 0; left: 0;
-    width: 18px; height: 18px;
-    z-index: 2;
-    animation: cursor-fly 5s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes cursor-fly {
-    0%   { transform: translate(180px, 16px); opacity: 0; }
-    8%   { opacity: 1; }
-    35%  { transform: translate(50px, 16px) scale(1); }
-    40%  { transform: translate(50px, 16px) scale(0.85); }
-    45%  { transform: translate(50px, 16px) scale(1); }
-    75%  { transform: translate(50px, 78px) scale(1); }
-    80%  { transform: translate(50px, 78px) scale(0.85); }
-    85%  { transform: translate(50px, 78px) scale(1); }
-    100% { transform: translate(50px, 78px); opacity: 1; }
-  }
 
   /* ============================== features */
   .feat-grid {
@@ -1680,10 +1366,7 @@
 
   /* ============================== mobile */
   @media (max-width: 1000px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-card-left { padding: 40px 32px; }
-    .hero-card-right { min-height: 480px; padding: 32px; }
-    .problem-grid, .how-grid, .quotes-grid { grid-template-columns: 1fr; }
+    .problem-grid, .quotes-grid { grid-template-columns: 1fr; }
     .feat-grid { grid-template-columns: 1fr; }
     .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
     .roadmap-grid { grid-template-columns: 1fr; gap: 16px; }
@@ -1698,10 +1381,7 @@
     .hero-input-wrap { flex-wrap: wrap; padding: 10px; border-radius: 14px; gap: 10px; }
     .hero-input-wrap input { width: 100%; padding: 8px 4px; }
     .hero-find-btn { width: 100%; justify-content: center; }
-    .hero-card-left { padding: 32px 24px; border-radius: 24px; }
-    .hero-card-right { padding: 24px; border-radius: 24px; min-height: 540px; }
     .problem-card, .final-card { border-radius: 24px; padding: 56px 24px; }
-    .popup-stage, .popup { width: 320px; }
     .compare th, .compare td { padding: 16px 18px; font-size: 13.5px; }
     .price-card { padding: 32px 24px; }
   }
@@ -1772,94 +1452,68 @@
     </div>
   </section>
 
-  <!-- HERO — original two-column popup demo -->
+  <!-- HERO — the extension, running on a mix -->
   <section class="hero">
+    <div class="hero-glow"></div>
     <div class="wrap">
       <div class="hero-grid">
-        <div class="hero-card-left rv">
-          <div class="eyebrow">
-            HuntID for SoundCloud
-            <span class="chip-new">NEW</span>
+        <div class="hero-copy rv">
+          <span class="eyebrow">Chrome extension for SoundCloud</span>
+          <h1>See the full tracklist for any SoundCloud mix</h1>
+          <p class="lede">Open a set, hit Find tracklist, and the full tracklist shows up right while you're listening — named, timecoded, linked to the source.</p>
+          <div class="ctas">
+            <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" data-track-cws="hero">Add to Chrome, free <span class="arr">→</span></a>
+            <a href="#how" class="btn btn-g btn-lg">See it in action</a>
           </div>
-          <h1 class="display"><span id="h1-word">Wondering</span><br/>what your favourite dj played?</h1>
-          <p class="hero-sub-orig">
-            It's in the tracklist.
-          </p>
-          <p class="hero-sub-orig" style="margin-top: 12px; font-size: 15px; color: var(--text-faint);">
-            HuntID finds and analyze tracklists for DJ mixes on SoundCloud.<br/>
-            Click any timecode — jump right to that moment.
-          </p>
-          <div class="hero-cta-row">
-            <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" data-track-cws="hero">
-              Add to Chrome — Free
-              <span class="arr">→</span>
-            </a>
-            <a href="#how" class="btn btn-g btn-lg">See how it works</a>
-          </div>
-          <div class="hero-meta">
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> 10 searches free</span>
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> <span id="px-hero">$4.99</span>/mo after</span>
-            <span class="item"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> No credit card</span>
+          <div class="hero-stats-mini">
+            <article class="stat-card">
+              <div class="sync-scan"><span class="dot"></span><span class="ring"></span><span class="ring"></span></div>
+              <h3>10 searches free</h3>
+            </article>
+            <article class="stat-card">
+              <div class="stat-num" data-stat="tracklists">900K+</div>
+              <h3>Tracklists to search</h3>
+            </article>
+            <article class="stat-card">
+              <div class="eq-viz"><i style="animation-delay:-1.1s"></i><i style="animation-delay:-.5s"></i><i style="animation-delay:-.9s"></i><i style="animation-delay:-.2s"></i><i style="animation-delay:-.7s"></i><i style="animation-delay:-1.2s"></i></div>
+              <h3>Audio recognition <span class="feat-beta">Launch soon</span></h3>
+            </article>
           </div>
         </div>
 
-        <div class="hero-card-right rv" data-delay="1">
-          <div class="hero-waves" id="hero-waves" aria-hidden="true"></div>
-          <div class="state-badge" id="state-badge">
-            <span class="num" id="state-num">01</span>
-            <span id="state-label">Idle on a mix</span>
-          </div>
-          <div class="popup-stage">
-            <div class="popup" id="popup-shell">
-              <div class="pop-head">
-                <span class="pop-mark" aria-hidden="true">
-                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-                    <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"/>
-                    <path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-                    <circle cx="7" cy="7" r="1.2" fill="white"/>
-                  </svg>
-                </span>
-                <span class="pop-title">Hunt<span class="id">ID</span></span>
-                <span class="pop-sep"></span>
-                <span class="pop-mix">Boiler Room · Palms Trax @ Hï Ibiza</span>
+        <div class="flow-frame rv" data-delay="1" aria-hidden="true">
+          <div class="scan-sweep"></div>
+          <div class="hero-waves" id="hero-waves"></div>
+          <div class="flow-wrap">
+            <div class="flow-badge"><span class="num" id="flow-num">01</span> <span id="flow-label">A set full of tracks you don't know yet</span></div>
+            <div class="flow-shell">
+              <div class="flow-head">
+                <span class="mk" style="width:22px;height:22px"><svg viewBox="0 0 64 64" width="22" height="22" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span>
+                <span class="flow-name">Hunt<em>ID</em></span>
+                <span class="flow-sep"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007zM87.204 109.25c8.951 39.59 4.918 74.557-.335 114.907a5.538 5.538 0 01-5.469 4.667 5.536 5.536 0 01-5.458-4.667c-4.78-39.799-8.742-75.589-.343-114.919a5.812 5.812 0 015.804-5.804 5.806 5.806 0 015.805 5.811l-.004.005zm-35.298-6.013c8.198 40.558 5.532 74.9-.209 115.597-.677 6.012-10.982 6.075-11.534 0-5.19-40.083-7.647-75.452-.208-115.597a6.026 6.026 0 015.981-5.368 5.995 5.995 0 015.97 5.368zm-35.633 19.661c8.596 26.903 5.659 48.761-.343 76.337a5.595 5.595 0 01-5.564 4.982 5.614 5.614 0 01-5.575-4.982c-5.19-27.036-7.293-49.364-.469-76.337.311-3.052 2.898-5.368 5.97-5.368a5.995 5.995 0 015.969 5.368h.012z"></path></svg>
+                <span class="flow-mix">Boiler Room · Palms Trax @ Hï Ibiza</span>
               </div>
-              <div class="popup-body" id="popup-body">
-                <div class="state-view state-find" data-state="find">
-                  <button class="find-btn" type="button">
-                    <span class="ic">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>
-                    </span>
-                    Find Tracklist
-                  </button>
-                  <div class="find-status"><span class="ok"></span> System available</div>
+              <div class="flow-body">
+                <div class="flow-view flow-find" data-state="find">
+                  <span class="ext-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>Find tracklist</span>
+                  <div class="ext-status"><span class="ok"></span>Mix detected</div>
                 </div>
-                <div class="state-view state-loading" data-state="loading">
-                  <div class="eyes" aria-hidden="true">
-                    <span class="eye"></span><span class="eye"></span>
-                  </div>
-                  <div class="looking">Looking<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+                <div class="flow-view flow-loading" data-state="loading">
+                  <div class="flow-eyes"><span class="flow-eye"></span><span class="flow-eye"></span></div>
+                  <div class="flow-looking">Looking<span class="flow-dots"><span>.</span><span>.</span><span>.</span></span></div>
                 </div>
-                <div class="state-view state-tracklist" data-state="tracklist">
-                  <div class="tl-bar">
-                    <span>Tracklist</span>
-                    <span class="ct">15 TRACKS</span>
-                  </div>
-                  <div class="tl-rows">
-                    <div class="tl-rows-inner" id="tl-rows-inner"></div>
-                  </div>
+                <div class="flow-view flow-tracklist" data-state="tracklist">
+                  <div class="ext-bar"><span>Tracklist</span><b>15 tracks</b></div>
+                  <div class="tl2-rows"><div class="tl2-rows-in" id="tl2-rows"></div></div>
                 </div>
-                <div class="state-view state-now" data-state="now">
-                  <div class="now-main">
-                    <div class="now-eyebrow">
-                      <span class="eq"><i></i><i></i><i></i></span>
-                      Now Playing
-                    </div>
-                    <div class="now-title"><span class="ar">Anz</span><span class="em">—</span><span class="ti">Last Before Lights</span></div>
-                    <div class="now-meta">19:55 <span class="faint">· track 05/15</span></div>
+                <div class="flow-view flow-now" data-state="now">
+                  <div class="now2-main">
+                    <div class="now2-eyebrow"><span class="eq"><i></i><i></i><i></i></span>Now playing</div>
+                    <div class="now2-title"><span>Anz —</span> Last Before Lights</div>
+                    <div class="now2-meta">19:55 <span class="faint">· track 05/15</span></div>
                   </div>
-                  <button class="now-expand">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 5.5 3.5 3.5 3.5-3.5"/></svg>
-                  </button>
+                  <span class="now2-expand"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 5.5 3.5 3.5 3.5-3.5"/></svg></span>
                 </div>
               </div>
             </div>
@@ -1868,11 +1522,6 @@
       </div>
     </div>
   </section>
-
-  <!-- TICKER — bonus dynamic element -->
-  <div class="ticker rv">
-    <div class="ticker-track" id="ticker-track"></div>
-  </div>
 
   <!-- PROBLEM — dark inverse card -->
   <section id="problem">
@@ -1906,47 +1555,44 @@
   <!-- HOW IT WORKS -->
   <section id="how">
     <div class="wrap">
-      <div class="sec-head rv">
-        <span class="eyebrow">How it works</span>
-        <h2 class="display">Three clicks. <span class="accent">Done.</span></h2>
-        <p>From a silent track ID to a clickable timecode in under three seconds.</p>
-      </div>
-      <div class="how-grid">
-        <div class="step-card rv" data-delay="1">
-          <div class="num-pill"><span>STEP 01</span></div>
-          <h3>Open any DJ mix on SoundCloud</h3>
-          <p>HuntID detects mixes automatically. No setup.</p>
-          <div class="step-mock s1">
-            <button class="find-btn" type="button">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>
-              Find Tracklist
-            </button>
-          </div>
-        </div>
-        <div class="step-card rv" data-delay="2">
-          <div class="num-pill"><span>STEP 02</span></div>
-          <h3>Hit Find Tracklist</h3>
-          <p>HuntID searches the tracklist instantly.</p>
-          <div class="step-mock">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
-              <div class="eyes" aria-hidden="true"><span class="eye"></span><span class="eye"></span></div>
-              <div class="looking" style="font-size: 13px;">Looking<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+      <div class="sh rv"><span class="eyebrow">How it works</span><h2>Three steps to hunt your sound.</h2></div>
+      <div class="how-flow">
+        <article class="step rv" data-delay="1">
+          <div class="step-dot">01</div>
+          <h3>Open any mix on SoundCloud</h3>
+          <p>HuntID activates the moment you hit play, nothing to configure.</p>
+          <div class="shot">
+            <div class="shot-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14" style="flex-shrink:0;opacity:.5;margin-right:7px;vertical-align:-1px"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Palms Trax, Boiler Room</span></span></div>
+            <div class="shot-body">
+              <div class="ext-btn"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>Find tracklist</div>
+              <div class="shot-status"><span class="ok"></span>Mix detected automatically</div>
             </div>
           </div>
-        </div>
-        <div class="step-card rv" data-delay="3">
-          <div class="num-pill"><span>STEP 03</span></div>
-          <h3>Click any timecode</h3>
-          <p>Jump directly to that moment in the mix.</p>
-          <div class="step-mock s3">
-            <svg class="s3-cursor" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 3l14 9-7 1-3 7-4-17z" fill="#fff" stroke="#0a0a0a" stroke-width="1.2" stroke-linejoin="round"/>
-            </svg>
-            <div class="step-mini"><span class="tc">04:12</span><span class="label">DJ Boring — Sunday Avenue</span></div>
-            <div class="step-mini active"><span class="tc">09:48</span><span class="label">Avalon Emerson — Fluorescent Rush</span><span class="eq"><i></i><i></i><i></i></span></div>
-            <div class="step-mini"><span class="tc">14:30</span><span class="label">Skee Mask — VLI</span></div>
+        </article>
+        <article class="step rv" data-delay="2">
+          <div class="step-dot">02</div>
+          <h3>Hit Find tracklist</h3>
+          <p>We match the set against <span data-stat="tracklists">900K+</span> tracklisted mixes and return every track we can confirm.</p>
+          <div class="shot">
+            <div class="shot-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14" style="flex-shrink:0;opacity:.5;margin-right:7px;vertical-align:-1px"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Palms Trax, Boiler Room</span></span></div>
+            <div class="shot-body">
+              <div class="lk"><div class="lk-dots"><i></i><i></i></div><div class="lk-t">Looking<span class="lk-e"><i></i><i></i><i></i></span></div></div>
+              <div class="shot-outcome">Full tracklist, usually under 3 seconds</div>
+            </div>
           </div>
-        </div>
+        </article>
+        <article class="step rv" data-delay="3">
+          <div class="step-dot">03</div>
+          <h3>Save it, or go get it</h3>
+          <p>Favourite any track on the spot, or jump straight to where you buy it.</p>
+          <div class="shot">
+            <div class="shot-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14" style="flex-shrink:0;opacity:.5;margin-right:7px;vertical-align:-1px"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>15 tracks found</span></span></div>
+            <div class="shot-body" style="padding:0">
+              <div class="mock-row"><span class="mt">DJ Boring — Sunday Avenue</span><span class="pill"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>Beatport</span></div>
+              <div class="mock-row on"><span class="heart">♥</span><span class="mt">Avalon Emerson — Fluorescent Rush</span><span class="pill">Saved</span></div>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -2510,62 +2156,72 @@
   (function () {
     const host = document.getElementById('hero-waves');
     if (!host) return;
-    const N = 64;
     let html = '';
-    for (let i = 0; i < N; i++) {
-      const delay = ((i * 0.06) % 1.4).toFixed(2);
-      const h = 16 + Math.abs(Math.sin(i * 0.34) * 80);
-      html += `<i style="animation-delay:-${delay}s; height:${h}px"></i>`;
+    for (let i = 0; i < 110; i++) {
+      const delay = ((i * 0.045) % 1.4).toFixed(2);
+      const h = 40 + Math.abs(Math.sin(i * 0.22)) * 260 * (0.5 + 0.5 * Math.abs(Math.sin(i * 0.05)));
+      html += `<i style="animation-delay:-${delay}s;height:${h.toFixed(0)}px"></i>`;
     }
     host.innerHTML = html;
   })();
 
-  /* ----------------------- tracks data */
-  const TRACKS = [
-    { n: 1,  t: "00:00", a: "Roza Terenzi",       ti: "Modem Tan" },
-    { n: 2,  t: "04:12", a: "DJ Boring",          ti: "Sunday Avenue" },
-    { n: 3,  t: "09:48", a: "Avalon Emerson",     ti: "Fluorescent Rush" },
-    { n: 4,  t: "14:30", a: "Skee Mask",          ti: "VLI" },
-    { n: 5,  t: "19:55", a: "Anz",                ti: "Last Before Lights", active: true },
-    { n: 6,  t: "24:18", a: "Nia Archives",       ti: "Forbidden Feelingz" },
-    { n: 7,  t: null,    a: "Unknown",            ti: "ID — bootleg edit" },
-    { n: 8,  t: "33:02", a: "Jensen Interceptor", ti: "Bionic Symphony" },
-    { n: 9,  t: "38:44", a: "Sherelle",           ti: "JUNGLE TEKNAH" },
-    { n: 10, t: "43:11", a: "Overmono",           ti: "So U Kno" }
-  ];
-
-  /* ----------------------- popup tracklist (rows duplicated for seamless scroll) */
+  /* ----------------------- hero tracklist (rows run twice for a seamless scroll) */
   (function () {
-    const host = document.getElementById('tl-rows-inner');
+    const host = document.getElementById('tl2-rows');
     if (!host) return;
-    function rowHtml(t, i) {
-      const cls = ['tl-row'];
-      if (t.active) cls.push('active');
-      if (t.t === null) cls.push('unknown');
-      const tc = t.t === null
-        ? `<span class="tc empty">--:--</span>`
-        : `<span class="tc">${t.t}</span>`;
-      const eq = t.active ? `<span class="eq"><i></i><i></i><i></i><i></i></span>` : `<span></span>`;
-      return `
-        <div class="${cls.join(' ')}">
-          <span class="n">${String(t.n).padStart(2, '0')}</span>
-          ${tc}
-          <span class="meta"><span class="ar">${t.a}</span><span class="em">—</span><span class="ti">${t.ti}</span></span>
-          ${eq}
-        </div>`;
-    }
-    const all = TRACKS.concat(TRACKS).map(rowHtml).join('');
-    host.innerHTML = all;
+    const TRACKS = [
+      ['00:00', 'Roza Terenzi', 'Modem Tan'],
+      ['04:12', 'DJ Boring', 'Sunday Avenue'],
+      ['09:48', 'Avalon Emerson', 'Fluorescent Rush', true],
+      ['14:30', 'Skee Mask', 'VLI'],
+      ['19:55', 'Anz', 'Last Before Lights'],
+      ['24:18', 'Nia Archives', 'Forbidden Feelingz'],
+      [null, 'Unknown', 'ID, bootleg edit'],
+      ['33:02', 'Jensen Interceptor', 'Bionic Symphony'],
+      ['38:44', 'Sherelle', 'JUNGLE TEKNAH'],
+      ['43:11', 'Overmono', 'So U Kno']
+    ];
+    const row = (t, i) =>
+      `<div class="tl-row${t[3] ? ' on' : ''}${t[0] ? '' : ' unknown'}">` +
+        `<span class="n">${String(i % TRACKS.length + 1).padStart(2, '0')}</span>` +
+        `<span class="t${t[0] ? '' : ' empty'}">${t[0] || '--:--'}</span>` +
+        `<span class="mt">${t[1]} — ${t[2]}</span>` +
+        (t[3] ? '<span class="eq"><i></i><i></i><i></i></span>' : '<span></span>') +
+      `</div>`;
+    host.innerHTML = TRACKS.concat(TRACKS).map(row).join('');
   })();
 
-  /* ----------------------- ticker */
+  /* ----------------------- hero state cycle: find → loading → tracklist → now playing */
   (function () {
-    const host = document.getElementById('ticker-track');
-    if (!host) return;
-    const items = TRACKS.filter(t => t.t).slice(0, 8).map(t =>
-      `<div class="ticker-item"><span class="tc">${t.t}</span> ${t.a} <span style="color: var(--text-faint);">—</span> ${t.ti}</div>`
-    );
-    host.innerHTML = (items.concat(items)).join('');
+    const STATES = [
+      { id: 'find',      label: "A set full of tracks you don't know yet", dur: 2200 },
+      { id: 'loading',   label: 'Searching',       dur: 2000 },
+      { id: 'tracklist', label: 'Tracklist found', dur: 5800 },
+      { id: 'now',       label: 'Now playing',     dur: 3000 }
+    ];
+    const numEl = document.getElementById('flow-num');
+    const lblEl = document.getElementById('flow-label');
+    const views = document.querySelectorAll('.flow-view');
+    if (!numEl || !views.length) return;
+    let idx = 0;
+    function show(i) {
+      const st = STATES[i];
+      views.forEach(v => v.classList.toggle('show', v.dataset.state === st.id));
+      numEl.textContent = String(i + 1).padStart(2, '0');
+      lblEl.textContent = st.label;
+    }
+    function tick() {
+      show(idx);
+      setTimeout(() => { idx = (idx + 1) % STATES.length; tick(); }, STATES[idx].dur);
+    }
+    show(0);
+    setTimeout(tick, 800);
+  })();
+
+  /* ----------------------- one catalogue size, everywhere it is quoted */
+  (function () {
+    const TRACKLISTS = '900K+';
+    document.querySelectorAll('[data-stat="tracklists"]').forEach(el => { el.textContent = TRACKLISTS; });
   })();
 
   /* ----------------------- plan toggle */
@@ -2575,40 +2231,6 @@
     document.getElementById('btn-monthly').className = 'plan-btn' + (plan === 'monthly' ? ' plan-btn-active' : '');
     document.getElementById('btn-annual').className  = 'plan-btn' + (plan === 'annual'  ? ' plan-btn-active' : '');
   }
-
-  /* ----------------------- popup state cycle */
-  (function () {
-    const STATES = [
-      { id: 'find',      label: 'Idle on a mix',    h: 184, dur: 2200 },
-      { id: 'loading',   label: 'Searching',        h: 184, dur: 2000 },
-      { id: 'tracklist', label: 'Tracklist found',  h: 464, dur: 5800 },
-      { id: 'now',       label: 'Now playing',      h: 184, dur: 3000 }
-    ];
-    const shell = document.getElementById('popup-shell');
-    const numEl = document.getElementById('state-num');
-    const lblEl = document.getElementById('state-label');
-    const views = document.querySelectorAll('.state-view');
-    let idx = 0;
-    if (!shell) return;
-
-    function show(i) {
-      const s = STATES[i];
-      shell.style.height = s.h + 'px';
-      views.forEach(v => v.classList.toggle('show', v.dataset.state === s.id));
-      numEl.textContent = String(i + 1).padStart(2, '0');
-      lblEl.textContent = s.label;
-    }
-
-    function tick() {
-      show(idx);
-      setTimeout(() => {
-        idx = (idx + 1) % STATES.length;
-        tick();
-      }, STATES[idx].dur);
-    }
-
-    setTimeout(tick, 800);
-  })();
 
   /* ----------------------- hash routing */
   (function () {
@@ -2682,42 +2304,6 @@
       });
     }, { threshold: 0.3 });
     fills.forEach(f => io.observe(f));
-  })();
-</script>
-
-<script>
-  // H1 typewriter animation
-  (function() {
-    const words = ['Wondering', 'Curious', 'Chasing', 'Looking', 'Searching', 'Hunting'];
-    let wordIdx = 0, charIdx = 0, deleting = false;
-    const el = document.getElementById('h1-word');
-    if (!el) return;
-    el.textContent = '';
-
-    function tick() {
-      const word = words[wordIdx];
-      if (!deleting) {
-        charIdx++;
-        el.textContent = word.slice(0, charIdx);
-        if (charIdx === word.length) {
-          setTimeout(function() { deleting = true; tick(); }, 1600);
-          return;
-        }
-        setTimeout(tick, 75);
-      } else {
-        charIdx--;
-        el.textContent = word.slice(0, charIdx);
-        if (charIdx === 0) {
-          deleting = false;
-          wordIdx = (wordIdx + 1) % words.length;
-          setTimeout(tick, 300);
-          return;
-        }
-        setTimeout(tick, 35);
-      }
-    }
-
-    tick();
   })();
 </script>
 
