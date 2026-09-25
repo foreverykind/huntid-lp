@@ -46,6 +46,9 @@
   } catch (e) {}
 </script>
 <link rel="canonical" href="https://www.huntid.app/" />
+<script type="application/ld+json" id="ld-app">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"HuntID","applicationCategory":"BrowserApplication","operatingSystem":"Chrome","description":"Chrome extension that finds the tracklist of any DJ mix on SoundCloud.","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Pro monthly","price":"4.99","priceCurrency":"USD"},{"@type":"Offer","name":"Pro yearly","price":"39.99","priceCurrency":"USD"}]}
+</script>
 <link rel="icon" type="image/png" href="favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -710,24 +713,6 @@
     .hero-stats-mini { flex-wrap: wrap; gap: 18px 0; }
   }
 
-  /* ============================== section head */
-  .sec-head {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto 64px;
-  }
-  .sec-head .eyebrow { margin-bottom: 20px; }
-  .sec-head h2 {
-    font-family: inherit;
-    font-size: clamp(36px, 4.5vw, 60px);
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    line-height: 1.05;
-    margin: 0;
-  }
-  .sec-head h2 .accent { color: var(--accent); }
-  .sec-head p { font-size: 17px; color: var(--text-dim); margin-top: 18px; }
-
   /* ============================== story blocks: no "track ID?", features, analyze
      From the design, on the system's tokens. */
   .grain{ position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.32;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44NScgbnVtT2N0YXZlcz0nMicgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbHRlcj0ndXJsKCNuKScvPjwvc3ZnPg==");background-size:180px 180px }
@@ -866,194 +851,59 @@
   .gb-center .tid-cta { display: flex; justify-content: center; margin-top: 30px; }
   .feat-tag .feat-beta { margin-left: 2px; }
 
-  /* ============================== pricing */
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    max-width: 480px;
-    margin: 0 auto;
-    gap: 24px;
-  }
-  .price-card {
-    background: var(--surface);
-    border: 2px solid var(--accent);
-    border-radius: 28px;
-    padding: 40px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 0 0 6px var(--accent-soft), 0 30px 60px -20px color-mix(in srgb, var(--accent) 30%, transparent);
-  }
-  .price-card-free {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 28px;
-    padding: 40px;
-    text-align: center;
-    position: relative;
-  }
-  .price-tier {
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--text-faint);
-    margin-bottom: 16px;
-  }
-  .price-card .pill-badge {
-    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-    background: var(--accent);
-    color: var(--on-accent);
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .price-card .price-big,
-  .price-card-free .price-big {
-    font-family: inherit;
-    font-size: 88px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    margin: 16px 0 4px;
-  }
-  .price-card .price-sub,
-  .price-card-free .price-sub {
-    font-size: 14px; color: var(--text-dim);
-  }
-  .price-list {
-    margin: 32px 0; padding: 0;
-    list-style: none;
-    text-align: left;
-    display: flex; flex-direction: column; gap: 12px;
-  }
-  .price-list li {
-    display: flex; align-items: center; gap: 12px;
-    font-size: 14.5px;
-    color: var(--text);
-  }
-  .price-list li .ck {
-    flex-shrink: 0;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: var(--accent-soft); color: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .price-divider { height: 1px; background: var(--border); margin: 28px 0 20px; }
-  .price-after-lbl {
-    font-size: 11px; font-weight: 600;
-    color: var(--text-faint);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .price-after {
-    font-family: inherit;
-    font-size: 24px; font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-  .price-after .per { font-size: 14px; color: var(--text-faint); font-weight: 400; }
-  .price-after-note { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
-  .price-card .btn { width: 100%; margin-top: 28px; }
-  .pricing-note {
-    margin-top: 24px;
-    font-size: 13px; color: var(--text-faint);
-    text-align: center;
-    max-width: 480px; margin-left: auto; margin-right: auto;
-  }
+  /* ============================== testimonials */
+  .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .quote { margin: 0; display: flex; flex-direction: column; gap: 18px; }
+  .quote .stars { color: var(--accent); letter-spacing: 2px; font-size: 13px; }
+  .quote blockquote { margin: 0; font-size: 17px; line-height: 1.5; color: var(--text); flex: 1; }
+  .quote .by { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  .quote .av { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); border: 1px solid var(--accent-border); color: var(--accent); font-weight: 600; }
+  .quote .who { color: var(--text); font-weight: 500; }
+  .quote .loc { color: var(--text-faint); }
 
-  /* ============================== quotes */
-  .quotes-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  }
-  .qcard {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 36px;
-    transition: transform 320ms, border-color 320ms;
-  }
-  .qcard:hover {
-    transform: translateY(-4px);
-    border-color: var(--border-strong);
-  }
-  .qcard .q-stars { color: var(--accent); display: inline-flex; gap: 2px; margin-bottom: 18px; font-size: 14px; }
-  .qcard blockquote {
-    margin: 0;
-    font-family: inherit;
-    font-size: 19px;
-    font-weight: 500;
-    line-height: 1.4;
-    letter-spacing: -0.01em;
-    color: var(--text);
-  }
-  .qcard .by {
-    margin-top: 20px;
-    display: flex; align-items: center; gap: 12px;
-    font-size: 13px;
-  }
-  .qcard .by .avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--surface-3);
-    color: var(--text-dim);
-    display: inline-flex; align-items: center; justify-content: center;
-    font-weight: 600; font-size: 12px;
-  }
-  .qcard .by .who { color: var(--text); font-weight: 500; }
-  .qcard .by .loc { color: var(--text-faint); }
-  .illustrative-note { text-align: center; margin-top: 32px; font-size: 12px; color: var(--text-faint); font-style: italic; }
+  /* ============================== pricing: Free and Pro, billed monthly or yearly
+     .pc, .amt, .plist and .tagpill come from huntid.css. */
+  #pricing .sh { margin-left: auto; margin-right: auto; text-align: center; }
+  #pricing .sh .lede { margin-left: auto; margin-right: auto; }
+  .bill { display: flex; width: max-content; gap: 4px; padding: 4px; margin: 0 auto 26px; border: 1px solid var(--line); background: var(--panel); border-radius: var(--r-pill); }
+  .bill-b { font-size: 13px; font-weight: 600; color: var(--text-dim); border-radius: var(--r-pill); padding: 9px 18px; display: inline-flex; align-items: center; gap: 8px; transition: background var(--t-base), color var(--t-base); }
+  .bill-b.on { background: var(--accent); color: var(--on-accent); }
+  .bill-save { font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; background: color-mix(in srgb, var(--on-accent) 16%, transparent); border-radius: var(--r-pill); padding: 2px 7px; }
+  .bill-b:not(.on) .bill-save { background: var(--accent-soft); color: var(--accent); }
+  .prices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 840px; margin: 0 auto; }
+  .amt { color: var(--text); }
+  .amt-compare { display: flex; align-items: baseline; gap: 10px; margin: 2px 0 4px; }
+  .amt-was { font-size: 14px; color: var(--text-faint); text-decoration: line-through; }
+  .pc .sub { font-size: 13px; color: var(--text-dim); min-height: 34px; }
+  .plist li { color: var(--text); }
+  .pc .btn { width: 100%; }
+  .pc-note { font-size: 12px; color: var(--text-faint); text-align: center; margin-top: 12px; }
 
-  /* ============================== final CTA dark band */
-  .final-card {
-    background: #0a0a0a;
-    border-radius: 32px;
-    padding: 96px 56px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    color: #fff;
+  /* ============================== faq (.faq comes from huntid.css) */
+  #faq .faq { max-width: 860px; }
+
+  /* ============================== promo: the closing offer */
+  .promo { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(28px, 4vw, 64px); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(34px, 4.2vw, 64px); background: var(--app-bg); }
+  .promo::before { content: ""; position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 60% 80% at 12% 0%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 62%), linear-gradient(180deg, var(--app-panel-2), var(--app-bg) 70%); }
+  .promo > * { position: relative; z-index: 2; }
+  .promo-l { display: flex; flex-direction: column; justify-content: center; gap: 18px; align-items: flex-start; }
+  .promo-l h2 { font-size: clamp(28px, 3.4vw, 44px); line-height: 1.06; letter-spacing: -.025em; color: var(--text-strong); max-width: 17ch; }
+  .promo-l p { color: var(--text-dim); font-size: 16px; line-height: 1.55; max-width: 40ch; }
+  .promo-meta { font-size: 12px; color: var(--text-faint); }
+  .promo-r { border-left: 1px solid var(--line); padding-left: clamp(24px, 3vw, 44px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+  .promo-price { display: flex; align-items: baseline; gap: 8px; }
+  .pp-now { font-size: clamp(38px, 4.6vw, 56px); font-weight: 700; letter-spacing: -.03em; color: var(--accent); line-height: 1; }
+  .pp-per { font-size: 15px; color: var(--text-dim); }
+  .promo-was { font-size: 13px; color: var(--text-faint); margin-bottom: 14px; }
+  .promo-was s { color: var(--text-dim); }
+  .promo .plist { margin: 0; }
+  .promo .plist li { font-size: 14px; }
+  @media (max-width: 960px) {
+    .quotes { grid-template-columns: 1fr; }
   }
-  .final-card::before {
-    content: ""; position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, color-mix(in oklab, var(--accent) 35%, transparent), transparent 60%);
-    pointer-events: none;
-  }
-  .final-card::after {
-    content: ""; position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 50px 50px;
-    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    opacity: 0.5;
-    pointer-events: none;
-  }
-  .final-card > * { position: relative; z-index: 1; }
-  .final-card h2 {
-    font-family: inherit;
-    font-size: clamp(44px, 6vw, 84px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.02;
-    margin: 0 auto;
-    max-width: 900px;
-  }
-  .final-card h2 .accent { color: var(--accent); }
-  .final-card p {
-    margin: 24px auto 0;
-    max-width: 560px;
-    font-size: 18px;
-    color: rgba(255,255,255,0.75);
-  }
-  .final-card .ctas { margin-top: 40px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .final-card .cta-meta {
-    margin-top: 28px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.45);
-    font-feature-settings: "tnum" 1;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+  @media (max-width: 860px) {
+    .prices, .promo { grid-template-columns: 1fr; }
+    .promo-r { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; padding-top: 28px; }
   }
 
   /* ============================== footer */
@@ -1070,15 +920,6 @@
   .rv[data-delay="2"] { transition-delay: 140ms; }
   .rv[data-delay="3"] { transition-delay: 210ms; }
   .rv[data-delay="4"] { transition-delay: 280ms; }
-
-  /* count-up */
-  .stat-num {
-    font-family: inherit;
-    font-weight: 700;
-    font-size: clamp(48px, 6vw, 84px);
-    letter-spacing: -0.035em;
-    line-height: 1;
-  }
 
   /* ============================== subpages */
   .subpage { padding: 64px 0 120px; }
@@ -1194,44 +1035,8 @@
   }
   .subpage-content article .body .legal-table thead th { color: var(--text); font-weight: 600; background: color-mix(in oklab, var(--accent) 5%, var(--surface)); }
 
-  /* ============================== plan toggle */
-  .plan-toggle {
-    display: flex;
-    background: var(--surface-3);
-    border-radius: 999px;
-    padding: 4px; gap: 4px;
-    margin: 16px 0 20px;
-  }
-  .plan-btn {
-    flex: 1; height: 34px;
-    border-radius: 999px;
-    font-size: 13px; font-weight: 600;
-    color: var(--text-dim);
-    background: transparent;
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    transition: background 200ms, color 200ms;
-    font-family: inherit;
-  }
-  .plan-btn-active {
-    background: var(--surface);
-    color: var(--text);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-  }
-  .save-chip {
-    background: var(--accent);
-    color: var(--on-accent);
-    font-size: 10px; font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 999px;
-    letter-spacing: 0.05em;
-  }
-
   /* ============================== mobile */
   @media (max-width: 1000px) {
-    .quotes-grid { grid-template-columns: 1fr; }
-    .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
-    .final-card { padding: 72px 32px; }
     .nav-links { display: none; }
   }
   @media (max-width: 600px) {
@@ -1240,9 +1045,7 @@
     .hero-input-wrap { flex-wrap: wrap; padding: 10px; border-radius: 14px; gap: 10px; }
     .hero-input-wrap input { width: 100%; padding: 8px 4px; }
     .hero-find-btn { width: 100%; justify-content: center; }
-    .final-card { border-radius: 24px; padding: 56px 24px; }
     .compare th, .compare td { padding: 16px 18px; font-size: 13.5px; }
-    .price-card { padding: 32px 24px; }
   }
 </style>
 </head>
@@ -1556,113 +1359,108 @@
     </div>
   </section>
 
-  <!-- PRICING -->
-  <section id="pricing">
-    <div class="wrap">
-      <div class="sec-head rv">
-        <span class="eyebrow">Pricing</span>
-        <h2 class="display">Simple <span class="accent">pricing</span>.</h2>
-        <p>First 10 searches free. No credit card. No time limit.</p>
-      </div>
-      <div class="pricing-grid">
-
-        <!-- PRO -->
-        <div class="price-card rv">
-          <div class="pill-badge">Pro</div>
-          <div class="plan-toggle">
-            <button class="plan-btn plan-btn-active" id="btn-monthly" onclick="setPlan('monthly')">Monthly</button>
-            <button class="plan-btn" id="btn-annual" onclick="setPlan('annual')">Annual <span class="save-chip" id="px-save">Save 33%</span></button>
-          </div>
-          <div id="plan-monthly-price">
-            <div class="price-big" id="px-monthly">$4.99</div>
-            <div class="price-sub">/ month</div>
-          </div>
-          <div id="plan-annual-price" style="display:none">
-            <div class="price-big" id="px-annual">$39.99</div>
-            <div class="price-sub">/ year · ≈ <span id="px-annual-eq">$3.33</span>/mo</div>
-          </div>
-          <div style="margin: 14px 0 0; font-size: 13px; color: var(--accent); font-weight: 600;">First 10 searches free — no card needed</div>
-          <ul class="price-list" style="text-align:left; margin-top: 24px;">
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Find Tracklist — unlimited searches</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Clickable timecodes</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Now Playing — always know what's on</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> One-click copy</li>
-            <li style="list-style:none; padding: 10px 0 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); display:flex; align-items:center; gap:8px;">
-              <span style="flex:1; height:1px; background: var(--accent-soft);"></span>
-              Advanced workflow
-              <span style="flex:1; height:1px; background: var(--accent-soft);"></span>
-            </li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Saved — all past tracklist searches</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Favourites — save tracks</li>
-            <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Buy links — Beatport, Bandcamp, Traxsource</li>
-          </ul>
-          <div class="price-after-note" style="margin-top: 16px;">Cancel anytime. No commitment.</div>
-        </div>
-
-      </div>
-      <div style="text-align: center; margin-top: 32px;">
-        <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" style="padding: 0 48px;" data-track-cws="pricing">
-          Start free — 10 searches included
-          <span class="arr">→</span>
-        </a>
-        <div class="pricing-note" style="margin-top: 16px;">
-          Install, try the full product, subscribe when it's worth it.
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- QUOTES -->
+  <!-- TESTIMONIALS -->
   <section id="proof">
     <div class="wrap">
-      <div class="sec-head rv">
-        <span class="eyebrow">Built for the underground</span>
-        <h2 class="display">Built for the <span class="accent">SoundCloud</span> underground.</h2>
-      </div>
-      <div class="quotes-grid">
-        <div class="qcard rv" data-delay="1">
-          <div class="q-stars">★★★★★</div>
+      <div class="sh rv"><span class="eyebrow">Built for the underground</span><h2>Built for the <span class="hl">SoundCloud</span> underground.</h2></div>
+      <div class="quotes">
+        <figure class="card quote rv" data-delay="1">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
           <blockquote>Found that one track I'd been searching for months now. That's enough for me.</blockquote>
-          <div class="by">
-            <span class="avatar">R</span>
-            <div><div class="who">Russell</div><div class="loc">London, UK</div></div>
-          </div>
-        </div>
-        <div class="qcard rv" data-delay="2">
-          <div class="q-stars">★★★★★</div>
+          <figcaption class="by"><span class="av">R</span><div><div class="who">Russell</div><div class="loc">London, UK</div></div></figcaption>
+        </figure>
+        <figure class="card quote rv" data-delay="2">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
           <blockquote>I used to spend up to an hour just looking for an id. Now I just click.</blockquote>
-          <div class="by">
-            <span class="avatar">L</span>
-            <div><div class="who">Lucasz</div><div class="loc">Warsaw, PL</div></div>
-          </div>
-        </div>
-        <div class="qcard rv" data-delay="3">
-          <div class="q-stars">★★★★★</div>
+          <figcaption class="by"><span class="av">L</span><div><div class="who">Lucasz</div><div class="loc">Warsaw, PL</div></div></figcaption>
+        </figure>
+        <figure class="card quote rv" data-delay="3">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
           <blockquote>Heard a track, copied the name, found it in 30 seconds. This is exactly what was missing.</blockquote>
-          <div class="by">
-            <span class="avatar">M</span>
-            <div><div class="who">Marco</div><div class="loc">Berlin, DE</div></div>
-          </div>
-        </div>
+          <figcaption class="by"><span class="av">M</span><div><div class="who">Marco</div><div class="loc">Berlin, DE</div></div></figcaption>
+        </figure>
       </div>
-
     </div>
   </section>
 
-  <!-- FINAL CTA -->
-  <section id="install">
+  <!-- PRICING — amounts come from get-pricing; the markup holds the fallback -->
+  <section id="pricing">
     <div class="wrap">
-      <div class="final-card rv">
-        <h2 class="display">That track is in there<br/><span class="accent">somewhere.</span></h2>
-        <p>Add HuntID. Find it.</p>
-        <div class="ctas">
-          <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" data-track-cws="final_cta">
-            Add to Chrome — Try free
-            <span class="arr">→</span>
-          </a>
-          <a href="#how" class="btn btn-g btn-lg">See how it works</a>
+      <div class="sh rv"><span class="eyebrow">Pricing</span><h2>Unlimited digging. <span class="hl">Find everything you're after.</span></h2><p class="lede">10 searches free. No credit card.</p></div>
+      <div class="bill rv" id="bill" role="group" aria-label="Billing period">
+        <button class="bill-b" data-bill="monthly" type="button">Monthly</button>
+        <button class="bill-b on" data-bill="annual" type="button">Yearly<span class="bill-save" data-price="save">Save 33%</span></button>
+      </div>
+      <div class="prices">
+        <div class="pc rv">
+          <div class="pc-top"><span class="pc-name">Free</span></div>
+          <div class="amt">$0</div>
+          <p class="sub">A free account, no card. Enough to try HuntID on your own mixes.</p>
+          <ul class="plist">
+            <li>10 searches, one time</li>
+            <li>Full tracklists with timecodes</li>
+            <li>Now Playing on any SoundCloud set</li>
+          </ul>
+          <button type="button" class="btn btn-g" id="pc-free-cta">Create free account</button>
         </div>
-        <div class="cta-meta">Chrome only · SoundCloud · No credit card required</div>
+        <div class="pc hi rv" data-delay="1">
+          <div class="pc-top"><span class="pc-name">Pro</span><span class="tagpill">Unlimited</span></div>
+          <div class="amt"><span id="pc-amt">$39.99</span><small id="pc-per"> /year</small></div>
+          <div class="amt-compare" id="pc-cmp"><span class="amt-was"><span data-price="was">$59.88</span>/yr</span><span class="amt-save" data-price="save">Save 33%</span></div>
+          <p class="sub" id="pc-sub">Billed once a year, the cheapest way to dig every night.</p>
+          <ul class="plist">
+            <li><span>Unlimited searches across <span data-stat="tracklists">900K+</span> tracklists</span></li>
+            <li>Clickable timecodes and Now Playing</li>
+            <li>Saved tracklists and favourites</li>
+            <li>Buy links: Beatport, Bandcamp, Traxsource</li>
+          </ul>
+          <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p" id="pc-cta" data-track-cws="pricing">Get Pro, $39.99/yr <span class="arr">→</span></a>
+          <div class="pc-note" id="pc-note">Billed yearly, $3.33 a month. Cancel any time.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sh rv"><span class="eyebrow">FAQ</span><h2>Questions worth answering.</h2></div>
+      <div class="faq rv">
+        <details open><summary>How does HuntID identify tracks in a DJ mix?</summary><p>It searches the set you're on against a catalogue of <span data-stat="tracklists">900K+</span> tracklisted mixes and returns every track it can confirm, with timecodes. Audio recognition, for sets that have no tracklist anywhere, is launching soon.</p></details>
+        <details><summary>Does it work on SoundCloud?</summary><p>Yes, SoundCloud mixes and live sets, inside Chrome. No uploads and no tab switching. More platforms are next.</p></details>
+        <details><summary>What do I get for free?</summary><p>A free account gives you 10 searches with full tracklists and timecodes. No card.</p></details>
+        <details><summary>What happens after 10 searches?</summary><p>Pro is <span data-price="monthly">$4.99</span> a month, or <span data-price="annual">$39.99</span> a year, for unlimited searches. Cancel any time.</p></details>
+        <details><summary>Does it run on mobile?</summary><p>HuntID is a Chrome extension, so it runs on desktop, which is where most digging happens anyway. On your phone you can create your free account now and install HuntID on your computer later.</p></details>
+        <details><summary>Is every track guaranteed?</summary><p>No, and HuntID won't pretend otherwise. Confirmed tracks are named; anything uncertain is flagged as unconfirmed rather than guessed.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMO — the closing offer -->
+  <section id="promo">
+    <div class="wrap">
+      <div class="promo rv">
+        <div class="promo-l">
+          <span class="brand"><span class="mk"><svg viewBox="0 0 64 64" width="26" height="26" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span><span>Hunt<em>ID</em></span></span>
+          <h2>Stop losing tracks you'll never find again.</h2>
+          <p>Free to try. Works right inside SoundCloud.</p>
+          <div class="ctas">
+            <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" data-track-cws="final_cta">Add to Chrome, free <span class="arr">→</span></a>
+            <a href="#pricing" class="btn btn-g btn-lg">See plans</a>
+          </div>
+          <div class="promo-meta">Chrome · SoundCloud · free account, 10 searches, no card</div>
+        </div>
+        <div class="promo-r">
+          <div class="promo-price"><span class="pp-now" data-price="annual">$39.99</span><span class="pp-per">/year</span></div>
+          <div class="promo-was" data-when-saving>Pro, billed yearly. <s><span data-price="was">$59.88</span></s> if paid monthly.</div>
+          <ul class="plist">
+            <li>Unlimited searches, no monthly cap</li>
+            <li>Full tracklists with clickable timecodes</li>
+            <li>Now Playing while the set runs</li>
+            <li>Saved tracklists and favourites</li>
+            <li>Buy links: Beatport, Bandcamp, Traxsource</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -1862,7 +1660,7 @@
           <h2>Free and Pro plans</h2>
           <div class="body">
             <p><strong>Free to start:</strong> 10 tracklist searches included at no cost. After the free searches are used, a Pro subscription is required to continue.</p>
-            <p><strong>Pro plan:</strong> <span id="px-tos-m">$4.99</span>/month or <span id="px-tos-a">$39.99</span>/year, unlimited searches.</p>
+            <p><strong>Pro plan:</strong> <span data-price="monthly">$4.99</span>/month or <span data-price="annual">$39.99</span>/year, unlimited searches.</p>
             <p>Prices may change with 30 days notice to existing subscribers.</p>
           </div>
         </div>
@@ -2074,13 +1872,7 @@
     document.querySelectorAll('[data-stat="tracklists"]').forEach(el => { el.textContent = TRACKLISTS; });
   })();
 
-  /* ----------------------- plan toggle */
-  function setPlan(plan) {
-    document.getElementById('plan-monthly-price').style.display = plan === 'monthly' ? 'block' : 'none';
-    document.getElementById('plan-annual-price').style.display  = plan === 'annual'  ? 'block' : 'none';
-    document.getElementById('btn-monthly').className = 'plan-btn' + (plan === 'monthly' ? ' plan-btn-active' : '');
-    document.getElementById('btn-annual').className  = 'plan-btn' + (plan === 'annual'  ? ' plan-btn-active' : '');
-  }
+
 
   /* ----------------------- hash routing */
   (function () {
@@ -2303,27 +2095,76 @@
   // than blank. After this, repricing is a Paddle-only change: nothing on this
   // site or in the extension has to be redeployed.
   (function () {
-    var set = function (id, value) {
-      var el = document.getElementById(id);
-      if (el) el.textContent = value;
-    };
+    var P = { monthly: '$4.99', annual: '$39.99', annualMonthly: '$3.33', save: 33, currency: 'USD' };
+    var billing = 'annual';
+
+    var num = function (a) { return parseFloat(String(a).replace(/[^0-9.]/g, '')); };
+    var symbol = function (a) { return String(a).replace(/[0-9.,\s]/g, '') || '$'; };
+    // What a year costs on the monthly plan: the "was" beside the yearly price.
+    var was = function () { return symbol(P.monthly) + (num(P.monthly) * 12).toFixed(2); };
+    var each = function (sel, fn) { Array.prototype.forEach.call(document.querySelectorAll(sel), fn); };
+
+    function render() {
+      var saving = P.save > 0;
+      each('[data-price="monthly"]', function (el) { el.textContent = P.monthly; });
+      each('[data-price="annual"]',  function (el) { el.textContent = P.annual; });
+      each('[data-price="was"]',     function (el) { el.textContent = was(); });
+      // Hide rather than claim "Save 0%" if the two plans ever price flat.
+      each('[data-price="save"]', function (el) {
+        el.textContent = 'Save ' + P.save + '%';
+        el.style.display = saving ? '' : 'none';
+      });
+      each('[data-when-saving]', function (el) { el.style.display = saving ? '' : 'none'; });
+
+      var yearly = billing === 'annual';
+      var set = function (id, v) { var el = document.getElementById(id); if (el) el.textContent = v; };
+      set('pc-amt', yearly ? P.annual : P.monthly);
+      set('pc-per', yearly ? ' /year' : ' /month');
+      set('pc-sub', yearly ? 'Billed once a year, the cheapest way to dig every night.'
+                           : 'Month to month. Cancel whenever you like.');
+      set('pc-note', yearly ? 'Billed yearly, ' + P.annualMonthly + ' a month. Cancel any time.'
+                            : 'Billed monthly. Cancel any time.');
+      var cmp = document.getElementById('pc-cmp');
+      if (cmp) cmp.style.display = yearly && saving ? '' : 'none';
+      // On a phone the CTA has become "Sign up" and dropped its CWS slot; leave it be.
+      var cta = document.getElementById('pc-cta');
+      if (cta && cta.hasAttribute('data-track-cws')) {
+        cta.innerHTML = 'Get Pro, ' + (yearly ? P.annual + '/yr' : P.monthly + '/mo') + ' <span class="arr">→</span>';
+      }
+
+      var ld = document.getElementById('ld-app');
+      if (ld) {
+        try {
+          var data = JSON.parse(ld.textContent);
+          data.offers[1].price = String(num(P.monthly)); data.offers[1].priceCurrency = P.currency;
+          data.offers[2].price = String(num(P.annual));  data.offers[2].priceCurrency = P.currency;
+          ld.textContent = JSON.stringify(data);
+        } catch (e) {}
+      }
+    }
+
+    var bill = document.getElementById('bill');
+    if (bill) bill.addEventListener('click', function (e) {
+      var b = e.target.closest('.bill-b');
+      if (!b) return;
+      billing = b.dataset.bill;
+      each('.bill-b', function (x) { x.classList.toggle('on', x === b); });
+      render();
+    });
+
+    render();
     fetch('https://qhyebkofqjgzmmkpyalb.supabase.co/functions/v1/get-pricing')
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (p) {
         if (!p || !p.monthly || !p.annual) return;
-        set('px-hero', p.monthly.amount);
-        set('px-monthly', p.monthly.amount);
-        set('px-roadmap', p.monthly.amount);
-        set('px-tos-m', p.monthly.amount);
-        set('px-annual', p.annual.amount);
-        set('px-annual-eq', p.annual.monthly_equivalent);
-        set('px-tos-a', p.annual.amount);
-        var save = document.getElementById('px-save');
-        // Hide rather than claim "Save 0%" if the two plans ever price flat.
-        if (save) {
-          if (p.annual.save_percent > 0) save.textContent = 'Save ' + p.annual.save_percent + '%';
-          else save.style.display = 'none';
-        }
+        P = {
+          monthly: p.monthly.amount,
+          annual: p.annual.amount,
+          annualMonthly: p.annual.monthly_equivalent,
+          save: p.annual.save_percent,
+          currency: p.annual.currency || p.monthly.currency || 'USD'
+        };
+        render();
       })
       .catch(function () {});
   })();
@@ -2997,6 +2838,11 @@
     /* Same modal as the tracklist gate — one way to make an account. */
     var navSignin = document.getElementById('nav-signin-btn');
     if (navSignin) navSignin.addEventListener('click', function () { openModal(null, null, null); });
+    var freeCta = document.getElementById('pc-free-cta');
+    if (freeCta) freeCta.addEventListener('click', function () {
+      if (likelyAuthed()) location.href = '/dashboard';
+      else openModal(null, null, null);
+    });
 
     updateHeaderAuth();
     syncExtensionCtas();
