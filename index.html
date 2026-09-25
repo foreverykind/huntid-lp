@@ -114,7 +114,8 @@
   }
 
   /* ============================== sections */
-  section { padding: 56px 0; }
+  section { padding: var(--section-y) 0; }
+  @media (max-width: 960px) { section { padding: 64px 0; } }
 
   /* ============================== hero cta (new top section) */
   .hero-cta {
@@ -727,136 +728,143 @@
   .sec-head h2 .accent { color: var(--accent); }
   .sec-head p { font-size: 17px; color: var(--text-dim); margin-top: 18px; }
 
-  /* ============================== problem — dark inverse card */
-  .problem-card {
-    background: #0a0a0a;
-    border-radius: 32px;
-    padding: 80px 56px;
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-  }
-  .problem-card::before {
-    content: ""; position: absolute;
-    top: -100px; right: -100px;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, color-mix(in oklab, var(--accent) 30%, transparent), transparent 70%);
-    filter: blur(60px);
-    pointer-events: none;
-  }
-  .problem-card .sec-head h2 { color: #fff; }
-  .problem-card .sec-head h2 .accent { color: var(--accent); }
-  .problem-card .sec-head .eyebrow { color: rgba(255,255,255,0.7); }
-  .problem-grid {
-    position: relative; z-index: 1;
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  }
-  .pain {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px;
-    padding: 32px;
-    transition: transform 320ms ease, background 320ms, border-color 320ms;
-  }
-  .pain:hover {
-    transform: translateY(-4px);
-    background: rgba(255,255,255,0.06);
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  }
-  .pain .pain-num {
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--accent);
-    margin-bottom: 24px;
-  }
-  .pain h3 {
-    font-family: inherit;
-    font-size: 22px;
-    font-weight: 600;
-    margin: 0 0 12px;
-    letter-spacing: -0.015em;
-    line-height: 1.2;
-    color: #fff;
-  }
-  .pain p { font-size: 14.5px; color: rgba(255,255,255,0.6); line-height: 1.55; }
-
-  /* ============================== features */
-  .feat-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-  }
-  .feat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 40px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 320ms, transform 320ms, box-shadow 320ms;
-  }
-  .feat-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-    box-shadow: var(--shadow-card);
-  }
-  .feat-card .ico {
-    width: 48px; height: 48px;
-    border-radius: 12px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    display: inline-flex; align-items: center; justify-content: center;
-    margin-bottom: 24px;
-  }
-  .feat-card h3 {
-    font-family: inherit;
-    font-size: 26px;
-    font-weight: 600;
-    margin: 0 0 10px;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-  }
-  .feat-card p { font-size: 15px; color: var(--text-dim); line-height: 1.55; }
-
-  /* ============================== comparison */
-  .compare-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    overflow: hidden;
-  }
-  .compare {
-    width: 100%; border-collapse: separate; border-spacing: 0;
-  }
-  .compare th, .compare td {
-    padding: 22px 32px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    font-size: 15px;
-  }
-  .compare thead th {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-faint);
-    font-weight: 600;
-    background: var(--surface-2);
-  }
-  .compare thead th.huntid {
-    color: var(--accent);
-    background: var(--accent-soft);
-  }
-  .compare tbody tr:last-child td { border-bottom: 0; }
-  .compare td.col-h { color: var(--text); font-weight: 500; }
-  .compare td.col-o { color: var(--text-dim); width: 25%; text-align: center; }
-  .compare td.col-y { width: 25%; text-align: center; background: color-mix(in oklab, var(--accent) 6%, transparent); }
-  .check, .cross {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 26px; height: 26px; border-radius: 999px;
-  }
-  .check { background: var(--accent); color: var(--on-accent); }
-  .cross { border: 1px solid var(--border-strong); color: var(--text-faint); }
+  /* ============================== story blocks: no "track ID?", features, analyze
+     From the design, on the system's tokens. */
+  .grain{ position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.32;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44NScgbnVtT2N0YXZlcz0nMicgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbHRlcj0ndXJsKCNuKScvPjwvc3ZnPg==");background-size:180px 180px }
+  /* features, three columns, copy above an extension mock */
+  .feat-rows{ display:flex;flex-direction:column;gap:22px }
+  .feat-row{ position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;min-height:var(--h-lg);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--app-bg) }
+  .feat-row::before{ content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 58% 74% at 78% 12%,color-mix(in srgb, var(--accent) 16%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 70%) }
+  .feat-row:nth-child(even)::before{ background:radial-gradient(ellipse 58% 74% at 22% 12%,color-mix(in srgb, var(--accent) 16%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 70%) }
+  .feat-row:nth-child(even) .feat-copy{ order:2 }
+  .feat-copy{ position:relative;z-index:2;padding:clamp(34px,4.4vw,66px);display:flex;flex-direction:column;justify-content:center;gap:18px;align-items:flex-start }
+  .feat-copy h3{ color:var(--text-strong);font-size:clamp(30px,3.1vw,44px);line-height:1.1;letter-spacing:-.022em;max-width:16ch }
+  .feat-copy p{ color:var(--text-dim);font-size:16px;line-height:1.6;max-width:40ch }
+  .feat-pic{ position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:clamp(26px,3.4vw,56px);overflow:hidden }
+  .feat-pic .ext{ max-width:520px }
+  .feat-pic::before{ content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,color-mix(in srgb, var(--accent) 10%, transparent),transparent 70%) }
+  .feat-pic::after{ content:"";position:absolute;inset:0;background-image:linear-gradient(color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px);background-size:30px 30px;mask-image:radial-gradient(ellipse at center,#000,transparent 72%);-webkit-mask-image:radial-gradient(ellipse at center,#000,transparent 72%) }
+  /* shared extension shell used in feature cards */
+  .feat-pic .ext{ position:relative;z-index:2;width:100%;max-width:100%;background:var(--ext-bg);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;box-shadow:0 26px 54px -20px rgba(0,0,0,.8) }
+  .feat-pic .ext-h{ height:36px;display:flex;align-items:center;gap:7px;padding:0 11px;background:var(--ext-head);border-bottom:1px solid var(--ext-line) }
+  .feat-pic .ext-h .m{ width:17px;height:17px;display:inline-flex;flex-shrink:0 }
+  .feat-pic .ext-h .n{ font-weight:700;font-size:11.5px;color:var(--text-strong);flex-shrink:0;letter-spacing:-.01em }
+  .feat-pic .ext-h .n em{ font-style:normal;color:var(--accent) }
+  .feat-pic .ext-h .x{ flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:9.5px;color:var(--ext-faint);white-space:nowrap;overflow:hidden }
+  .feat-pic .ext-h .x span{ overflow:hidden;text-overflow:ellipsis }
+  .feat-pic .ext-b{ padding:0 }
+  /* f1, scrolling tracklist */
+  .f1-bar{ display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--ext-line);font-size:9.5px;color:var(--ext-muted);text-transform:uppercase;letter-spacing:.07em;background:var(--ext-bar) }
+  .f1-bar b{ color:var(--accent);background:var(--accent-soft);padding:2px 7px;border-radius:5px;font-weight:500;font-size:9.5px;text-transform:none;letter-spacing:0 }
+  .f1-rows{ height:330px;overflow:hidden }
+  .f1-in{ animation:f1scroll 20s linear infinite }
+  @keyframes f1scroll{ 0%,6%{ transform:translateY(0) }100%{ transform:translateY(-50%) } }
+  .f1-row{ display:grid;grid-template-columns:16px 36px 1fr;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--ext-row-line);font-size:11.5px }
+  .f1-row .n{ font-size:8.5px;color:var(--ext-faint);text-align:right;font-feature-settings:"tnum" 1 }
+  .f1-row .tc{ font-size:10px;color:var(--accent);font-feature-settings:"tnum" 1 }
+  .f1-row .tc.e{ color:var(--ext-faint) }
+  .f1-row .mt{ min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ext-dim) }
+  .f1-row.on{ background:var(--accent-soft) }
+  .f1-row.on .mt{ color:var(--text-strong);font-weight:600 }
+  .f1-row.on .n{ color:var(--accent) }
+  /* f2, now playing */
+  .f2-wrap{ padding:20px 16px;display:flex;flex-direction:column;gap:16px;height:360px;justify-content:center;box-sizing:border-box }
+  .f2-eyebrow{ font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-weight:700;display:inline-flex;align-items:center;gap:6px }
+  .f2-title{ font-size:12.5px;font-weight:600;color:var(--text-strong);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+  .f2-title span{ color:var(--ext-dim);font-weight:500 }
+  .f2-wave{ display:flex;align-items:flex-end;gap:2px;height:56px }
+  .f2-wave i{ flex:1;background:color-mix(in srgb, var(--accent) 22%, transparent);border-radius:1px;transition:background .3s }
+  .f2-wave i.p{ background:var(--accent) }
+  .f2-tcs{ display:flex;gap:5px;flex-wrap:wrap }
+  .f2-tc{ font-size:9.5px;color:var(--accent);border:1px solid color-mix(in srgb, var(--accent) 25%, transparent);background:var(--accent-soft);border-radius:5px;padding:3px 7px;font-feature-settings:"tnum" 1;transition:background .3s,color .3s }
+  .f2-tc.on{ background:var(--accent);color:var(--on-accent);font-weight:600 }
+  /* f3, audio recognition */
+  .f3-wrap{ padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:16px;height:360px;justify-content:center;box-sizing:border-box }
+  .f3-mic{ width:52px;height:52px;border-radius:50%;background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);display:grid;place-items:center;color:var(--accent);position:relative;flex-shrink:0 }
+  .f3-mic .rp{ position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--accent);animation:f3ping 2.4s ease-out infinite;opacity:0 }
+  .f3-mic .rp:nth-child(2){ animation-delay:.8s }
+  @keyframes f3ping{ 0%{ transform:scale(1);opacity:.7 }100%{ transform:scale(1.9);opacity:0 } }
+  .f3-bars{ display:flex;align-items:flex-end;gap:3px;height:28px }
+  .f3-bars i{ width:3px;border-radius:2px;background:var(--accent);animation:eqviz 1.2s ease-in-out infinite }
+  .f3-out{ width:100%;background:var(--ext-bar);border:1px solid var(--line);border-radius:9px;padding:10px 12px;text-align:left }
+  .f3-lbl{ font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:700 }
+  .f3-name{ font-size:11.5px;color:var(--text-strong);font-weight:600;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+  .f3-name span{ color:var(--ext-dim);font-weight:500 }
+  /* staged reveal */
+  .feat-row .feat-tag,.feat-row h3,.feat-row p{ opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.2,.7,.3,1),transform .6s cubic-bezier(.2,.7,.3,1) }
+  .feat-row .feat-pic{ opacity:0;transform:translateY(20px);transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1) }
+  .feat-row.in .feat-tag{ opacity:1;transform:none;transition-delay:60ms }
+  .feat-row.in h3{ opacity:1;transform:none;transition-delay:150ms }
+  .feat-row.in p{ opacity:1;transform:none;transition-delay:240ms }
+  .feat-row.in .feat-pic{ opacity:1;transform:none;transition-delay:320ms }
+  .feat-rows>.feat-row:nth-child(2) .feat-tag,.feat-rows>.feat-row:nth-child(2) h3,.feat-rows>.feat-row:nth-child(2) p,.feat-rows>.feat-row:nth-child(2) .feat-pic{ transition-duration:.66s }
+  @media (max-width:960px){ .feat-row{ grid-template-columns:1fr;min-height:0 }.feat-row:nth-child(even) .feat-copy{ order:0 }.feat-copy{ padding:34px 26px;min-height:0 }.feat-pic{ min-height:0;padding:26px 22px } }
+  .f4-wrap{ padding:14px 12px;display:flex;flex-direction:column;gap:9px }
+  .f4-item{ display:grid;grid-template-columns:40px 1fr auto;gap:11px;align-items:center;padding:11px;border:1px solid var(--ext-line);border-radius:9px;background:var(--ext-item) }
+  .f4-art{ width:40px;height:40px;border-radius:6px;background:linear-gradient(140deg,var(--app-panel-2),var(--app-panel));border:1px solid var(--ext-line) }
+  .f4-t{ font-size:12.5px;color:var(--text-strong);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+  .f4-s{ font-size:10px;color:var(--ext-muted);margin-top:3px;font-feature-settings:"tnum" 1 }
+  .f4-b{ font-size:9.5px;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 25%, transparent);border-radius:5px;padding:3px 8px;white-space:nowrap }
+  .glass-band{ position:relative;overflow:hidden;border:1px solid var(--line);border-radius:var(--r-lg);min-height:var(--h-lg);padding:clamp(64px,8vw,112px) clamp(24px,5vw,72px);display:flex;align-items:center;justify-content:center;text-align:center;background:var(--app-bg) }
+  .gb-photo{ position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:saturate(1.55) contrast(1.08);opacity:.92 }
+  .gb-screen{ position:absolute;inset:0;z-index:1;backdrop-filter:blur(2.5px);background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 20%),color-mix(in srgb, var(--app-bg) 56%, transparent) }
+  .glass-band::after{ content:"";position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.16) }
+  .gb-center{ position:relative;z-index:4;max-width:660px;margin:0 auto }
+  .gb-center::before{ content:"";position:absolute;left:50%;top:50%;width:min(150%,940px);height:160%;transform:translate(-50%,-50%);z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,color-mix(in srgb, var(--app-bg) 70%, transparent),color-mix(in srgb, var(--app-bg) 40%, transparent) 54%,transparent 78%) }
+  .gb-center h2{ font-size:clamp(32px,4.6vw,54px);color:var(--text-strong);line-height:1.06;letter-spacing:-.025em;max-width:19ch;margin:0 auto }
+  .gb-center p{ color:var(--text);font-size:17px;line-height:1.55;max-width:46ch;margin:18px auto 0;text-shadow:0 1px 16px rgba(0,0,0,.55) }
+  .gb-center .ctas,.gb-center .tid-cta{ display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:30px }
+  .gb-notes{ position:absolute;inset:0;z-index:2;pointer-events:none }
+  .note{ position:absolute;display:flex;gap:10px;align-items:flex-start;max-width:244px;padding:10px 13px;border-radius:14px;background:color-mix(in srgb, var(--app-bg) 72%, transparent);border:1px solid rgba(255,255,255,.1);box-shadow:0 18px 40px rgba(0,0,0,.45);backdrop-filter:blur(6px);text-align:left;animation:nfloat 7.5s ease-in-out infinite }
+  .note .av{ width:26px;height:26px;border-radius:50%;background:linear-gradient(140deg,var(--app-panel-2),var(--app-panel));border:1px solid rgba(255,255,255,.12);flex-shrink:0 }
+  .note b{ display:block;font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:.02em }
+  .note p{ margin:2px 0 0;font-size:13.5px;line-height:1.35;color:var(--text) }
+  .note.n1{ top:6%;left:3%;animation-delay:-.4s }
+  .note.n2{ top:12%;right:4%;animation-delay:-2.6s }
+  .note.n3{ top:26%;left:8%;opacity:.86;animation-delay:-4.1s }
+  .note.n4{ top:30%;right:7%;opacity:.86;animation-delay:-1.4s }
+  .note.n5{ top:47%;left:1%;animation-delay:-5.2s }
+  .note.n6{ top:52%;right:2%;animation-delay:-3.1s }
+  .note.n7{ bottom:25%;left:6%;opacity:.9;animation-delay:-6.3s }
+  .note.n8{ bottom:20%;right:5%;opacity:.9;animation-delay:-1.9s }
+  .note.n9{ bottom:6%;left:15%;animation-delay:-4.7s }
+  .note.n10{ bottom:4%;right:16%;animation-delay:-2.2s }
+  .note.n11{ top:4%;left:50%;margin-left:-150px;opacity:.85;animation-delay:-5.8s }
+  .note.n12{ bottom:9%;left:50%;margin-left:-118px;opacity:.9;animation-delay:-3.6s }
+  @keyframes nfloat{ 0%,100%{ transform:translateY(0) }50%{ transform:translateY(-9px) } }
+  @media (max-width:1180px){ .note.n3,.note.n4,.note.n11{ display:none } }
+  @media (max-width:1080px){ .note.n5,.note.n6,.note.n12{ display:none } }
+  @media (max-width:860px){ .gb-notes{ display:none } }
+  .feat-row.sf{ border-color:color-mix(in srgb, var(--accent) 34%, transparent);box-shadow:0 0 0 1px color-mix(in srgb, var(--accent) 7%, transparent),0 40px 90px rgba(0,0,0,.45) }
+  .feat-row.sf::before{ background:radial-gradient(ellipse 62% 82% at 18% 0%,color-mix(in srgb, var(--accent) 26%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 72%) }
+  .feat-row.sf .feat-copy h3{ max-width:14ch }
+  .feat-row.sf .feat-copy p{ font-size:17px;max-width:44ch }
+  .an-wrap{ position:relative;height:360px;padding:22px 16px;box-sizing:border-box }
+  .an-stage{ position:absolute;inset:22px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease;pointer-events:none }
+  .an-stage.on{ opacity:1;transform:none }
+  .an-stage .f3-out{ width:100% }
+  .an-note{ font-size:10.5px;letter-spacing:.02em;color:var(--text-dim);text-align:center }
+  .an-note b{ color:var(--text);font-weight:600 }
+  .f4-div{ display:flex;align-items:center;gap:9px;padding:8px 2px 2px;font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-faint);font-weight:700 }
+  .f4-div::after{ content:"";flex:1;height:1px;background:var(--ext-line) }
+  .f4-nav{ display:flex;gap:4px;padding:0 0 4px }
+  .f4-nv{ display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;color:var(--ext-muted);padding:5px 8px;border-radius:6px;border:1px solid transparent;white-space:nowrap }
+  .f4-nv em{ font-style:normal;font-size:9px;color:var(--ext-muted);font-feature-settings:"tnum" 1 }
+  .f4-nv.on{ color:var(--text-strong);background:var(--accent-soft);border-color:color-mix(in srgb, var(--accent) 24%, transparent) }
+  .f4-nv.on em{ color:var(--accent) }
+  .f4-rw{ display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 11px;border:1px solid var(--ext-line);border-radius:9px;background:var(--ext-item) }
+  .f4-main{ min-width:0 }
+  .f4-rw .f4-s span{ color:var(--ext-faint);margin:0 2px }
+  .f4-acts{ display:flex;gap:5px }
+  .f4-ib{ display:flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:5px;border:1px solid var(--ext-line);color:var(--ext-muted);background:var(--ext-bg) }
+  .f4-buy{ display:flex;gap:5px;flex-wrap:wrap;margin-top:7px }
+  .f4-buy span{ font-size:9px;color:var(--accent);border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);background:var(--accent-soft);border-radius:5px;padding:3px 6px }
+  .f4-l{ display:inline-flex;align-items:center;gap:5px;font-size:9.5px;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 7px;background:var(--ext-bg) }
+  .f4-l i{ width:6px;height:6px;border-radius:50%;flex-shrink:0 }
+  /* The mock's timecodes are plain text, not the system's .tc chip. */
+  .f1-row .tc { border: 0; background: none; padding: 0; white-space: nowrap; }
+  .gb-center .tid-cta { display: flex; justify-content: center; margin-top: 30px; }
+  .feat-tag .feat-beta { margin-left: 2px; }
 
   /* ============================== pricing */
   .pricing-grid {
@@ -1169,30 +1177,6 @@
     .cookie-banner .cookie-actions { justify-content: flex-end; }
   }
 
-  /* ============================== one track block */
-  .one-track-block {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 48px 40px;
-    border-left: 3px solid var(--accent);
-    background: color-mix(in oklab, var(--accent) 5%, var(--surface));
-    border-radius: 0 16px 16px 0;
-  }
-  .one-track-title {
-    font-family: inherit;
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin: 0 0 16px;
-  }
-  .one-track-body {
-    font-size: 17px;
-    line-height: 1.65;
-    color: var(--text-dim);
-    font-style: italic;
-    margin: 0;
-  }
-
   /* ============================== legal body content */
   .subpage-content article .body p { font-size: 14px; color: var(--text-dim); font-style: normal; margin: 0 0 10px; }
   .subpage-content article .body p:last-child { margin-bottom: 0; }
@@ -1209,127 +1193,6 @@
     padding: 8px 12px; border: 1px solid var(--border); line-height: 1.45;
   }
   .subpage-content article .body .legal-table thead th { color: var(--text); font-weight: 600; background: color-mix(in oklab, var(--accent) 5%, var(--surface)); }
-
-  /* ============================== roadmap */
-  .roadmap-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-  .roadmap-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px;
-    transition: transform 320ms ease, border-color 320ms, box-shadow 320ms;
-  }
-  .roadmap-card.active {
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-    box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 8%, transparent);
-  }
-  .roadmap-card:hover { transform: translateY(-4px); }
-
-  .rm-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-  .rm-badge.live {
-    background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    color: #22c55e;
-  }
-  .rm-badge.in-progress {
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    color: var(--accent);
-  }
-  .rm-badge.planned {
-    background: rgba(136, 136, 136, 0.1);
-    border: 1px solid rgba(136, 136, 136, 0.2);
-    color: #888888;
-  }
-  .rm-dot {
-    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-  }
-  .rm-badge.live .rm-dot { background: #22c55e; }
-  .rm-badge.in-progress .rm-dot {
-    background: var(--accent);
-    animation: rm-pulse 1.5s ease-in-out infinite;
-  }
-  .rm-badge.planned .rm-dot { background: #888888; }
-  @keyframes rm-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.4); }
-  }
-
-  .roadmap-card h3 {
-    font-family: inherit;
-    font-size: 20px; font-weight: 600;
-    letter-spacing: -0.015em;
-    margin: 0 0 16px;
-  }
-
-  .rm-progress-label {
-    font-size: 10px; font-weight: 600;
-    color: var(--text-faint);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .rm-progress-track {
-    height: 6px;
-    background: var(--border);
-    border-radius: 999px;
-    margin-bottom: 20px;
-    overflow: hidden;
-  }
-  .rm-progress-fill {
-    height: 100%;
-    border-radius: 999px;
-    width: 0;
-  }
-  .rm-progress-fill.green { background: #22c55e; }
-  .rm-progress-fill.orange {
-    background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 50%, var(--accent) 100%);
-    background-size: 200% auto;
-    animation: rm-shimmer 2s linear infinite;
-  }
-  @keyframes rm-shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-
-  .rm-list {
-    list-style: none; padding: 0; margin: 0;
-    display: flex; flex-direction: column;
-  }
-  .rm-list li {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-    color: var(--text-dim);
-    line-height: 1.4;
-  }
-  .rm-list li:last-child { border-bottom: 0; }
-  .now-card .rm-list li { color: var(--text); }
-  .later-card .rm-list li { opacity: 0.7; }
-  .rm-list-icon { font-size: 14px; flex-shrink: 0; width: 18px; text-align: center; }
-
-  .rm-footer-note {
-    text-align: center;
-    margin-top: 32px;
-    font-size: 13px;
-    color: var(--text-faint);
-    line-height: 1.6;
-  }
-  .rm-footer-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
 
   /* ============================== plan toggle */
   .plan-toggle {
@@ -1366,22 +1229,18 @@
 
   /* ============================== mobile */
   @media (max-width: 1000px) {
-    .problem-grid, .quotes-grid { grid-template-columns: 1fr; }
-    .feat-grid { grid-template-columns: 1fr; }
+    .quotes-grid { grid-template-columns: 1fr; }
     .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
-    .roadmap-grid { grid-template-columns: 1fr; gap: 16px; }
-    .problem-card { padding: 56px 32px; }
     .final-card { padding: 72px 32px; }
     .nav-links { display: none; }
   }
   @media (max-width: 600px) {
     .wrap { padding: 0 18px; }
-    section { padding: 32px 0; }
     .mix-track .mix-card { width: 280px; }
     .hero-input-wrap { flex-wrap: wrap; padding: 10px; border-radius: 14px; gap: 10px; }
     .hero-input-wrap input { width: 100%; padding: 8px 4px; }
     .hero-find-btn { width: 100%; justify-content: center; }
-    .problem-card, .final-card { border-radius: 24px; padding: 56px 24px; }
+    .final-card { border-radius: 24px; padding: 56px 24px; }
     .compare th, .compare td { padding: 16px 18px; font-size: 13.5px; }
     .price-card { padding: 32px 24px; }
   }
@@ -1523,30 +1382,31 @@
     </div>
   </section>
 
-  <!-- PROBLEM — dark inverse card -->
-  <section id="problem">
+  <!-- NO MORE "TRACK ID?" -->
+  <section id="no-track-id">
     <div class="wrap">
-      <div class="problem-card rv">
-        <div class="sec-head">
-          <span class="eyebrow">The problem</span>
-          <h2 class="display">You hear it in a mix, comment "id?"<br/>and wait <span class="accent">forever</span>.</h2>
+      <div class="glass-band rv">
+        <img class="gb-photo" src="/assets/band-crowd.jpg" alt="" loading="lazy" onerror="this.remove()"/>
+        <div class="gb-screen"></div>
+        <div class="grain"></div>
+        <div class="gb-notes" aria-hidden="true">
+          <div class="note n1"><span class="av"></span><div><b>marek_dv</b><p>track ID?</p></div></div>
+          <div class="note n2"><span class="av"></span><div><b>luca.4am</b><p>track id ????</p></div></div>
+          <div class="note n3"><span class="av"></span><div><b>sofia_rmx</b><p>anyone knows what's playing here</p></div></div>
+          <div class="note n4"><span class="av"></span><div><b>night.owl</b><p>ID at 41:20 please</p></div></div>
+          <div class="note n5"><span class="av"></span><div><b>bass_pilgrim</b><p>what's this tune??</p></div></div>
+          <div class="note n6"><span class="av"></span><div><b>mira_k</b><p>someone drop the tracklist</p></div></div>
+          <div class="note n7"><span class="av"></span><div><b>dust_and_wax</b><p>still no ID after three years</p></div></div>
+          <div class="note n8"><span class="av"></span><div><b>kito.wav</b><p>TRACK ID PLEASE</p></div></div>
+          <div class="note n9"><span class="av"></span><div><b>999_ellis</b><p>what is this at 12:04</p></div></div>
+          <div class="note n10"><span class="av"></span><div><b>pattern_hunter</b><p>tracklist anyone?</p></div></div>
+          <div class="note n11"><span class="av"></span><div><b>low_end_theo</b><p>need the ID on this one</p></div></div>
+          <div class="note n12"><span class="av"></span><div><b>vinyl.moth</b><p>sos, track id</p></div></div>
         </div>
-        <div class="problem-grid">
-          <div class="pain rv" data-delay="1">
-            <div class="pain-num">01</div>
-            <h3>Shazam can't get it</h3>
-            <p>DJ mixes layer and adjust tracks on top of each other. Audio recognition fails.</p>
-          </div>
-          <div class="pain rv" data-delay="2">
-            <div class="pain-num">02</div>
-            <h3>You heard it. And it's gone.</h3>
-            <p>You were in the mix. You heard it. By the time you found it manually — the moment was already gone.</p>
-          </div>
-          <div class="pain rv" data-delay="3">
-            <div class="pain-num">03</div>
-            <h3>Comments? Hopefully</h3>
-            <p>Tracklists in comments appears rarely.</p>
-          </div>
+        <div class="gb-center">
+          <h2>No more <span class="mark-accent">"track ID?"</span> in the comments.</h2>
+          <p>A new way to get back to the moment you liked, the full set, named, right where you heard it.</p>
+          <div class="tid-cta"><a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" data-track-cws="no_track_id">Add to Chrome, free <span class="arr">→</span></a></div>
         </div>
       </div>
     </div>
@@ -1597,45 +1457,102 @@
     </div>
   </section>
 
-  <!-- ONE TRACK WORTH IT -->
-  <section id="one-track">
+  <!-- FEATURES -->
+  <section id="features">
     <div class="wrap">
-      <div class="one-track-block rv">
-        <p class="one-track-title">Audio recognition engines weren't designed for 2-hour underground sets. HuntID was.</p>
-        <p class="one-track-body">Not every mix, not every track — but a fast answer with a high hit rate for exactly the content that leaves every other tool silent.</p>
+      <div class="sh rv"><span class="eyebrow">What's inside</span><h2>Everything you need, right when you need it.</h2></div>
+      <div class="feat-rows">
+
+        <article class="feat-row">
+          <div class="feat-copy">
+            <span class="feat-tag"><span class="dot"></span>Tracklist</span>
+            <h3>Instant tracklist</h3>
+            <p><span data-stat="tracklists">900K+</span> tracklists from Dekmantel, Awakenings, Time Warp, Sónar, Dimensions, Houghton and Tomorrowland, plus Boiler Room, HÖR, NTS and Rinse FM shows — the full set in seconds, numbered and ordered, right where you're listening.</p>
+          </div>
+          <div class="feat-pic">
+            <div class="ext">
+              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Palms Trax, Boiler Room</span></span></div>
+              <div class="ext-b">
+                <div class="f1-bar"><span>Tracklist</span><b>15 tracks</b></div>
+                <div class="f1-rows"><div class="f1-in"><div class="f1-row"><span class="n">01</span><span class="tc">00:00</span><span class="mt">Roza Terenzi — Modem Tan</span></div><div class="f1-row"><span class="n">02</span><span class="tc">04:12</span><span class="mt">DJ Boring — Sunday Avenue</span></div><div class="f1-row on"><span class="n">03</span><span class="tc">09:48</span><span class="mt">Avalon Emerson — Fluorescent Rush</span></div><div class="f1-row"><span class="n">04</span><span class="tc">14:30</span><span class="mt">Skee Mask — VLI</span></div><div class="f1-row"><span class="n">05</span><span class="tc">19:55</span><span class="mt">Anz — Last Before Lights</span></div><div class="f1-row"><span class="n">06</span><span class="tc e">--:--</span><span class="mt">Unknown — ID</span></div><div class="f1-row"><span class="n">07</span><span class="tc">28:40</span><span class="mt">Nia Archives — Forbidden Feelingz</span></div><div class="f1-row"><span class="n">08</span><span class="tc">33:02</span><span class="mt">Overmono — So U Kno</span></div><div class="f1-row"><span class="n">01</span><span class="tc">00:00</span><span class="mt">Roza Terenzi — Modem Tan</span></div><div class="f1-row"><span class="n">02</span><span class="tc">04:12</span><span class="mt">DJ Boring — Sunday Avenue</span></div><div class="f1-row on"><span class="n">03</span><span class="tc">09:48</span><span class="mt">Avalon Emerson — Fluorescent Rush</span></div><div class="f1-row"><span class="n">04</span><span class="tc">14:30</span><span class="mt">Skee Mask — VLI</span></div><div class="f1-row"><span class="n">05</span><span class="tc">19:55</span><span class="mt">Anz — Last Before Lights</span></div><div class="f1-row"><span class="n">06</span><span class="tc e">--:--</span><span class="mt">Unknown — ID</span></div><div class="f1-row"><span class="n">07</span><span class="tc">28:40</span><span class="mt">Nia Archives — Forbidden Feelingz</span></div><div class="f1-row"><span class="n">08</span><span class="tc">33:02</span><span class="mt">Overmono — So U Kno</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        
+
+        <article class="feat-row">
+          <div class="feat-copy">
+            <span class="feat-tag"><span class="dot"></span>Now playing</span>
+            <h3>Know what's playing right now</h3>
+            <p>Catch a track the second it starts, or jump straight to any moment in the set, no scrubbing, no counting minutes.</p>
+          </div>
+          <div class="feat-pic">
+            <div class="ext">
+              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>19:55 · 05/15</span></span></div>
+              <div class="ext-b"><div class="f2-wrap">
+                <div class="f2-now">
+                  <div style="flex:1;min-width:0">
+                    <div class="f2-eyebrow"><span class="eq"><i></i><i></i><i></i></span>Now playing</div>
+                    <div class="f2-title"><span>Anz —</span> Last Before Lights</div>
+                  </div>
+                </div>
+                <div class="f2-wave" id="f2-wave"><i class="p" style="height:18%"></i><i class="p" style="height:43%"></i><i class="p" style="height:64%"></i><i class="p" style="height:79%"></i><i class="p" style="height:84%"></i><i class="p" style="height:79%"></i><i class="p" style="height:66%"></i><i class="p" style="height:48%"></i><i class="p" style="height:50%"></i><i class="p" style="height:72%"></i><i class="p" style="height:88%"></i><i class="p" style="height:96%"></i><i class="p" style="height:93%"></i><i class="p" style="height:81%"></i><i class="p" style="height:62%"></i><i class="p" style="height:41%"></i><i class="p" style="height:62%"></i><i class="p" style="height:78%"></i><i class="p" style="height:87%"></i><i class="" style="height:87%"></i><i class="" style="height:77%"></i><i class="" style="height:58%"></i><i class="" style="height:35%"></i><i class="" style="height:34%"></i><i class="" style="height:51%"></i><i class="" style="height:68%"></i><i class="" style="height:78%"></i><i class="" style="height:77%"></i><i class="" style="height:68%"></i><i class="" style="height:52%"></i><i class="" style="height:36%"></i><i class="" style="height:60%"></i><i class="" style="height:80%"></i><i class="" style="height:92%"></i><i class="" style="height:94%"></i><i class="" style="height:87%"></i><i class="" style="height:72%"></i><i class="" style="height:51%"></i><i class="" style="height:55%"></i><i class="" style="height:74%"></i><i class="" style="height:87%"></i><i class="" style="height:91%"></i><i class="" style="height:86%"></i><i class="" style="height:72%"></i></div>
+                <div class="f2-tcs" id="f2-tcs"><span class="f2-tc">04:12</span><span class="f2-tc">09:48</span><span class="f2-tc">14:30</span><span class="f2-tc on">19:55</span><span class="f2-tc">24:18</span></div>
+              </div></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="feat-row">
+          <div class="feat-copy">
+            <span class="feat-tag"><span class="dot"></span>Saved tracklists and favourites</span>
+            <h3>Nothing you found gets lost</h3>
+            <p>Save a tracklist from the extension and it lands in your account with the timecodes intact. Heart a single track and it goes to your favourites with the links you actually buy from.</p>
+          </div>
+          <div class="feat-pic">
+            <div class="ext">
+              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Your library · 128 sets</span></span></div>
+              <div class="ext-b"><div class="f4-wrap">
+                <div class="f4-nav"><span class="f4-nv on">Saved tracklists<em>4</em></span><span class="f4-nv">Favourites<em>5</em></span></div>
+                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Nachtbraker — Rush Hour Session 214</div><div class="f4-s">Rush Hour <span>·</span> 17 tracks <span>·</span> saved Jul 21, 2026</div></div><div class="f4-acts"><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5.5 2.5H2.5v9h9v-3" stroke-linecap="round"></path><path d="M8.5 2.5h3v3M11.5 2.5 7 7" stroke-linecap="round"></path></svg></span><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2.8 4.2h8.4M5.6 4.2V2.8h2.8v1.4M4.2 4.2l.5 7h4.6l.5-7"></path></svg></span></div></div>
+                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Late Bloom — Basement Tapes vol. 6</div><div class="f4-s">basementtapes <span>·</span> 12 tracks <span>·</span> saved Jul 18, 2026</div></div><div class="f4-acts"><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5.5 2.5H2.5v9h9v-3" stroke-linecap="round"></path><path d="M8.5 2.5h3v3M11.5 2.5 7 7" stroke-linecap="round"></path></svg></span><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2.8 4.2h8.4M5.6 4.2V2.8h2.8v1.4M4.2 4.2l.5 7h4.6l.5-7"></path></svg></span></div></div>
+                <div class="f4-div"><span>Favourites</span></div>
+                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Meridian — Slow Tide (Dub)</div><div class="f4-s">from Dust Radio 088</div><div class="f4-buy"><span>Beatport</span><span>Bandcamp</span><span>Discogs</span></div></div></div>
+                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Orso — Halfway Lights</div><div class="f4-s">from Solar Dock</div><div class="f4-buy"><span>Beatport</span><span>Bandcamp</span><span>Discogs</span></div></div></div>
+              </div></div>
+            </div>
+          </div>
+        </article>
+
+        
+
       </div>
     </div>
   </section>
 
-  <!-- FEATURES -->
-  <section id="features">
+  <!-- ANALYZE — launching soon -->
+  <section id="analyze">
     <div class="wrap">
-      <div class="sec-head rv">
-        <span class="eyebrow">What's inside</span>
-        <h2 class="display">Everything you need.<br/><span style="color: var(--text-faint);">Nothing you don't.</span></h2>
-      </div>
-      <div class="feat-grid">
-        <div class="feat-card rv" data-delay="1">
-          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-          <h3>Instant Tracklist</h3>
-          <p>Full tracklist in seconds. No tab switching, no manual search. Searches the moment you press the button.</p>
-        </div>
-        <div class="feat-card rv" data-delay="2">
-          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-          <h3>Clickable Timecodes</h3>
-          <p>Every timecode is a button. Click — the mix jumps right there. No copying, no math, no manual seeking through a two-hour set.</p>
-        </div>
-        <div class="feat-card rv" data-delay="3">
-          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg></div>
-          <h3>Now Playing</h3>
-          <p>Always know what's on right now. Current track highlighted automatically, synced to your playhead in real time.</p>
-        </div>
-        <div class="feat-card rv" data-delay="4">
-          <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/></svg></div>
-          <h3>One-click Copy</h3>
-          <p>Add any track to your collection instantly. Just click and buy.</p>
-        </div>
-      </div>
+      <div class="sh rv"><span class="eyebrow">When there is no tracklist anywhere</span><h2>Some sets nobody ever wrote down.</h2><p class="lede">A basement b2b, a friend's upload from 2019, a set that never got posted. No database has it, so the comments stay unanswered.</p></div>
+      <article class="feat-row sf">
+          <div class="feat-copy">
+            <span class="feat-tag"><span class="dot"></span>Audio recognition<span class="feat-beta">Launch soon</span></span>
+            <h3>Analyze the mix itself</h3>
+            <p>Coming soon: hit Analyze and HuntID listens to the set, track by track, and names what it recognises straight from the audio. The tracklist that never existed gets written the first time someone asks.</p>
+          </div>
+          <div class="feat-pic">
+            <div class="ext">
+              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Listening…</span></span></div>
+              <div class="ext-b"><div class="f3-wrap an-wrap" id="an-wrap">
+                <div class="an-stage on" data-s="0"><div class="lk-dots"><i></i><i></i></div><div class="lk-t">Looking<span class="lk-e"><i></i><i></i><i></i></span></div><div class="an-note">No tracklist found for this set</div></div>
+                <div class="an-stage" data-s="1"><div class="f3-mic"><span class="rp"></span><span class="rp"></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div><div class="f3-bars"><i style="animation-delay:-0.00s"></i><i style="animation-delay:-0.17s"></i><i style="animation-delay:-0.34s"></i><i style="animation-delay:-0.51s"></i><i style="animation-delay:-0.68s"></i><i style="animation-delay:-0.85s"></i><i style="animation-delay:-1.02s"></i><i style="animation-delay:-1.19s"></i><i style="animation-delay:-1.36s"></i><i style="animation-delay:-1.53s"></i><i style="animation-delay:-1.70s"></i></div><div class="an-note"><b>Analyzing audio</b> 07:41 of 1:58:00</div></div>
+                <div class="an-stage" data-s="2"><div class="f3-out"><div class="f3-lbl">Identified from audio</div><div class="f3-name"><span>Sherelle —</span> JUNGLE TEKNAH</div></div><div class="f3-out"><div class="f3-lbl">Identified from audio</div><div class="f3-name"><span>Anz —</span> Last Before Lights</div></div><div class="an-note">Tracklist written from the sound itself</div></div>
+              </div></div>
+            </div>
+          </div>
+        </article>
     </div>
   </section>
 
@@ -1692,73 +1609,6 @@
           Install, try the full product, subscribe when it's worth it.
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ROADMAP -->
-  <section id="roadmap">
-    <div class="wrap">
-      <div class="sec-head rv">
-        <span class="eyebrow">Roadmap</span>
-        <h2 class="display">What's <span class="accent">coming.</span></h2>
-        <p>HuntID is actively developed. Here's where we're headed.</p>
-      </div>
-      <div class="roadmap-grid">
-
-        <!-- NOW -->
-        <div class="roadmap-card now-card rv" data-delay="1">
-          <div class="rm-badge live"><span class="rm-dot"></span> Live</div>
-          <h3>v1 · Beta</h3>
-          <div class="rm-progress-label">Shipped</div>
-          <div class="rm-progress-track">
-            <div class="rm-progress-fill green" data-target="100"></div>
-          </div>
-          <ul class="rm-list">
-            <li><span class="rm-list-icon">✅</span> Instant tracklist search</li>
-            <li><span class="rm-list-icon">✅</span> Clickable timecodes</li>
-            <li><span class="rm-list-icon">✅</span> Now Playing view</li>
-            <li><span class="rm-list-icon">✅</span> One-click copy</li>
-            <li><span class="rm-list-icon">✅</span> Auto-detects mixes</li>
-            <li><span class="rm-list-icon">✅</span> Light &amp; dark theme</li>
-            <li><span class="rm-list-icon">✅</span> Tracklist quality rating</li>
-          </ul>
-        </div>
-
-        <!-- SOON -->
-        <div class="roadmap-card now-card rv" data-delay="2">
-          <div class="rm-badge live"><span class="rm-dot"></span> Live</div>
-          <h3>Pro · <span id="px-roadmap">$4.99</span>/mo</h3>
-          <div class="rm-progress-label">Shipped</div>
-          <div class="rm-progress-track">
-            <div class="rm-progress-fill green" data-target="100"></div>
-          </div>
-          <ul class="rm-list">
-            <li><span class="rm-list-icon">✅</span> Unlimited searches</li>
-            <li><span class="rm-list-icon">✅</span> Save tracklist</li>
-            <li><span class="rm-list-icon">✅</span> Favourite — collect tracks</li>
-            <li><span class="rm-list-icon">✅</span> Buy links (Beatport, Bandcamp)</li>
-            <li><span class="rm-list-icon">✅</span> Better source coverage</li>
-          </ul>
-        </div>
-
-        <!-- LATER -->
-        <div class="roadmap-card soon-card active rv" data-delay="3">
-          <div class="rm-badge planned"><span class="rm-dot"></span> Planned</div>
-          <h3>What's next</h3>
-          <div class="rm-progress-label">Planned</div>
-          <div class="rm-progress-track">
-            <div class="rm-progress-fill grey" data-target="0"></div>
-          </div>
-          <ul class="rm-list">
-            <li><span class="rm-list-icon">🔮</span> YouTube support</li>
-            <li><span class="rm-list-icon">🔮</span> Better source coverage</li>
-            <li><span class="rm-list-icon">🔮</span> Tracklist confidence score</li>
-            <li><span class="rm-list-icon">🔮</span> Analyze this set (Pro)</li>
-          </ul>
-        </div>
-
-      </div>
-      <p class="rm-footer-note">Roadmap is subject to change. Feature requests? <a href="mailto:foreverykindofthing@gmail.com">Let us know →</a></p>
     </div>
   </section>
 
@@ -2284,26 +2134,43 @@
     }));
   })();
 
-  /* ----------------------- roadmap progress bars */
+  /* ----------------------- features: staged reveal, now-playing wave, analyze stages */
   (function () {
-    const fills = document.querySelectorAll('.rm-progress-fill[data-target]');
-    if (!fills.length) return;
-    if (!('IntersectionObserver' in window)) {
-      fills.forEach(f => { f.style.width = f.dataset.target + '%'; });
-      return;
+    const rows = document.querySelectorAll('.feat-row');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }), { threshold: 0, rootMargin: '0px 0px -12% 0px' });
+      rows.forEach(r => io.observe(r));
+    } else {
+      rows.forEach(r => r.classList.add('in'));
     }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          const target = parseInt(e.target.dataset.target, 10);
-          const dur = target === 100 ? 800 : 600;
-          e.target.style.transition = `width ${dur}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-          setTimeout(() => { e.target.style.width = target + '%'; }, 120);
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    fills.forEach(f => io.observe(f));
+
+    const tcs = document.querySelectorAll('#f2-tcs .f2-tc');
+    const wave = document.querySelectorAll('#f2-wave i');
+    if (tcs.length) {
+      let k = 3;
+      setInterval(() => {
+        k = (k + 1) % tcs.length;
+        tcs.forEach((t, i) => t.classList.toggle('on', i === k));
+        const cut = Math.round((k + 1) / tcs.length * wave.length);
+        wave.forEach((b, i) => b.classList.toggle('p', i < cut));
+      }, 2600);
+    }
+
+    const an = document.getElementById('an-wrap');
+    if (an) {
+      const stages = an.querySelectorAll('.an-stage');
+      const dur = [2600, 3400, 3600];
+      let si = 0;
+      (function next() {
+        setTimeout(() => {
+          si = (si + 1) % stages.length;
+          stages.forEach((st, i) => st.classList.toggle('on', i === si));
+          next();
+        }, dur[si]);
+      })();
+    }
   })();
 </script>
 
@@ -2491,7 +2358,7 @@
     /* A phone can't install the extension, so the page CTAs offer what does
        work there — an account — and once you have one they stop pretending
        to be buttons and just say where the extension lives. */
-    var extCtas = !NO_EXT ? [] : ['hero', 'pricing', 'final_cta']
+    var extCtas = !NO_EXT ? [] : ['hero', 'no_track_id', 'pricing', 'final_cta']
       .map(function (slot) { return document.querySelector('[data-track-cws="' + slot + '"]'); })
       .filter(Boolean);
 
