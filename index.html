@@ -761,14 +761,14 @@
   @keyframes xpheart{ 0%{ transform:scale(.6) }60%{ transform:scale(1.25) }100%{ transform:scale(1) } }
   .xp-buy{ display:flex;gap:4px;margin-top:6px }
   .xp-buy span{ font-size:9.5px;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);border-radius:4px;padding:2px 6px }
-  .feat-row{ position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;min-height:var(--h-lg);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--app-bg) }
+  .feat-row{ position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--app-bg) }
   .feat-row::before{ content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 58% 74% at 78% 12%,color-mix(in srgb, var(--accent) 16%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 70%) }
   .feat-row:nth-child(even)::before{ background:radial-gradient(ellipse 58% 74% at 22% 12%,color-mix(in srgb, var(--accent) 16%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 70%) }
   .feat-row:nth-child(even) .feat-copy{ order:2 }
   .feat-copy{ position:relative;z-index:2;padding:clamp(34px,4.4vw,66px);display:flex;flex-direction:column;justify-content:center;gap:18px;align-items:flex-start }
   .feat-copy h3{ color:var(--text-strong);font-size:clamp(30px,3.1vw,44px);line-height:1.1;letter-spacing:-.022em;max-width:16ch }
   .feat-copy p{ color:var(--text-dim);font-size:16px;line-height:1.6;max-width:40ch }
-  .feat-pic{ position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:clamp(26px,3.4vw,56px);overflow:hidden }
+  .feat-pic{ position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:clamp(26px,3vw,44px);overflow:hidden }
   .feat-pic::before{ content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,color-mix(in srgb, var(--accent) 10%, transparent),transparent 70%) }
   .feat-pic::after{ content:"";position:absolute;inset:0;background-image:linear-gradient(color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px);background-size:30px 30px;mask-image:radial-gradient(ellipse at center,#000,transparent 72%);-webkit-mask-image:radial-gradient(ellipse at center,#000,transparent 72%) }
   /* staged reveal */
@@ -778,7 +778,7 @@
   .feat-row.in h3{ opacity:1;transform:none;transition-delay:150ms }
   .feat-row.in p{ opacity:1;transform:none;transition-delay:240ms }
   .feat-row.in .feat-pic{ opacity:1;transform:none;transition-delay:320ms }
-  @media (max-width:960px){ .feat-row{ grid-template-columns:1fr;min-height:0 }.feat-row:nth-child(even) .feat-copy{ order:0 }.feat-copy{ padding:34px 26px;min-height:0 }.feat-pic{ min-height:0;padding:26px 22px } }
+  @media (max-width:960px){ .feat-row{ grid-template-columns:1fr }.feat-row:nth-child(even) .feat-copy{ order:0 }.feat-copy{ padding:34px 26px;min-height:0 }.feat-pic{ min-height:0;padding:26px 22px } }
   .glass-band{ position:relative;overflow:hidden;border:1px solid var(--line);border-radius:var(--r-lg);min-height:var(--h-lg);padding:clamp(64px,8vw,112px) clamp(24px,5vw,72px);display:flex;align-items:center;justify-content:center;text-align:center;background:var(--app-bg) }
   .gb-photo{ position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:saturate(1.55) contrast(1.08);opacity:.92 }
   .gb-screen{ position:absolute;inset:0;z-index:1;backdrop-filter:blur(2.5px);background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 20%),color-mix(in srgb, var(--app-bg) 56%, transparent) }
