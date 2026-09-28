@@ -592,10 +592,10 @@
   .result-gate-btn:hover { background: var(--accent-2); }
 
   /* ============================== section head (design system) */
-  .sh { max-width: 680px; margin-bottom: 52px; }
+  .sh { max-width: 680px; margin: 0 auto 52px; text-align: center; }
   .sh h2 { font-size: clamp(38px, 4.8vw, 60px); color: var(--text-strong); }
   .lede { color: var(--text-dim); font-size: 17px; max-width: 52ch; }
-  .sh .lede { margin-top: 14px; }
+  .sh .lede { margin: 14px auto 0; }
   .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
 
   /* ============================== hero: the extension, running on a mix */
@@ -840,8 +840,6 @@
 
   /* ============================== pricing: Free and Pro, billed monthly or yearly
      .pc, .amt, .plist and .tagpill come from huntid.css. */
-  #pricing .sh { margin-left: auto; margin-right: auto; text-align: center; }
-  #pricing .sh .lede { margin-left: auto; margin-right: auto; }
   .bill { display: flex; width: max-content; gap: 4px; padding: 4px; margin: 0 auto 26px; border: 1px solid var(--line); background: var(--panel); border-radius: var(--r-pill); }
   .bill-b { font-size: 13px; font-weight: 600; color: var(--text-dim); border-radius: var(--r-pill); padding: 9px 18px; display: inline-flex; align-items: center; gap: 8px; transition: background var(--t-base), color var(--t-base); }
   .bill-b.on { background: var(--accent); color: var(--on-accent); }
