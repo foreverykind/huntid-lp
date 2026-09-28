@@ -670,24 +670,7 @@
   .now2-meta .faint { color: var(--ext-muted); }
   .now2-expand { width: 36px; height: 36px; border-radius: var(--r-sm); border: 1px solid var(--ext-line); display: inline-flex; align-items: center; justify-content: center; color: var(--text-strong); flex-shrink: 0; }
 
-  /* ============================== how it works: three shots of the real UI */
-  .how-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-  .step { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px 22px 22px; }
-  .step .step-dot { margin-bottom: 16px; }
-  .step h3 { font-size: 19px; margin-bottom: 8px; color: var(--text-strong); }
-  .step p { font-size: 14px; color: var(--text-dim); flex: 1; }
-  .shot { margin-top: 20px; background: var(--ext-bg); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
-  .shot-h { height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--ext-head); border-bottom: 1px solid var(--ext-line); }
-  .shot-h .m { width: 18px; height: 18px; display: inline-flex; flex-shrink: 0; }
-  .shot-h .n { font-weight: 700; font-size: 12px; color: var(--text-strong); flex-shrink: 0; }
-  .shot-h .n em { font-style: normal; color: var(--accent); }
-  .shot-h .x { flex: 1; min-width: 0; font-size: 10px; color: var(--ext-muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .shot-body { padding: 18px; min-height: 130px; display: flex; flex-direction: column; justify-content: center; }
-  .shot-status { margin-top: 12px; font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 7px; }
-  .shot-status .ok { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
-  .shot-outcome { margin-top: 12px; font-size: 11px; color: var(--accent); display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .shot-outcome::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
-  .lk { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 6px 0; }
+  /* "Looking" state in the analyze popup */
   .lk-dots { display: flex; gap: 14px; animation: lkeye 2.2s ease-in-out infinite; }
   .lk-dots i { width: 13px; height: 13px; border-radius: 50%; background: var(--text-strong); }
   @keyframes lkeye { 0%, 100% { transform: translateX(-9px); } 50% { transform: translateX(9px); } }
@@ -697,21 +680,12 @@
   .lk-e i:nth-child(2) { animation-delay: .4s; }
   .lk-e i:nth-child(3) { animation-delay: .8s; }
   @keyframes lke { 0%, 33% { opacity: 1; } 34%, 100% { opacity: .18; } }
-  .mock-row { display: flex; align-items: center; gap: 9px; padding: 11px 16px; border-bottom: 1px solid var(--ext-row-line); font-size: 12.5px; }
-  .mock-row:last-child { border-bottom: 0; }
-  .mock-row .heart { color: var(--accent); flex-shrink: 0; }
-  .mock-row .mt { flex: 1; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .mock-row.on { background: var(--accent-soft); }
-  .mock-row.on .mt { color: var(--text); }
-  .mock-row .pill { font-size: 10px; color: var(--accent); border: 1px solid var(--line-strong); border-radius: var(--r-pill); padding: 2px 8px; flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; }
   @media (max-width: 960px) {
-    .hero-grid, .how-flow { grid-template-columns: 1fr; }
+    .hero-grid { grid-template-columns: 1fr; }
     .hero-copy { min-height: 0; }
     .flow-frame { min-height: 0; padding: 26px; }
   }
   @media (max-width: 960px) {
-    .how-flow { grid-template-columns: minmax(0, 1fr); }
-    .step, .shot { min-width: 0; }
     .glass-band { min-height: 0; }
   }
   @media (max-width: 600px) {
@@ -1094,7 +1068,6 @@
     <div class="wrap nav-row">
       <a href="#home" class="brand"><span class="mk" aria-hidden="true"><svg viewBox="0 0 64 64" width="26" height="26" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span><span>Hunt<em>ID</em></span></a>
       <div class="nav-links">
-        <a href="#how">How it works</a>
         <a href="#features">Features</a>
         <a href="#pricing">Pricing</a>
       </div>
@@ -1157,10 +1130,10 @@
         <div class="hero-copy rv">
           <span class="eyebrow">Chrome extension for SoundCloud</span>
           <h1>See the full tracklist for any SoundCloud mix</h1>
-          <p class="lede">Open a set, hit Find tracklist, and the full tracklist shows up right while you're listening — named, timecoded, linked to the source.</p>
+          <p class="lede">Open a set and HuntID is already on, nothing to configure. Hit Find tracklist and the full tracklist shows up while you're listening — named, timecoded, linked to the source.</p>
           <div class="ctas">
             <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" data-track-cws="hero">Add to Chrome, free <span class="arr">→</span></a>
-            <a href="#how" class="btn btn-g btn-lg">See it in action</a>
+            <a href="#features" class="btn btn-g btn-lg">See it in action</a>
           </div>
           <div class="hero-stats-mini">
             <article class="stat-card">
@@ -1250,51 +1223,6 @@
     </div>
   </section>
 
-  <!-- HOW IT WORKS -->
-  <section id="how">
-    <div class="wrap">
-      <div class="sh rv"><span class="eyebrow">How it works</span><h2>Three steps to hunt your sound.</h2></div>
-      <div class="how-flow">
-        <article class="step rv" data-delay="1">
-          <div class="step-dot">01</div>
-          <h3>Open any mix on SoundCloud</h3>
-          <p>HuntID activates the moment you hit play, nothing to configure.</p>
-          <div class="shot">
-            <div class="shot-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14" style="flex-shrink:0;opacity:.5;margin-right:7px;vertical-align:-1px"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Palms Trax, Boiler Room</span></span></div>
-            <div class="shot-body">
-              <div class="ext-btn"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="4.25"/><path d="m9.2 9.2 3 3"/></svg>Find tracklist</div>
-              <div class="shot-status"><span class="ok"></span>Mix detected automatically</div>
-            </div>
-          </div>
-        </article>
-        <article class="step rv" data-delay="2">
-          <div class="step-dot">02</div>
-          <h3>Hit Find tracklist</h3>
-          <p>We match the set against <span data-stat="tracklists">900K+</span> tracklisted mixes and return every track we can confirm.</p>
-          <div class="shot">
-            <div class="shot-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14" style="flex-shrink:0;opacity:.5;margin-right:7px;vertical-align:-1px"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Palms Trax, Boiler Room</span></span></div>
-            <div class="shot-body">
-              <div class="lk"><div class="lk-dots"><i></i><i></i></div><div class="lk-t">Looking<span class="lk-e"><i></i><i></i><i></i></span></div></div>
-              <div class="shot-outcome">Full tracklist, usually under 3 seconds</div>
-            </div>
-          </div>
-        </article>
-        <article class="step rv" data-delay="3">
-          <div class="step-dot">03</div>
-          <h3>Save it, or go get it</h3>
-          <p>Favourite any track on the spot, or jump straight to where you buy it.</p>
-          <div class="shot">
-            <div class="shot-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="31" height="14" style="flex-shrink:0;opacity:.5;margin-right:7px;vertical-align:-1px"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>15 tracks found</span></span></div>
-            <div class="shot-body" style="padding:0">
-              <div class="mock-row"><span class="mt">DJ Boring — Sunday Avenue</span><span class="pill"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>Beatport</span></div>
-              <div class="mock-row on"><span class="heart">♥</span><span class="mt">Avalon Emerson — Fluorescent Rush</span><span class="pill">Saved</span></div>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <!-- FEATURES -->
   <section id="features">
     <div class="wrap">
@@ -1312,7 +1240,7 @@
           <div class="fcard-copy">
             <span class="feat-tag"><span class="dot"></span>Tracklist</span>
             <h3>Instant tracklist</h3>
-            <p><span data-stat="tracklists">900K+</span> tracklists from Dekmantel, Awakenings, Time Warp, Sónar, Dimensions, Houghton and Tomorrowland, plus Boiler Room, HÖR, NTS and Rinse FM shows — the full set in seconds, numbered and ordered, right where you're listening.</p>
+            <p>The full set, numbered and ordered, usually in under 3 seconds. <span data-stat="tracklists">900K+</span> tracklists from Dekmantel, Awakenings, Sónar, Boiler Room, HÖR, NTS and Rinse FM.</p>
           </div>
         </article>
 
@@ -1509,7 +1437,7 @@
       <a href="#home" class="brand"><span class="mk" aria-hidden="true"><svg viewBox="0 0 64 64" width="22" height="22" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg></span><span>Hunt<em>ID</em></span></a>
       <div class="grow"></div>
       <div class="foot-links">
-        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
         <a href="mailto:foreverykindofthing@gmail.com">Contact</a>
