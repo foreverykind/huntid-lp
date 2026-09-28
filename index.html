@@ -815,6 +815,7 @@
   .feat-row.sf .feat-copy p{ font-size:17px;max-width:44ch }
   .gb-center .tid-cta { display: flex; justify-content: center; margin-top: 30px; }
   .feat-tag .feat-beta { margin-left: 2px; }
+  .feat-copy .feat-note, .feat-row.sf .feat-copy .feat-note { font-size: 13px; line-height: 1.55; color: var(--text-faint); max-width: 46ch; padding-top: 14px; border-top: 1px solid var(--line); }
   /* analyze: looking → no tracklist → loading bar → the whole tracklist */
   .an-body{ position:relative;height:calc(100% - 44px) }
   .an-stage{ position:absolute;inset:0;opacity:0;transform:translateY(8px);transition:opacity .38s ease,transform .38s ease;pointer-events:none }
@@ -1283,6 +1284,7 @@
             <span class="feat-tag"><span class="dot"></span>Audio recognition<span class="feat-beta">Launch soon</span></span>
             <h3>Analyze the mix itself</h3>
             <p>Coming soon: hit Analyze and HuntID listens to the whole set and writes out the full tracklist, timecodes included. The tracklist that never existed gets written the first time someone asks.</p>
+            <p class="feat-note">Recognition won't name every track. Unreleased IDs, heavy edits and tight blends can stay unknown. It raises your odds of finding the track, it doesn't guarantee it.</p>
           </div>
           <div class="feat-pic" aria-hidden="true">
             <div class="xp">
