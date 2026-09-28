@@ -670,16 +670,6 @@
   .now2-meta .faint { color: var(--ext-muted); }
   .now2-expand { width: 36px; height: 36px; border-radius: var(--r-sm); border: 1px solid var(--ext-line); display: inline-flex; align-items: center; justify-content: center; color: var(--text-strong); flex-shrink: 0; }
 
-  /* "Looking" state in the analyze popup */
-  .lk-dots { display: flex; gap: 14px; animation: lkeye 2.2s ease-in-out infinite; }
-  .lk-dots i { width: 13px; height: 13px; border-radius: 50%; background: var(--text-strong); }
-  @keyframes lkeye { 0%, 100% { transform: translateX(-9px); } 50% { transform: translateX(9px); } }
-  .lk-t { display: flex; align-items: baseline; gap: 9px; font-size: 15px; font-weight: 500; color: var(--text); }
-  .lk-e { display: flex; gap: 4px; }
-  .lk-e i { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); animation: lke 1.2s steps(1) infinite; }
-  .lk-e i:nth-child(2) { animation-delay: .4s; }
-  .lk-e i:nth-child(3) { animation-delay: .8s; }
-  @keyframes lke { 0%, 33% { opacity: 1; } 34%, 100% { opacity: .18; } }
   @media (max-width: 960px) {
     .hero-grid { grid-template-columns: 1fr; }
     .hero-copy { min-height: 0; }
@@ -779,30 +769,8 @@
   .feat-copy h3{ color:var(--text-strong);font-size:clamp(30px,3.1vw,44px);line-height:1.1;letter-spacing:-.022em;max-width:16ch }
   .feat-copy p{ color:var(--text-dim);font-size:16px;line-height:1.6;max-width:40ch }
   .feat-pic{ position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:clamp(26px,3.4vw,56px);overflow:hidden }
-  .feat-pic .ext{ max-width:520px }
   .feat-pic::before{ content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,color-mix(in srgb, var(--accent) 10%, transparent),transparent 70%) }
   .feat-pic::after{ content:"";position:absolute;inset:0;background-image:linear-gradient(color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px);background-size:30px 30px;mask-image:radial-gradient(ellipse at center,#000,transparent 72%);-webkit-mask-image:radial-gradient(ellipse at center,#000,transparent 72%) }
-  /* shared extension shell used in feature cards */
-  .feat-pic .ext{ position:relative;z-index:2;width:100%;max-width:100%;background:var(--ext-bg);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;box-shadow:0 26px 54px -20px rgba(0,0,0,.8) }
-  .feat-pic .ext-h{ height:36px;display:flex;align-items:center;gap:7px;padding:0 11px;background:var(--ext-head);border-bottom:1px solid var(--ext-line) }
-  .feat-pic .ext-h .m{ width:17px;height:17px;display:inline-flex;flex-shrink:0 }
-  .feat-pic .ext-h .n{ font-weight:700;font-size:11.5px;color:var(--text-strong);flex-shrink:0;letter-spacing:-.01em }
-  .feat-pic .ext-h .n em{ font-style:normal;color:var(--accent) }
-  .feat-pic .ext-h .x{ flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:9.5px;color:var(--ext-faint);white-space:nowrap;overflow:hidden }
-  .feat-pic .ext-h .x span{ overflow:hidden;text-overflow:ellipsis }
-  .feat-pic .ext-b{ padding:0 }
-  /* f3, audio recognition */
-  .f3-wrap{ padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:16px;height:360px;justify-content:center;box-sizing:border-box }
-  .f3-mic{ width:52px;height:52px;border-radius:50%;background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);display:grid;place-items:center;color:var(--accent);position:relative;flex-shrink:0 }
-  .f3-mic .rp{ position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--accent);animation:f3ping 2.4s ease-out infinite;opacity:0 }
-  .f3-mic .rp:nth-child(2){ animation-delay:.8s }
-  @keyframes f3ping{ 0%{ transform:scale(1);opacity:.7 }100%{ transform:scale(1.9);opacity:0 } }
-  .f3-bars{ display:flex;align-items:flex-end;gap:3px;height:28px }
-  .f3-bars i{ width:3px;border-radius:2px;background:var(--accent);animation:eqviz 1.2s ease-in-out infinite }
-  .f3-out{ width:100%;background:var(--ext-bar);border:1px solid var(--line);border-radius:9px;padding:10px 12px;text-align:left }
-  .f3-lbl{ font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:700 }
-  .f3-name{ font-size:11.5px;color:var(--text-strong);font-weight:600;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
-  .f3-name span{ color:var(--ext-dim);font-weight:500 }
   /* staged reveal */
   .feat-row .feat-tag,.feat-row h3,.feat-row p{ opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.2,.7,.3,1),transform .6s cubic-bezier(.2,.7,.3,1) }
   .feat-row .feat-pic{ opacity:0;transform:translateY(20px);transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1) }
@@ -845,14 +813,19 @@
   .feat-row.sf::before{ background:radial-gradient(ellipse 62% 82% at 18% 0%,color-mix(in srgb, var(--accent) 26%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 72%) }
   .feat-row.sf .feat-copy h3{ max-width:14ch }
   .feat-row.sf .feat-copy p{ font-size:17px;max-width:44ch }
-  .an-wrap{ position:relative;height:360px;padding:22px 16px;box-sizing:border-box }
-  .an-stage{ position:absolute;inset:22px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease;pointer-events:none }
-  .an-stage.on{ opacity:1;transform:none }
-  .an-stage .f3-out{ width:100% }
-  .an-note{ font-size:10.5px;letter-spacing:.02em;color:var(--text-dim);text-align:center }
-  .an-note b{ color:var(--text);font-weight:600 }
   .gb-center .tid-cta { display: flex; justify-content: center; margin-top: 30px; }
   .feat-tag .feat-beta { margin-left: 2px; }
+  /* analyze: looking → no tracklist → loading bar → the whole tracklist */
+  .an-body{ position:relative;height:calc(100% - 44px) }
+  .an-stage{ position:absolute;inset:0;opacity:0;transform:translateY(8px);transition:opacity .38s ease,transform .38s ease;pointer-events:none }
+  .an-stage.on{ opacity:1;transform:none }
+  .an-center{ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:0 22px;text-align:center }
+  .an-t{ font-size:14px;font-weight:600;color:var(--text-strong) }
+  .an-s{ margin:-6px 0 6px;font-size:11px;color:var(--ext-muted) }
+  .an-bar{ width:100%;height:6px;margin-top:4px;border-radius:999px;background:var(--ext-line);overflow:hidden }
+  .an-bar i{ display:block;width:0;height:100%;border-radius:inherit;background:var(--accent) }
+  .an-meta{ width:100%;display:flex;justify-content:space-between;font-size:10.5px;color:var(--ext-muted);font-feature-settings:"tnum" 1 }
+  .an-meta b{ font-weight:600;color:var(--accent) }
 
   /* ============================== testimonials */
   .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -1309,16 +1282,31 @@
           <div class="feat-copy">
             <span class="feat-tag"><span class="dot"></span>Audio recognition<span class="feat-beta">Launch soon</span></span>
             <h3>Analyze the mix itself</h3>
-            <p>Coming soon: hit Analyze and HuntID listens to the set, track by track, and names what it recognises straight from the audio. The tracklist that never existed gets written the first time someone asks.</p>
+            <p>Coming soon: hit Analyze and HuntID listens to the whole set and writes out the full tracklist, timecodes included. The tracklist that never existed gets written the first time someone asks.</p>
           </div>
-          <div class="feat-pic">
-            <div class="ext">
-              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Listening…</span></span></div>
-              <div class="ext-b"><div class="f3-wrap an-wrap" id="an-wrap">
-                <div class="an-stage on" data-s="0"><div class="lk-dots"><i></i><i></i></div><div class="lk-t">Looking<span class="lk-e"><i></i><i></i><i></i></span></div><div class="an-note">No tracklist found for this set</div></div>
-                <div class="an-stage" data-s="1"><div class="f3-mic"><span class="rp"></span><span class="rp"></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div><div class="f3-bars"><i style="animation-delay:-0.00s"></i><i style="animation-delay:-0.17s"></i><i style="animation-delay:-0.34s"></i><i style="animation-delay:-0.51s"></i><i style="animation-delay:-0.68s"></i><i style="animation-delay:-0.85s"></i><i style="animation-delay:-1.02s"></i><i style="animation-delay:-1.19s"></i><i style="animation-delay:-1.36s"></i><i style="animation-delay:-1.53s"></i><i style="animation-delay:-1.70s"></i></div><div class="an-note"><b>Analyzing audio</b> 07:41 of 1:58:00</div></div>
-                <div class="an-stage" data-s="2"><div class="f3-out"><div class="f3-lbl">Identified from audio</div><div class="f3-name"><span>Sherelle —</span> JUNGLE TEKNAH</div></div><div class="f3-out"><div class="f3-lbl">Identified from audio</div><div class="f3-name"><span>Anz —</span> Last Before Lights</div></div><div class="an-note">Tracklist written from the sound itself</div></div>
-              </div></div>
+          <div class="feat-pic" aria-hidden="true">
+            <div class="xp">
+              <div class="xp-h"><svg class="mk" viewBox="0 0 64 64" width="22" height="22"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg><span class="nm">Hunt<em>ID</em></span><span class="sp"></span><span class="mx">Late Bloom b2b Orso · basement, 2019</span></div>
+              <div class="an-body" id="an-wrap">
+                <div class="an-stage an-center on">
+                  <div class="flow-eyes"><span class="flow-eye"></span><span class="flow-eye"></span></div>
+                  <div class="flow-looking">Looking<span class="flow-dots"><span>.</span><span>.</span><span>.</span></span></div>
+                </div>
+                <div class="an-stage an-center">
+                  <div class="an-t">No tracklist found for this set</div>
+                  <div class="an-s">Nobody has written this one down yet</div>
+                  <span class="ext-btn"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6.5v3M5 4v8M8 2v12M11 5v6M14 7v2"/></svg>Analyze mix</span>
+                </div>
+                <div class="an-stage an-center">
+                  <div class="an-t">Analyzing the whole set</div>
+                  <div class="an-bar"><i id="an-fill"></i></div>
+                  <div class="an-meta"><b id="an-pct">0%</b><span>1:58:00 of audio</span></div>
+                </div>
+                <div class="an-stage">
+                  <div class="xp-bar"><span>Written from audio</span><b>18 tracks</b></div>
+                  <div id="an-tl"></div>
+                </div>
+              </div>
             </div>
           </div>
         </article>
@@ -2008,13 +1996,37 @@
 
     const an = document.getElementById('an-wrap');
     if (an) {
+      const AN_TRACKS = [
+        ['00:00', 'Sherelle', 'JUNGLE TEKNAH'],
+        ['05:26', 'Anz', 'Last Before Lights'],
+        ['11:02', 'Nia Archives', 'Forbidden Feelingz'],
+        ['16:48', 'Skee Mask', 'VLI'],
+        [null, 'Unknown', 'ID'],
+        ['27:15', 'Overmono', 'So U Kno'],
+        ['32:40', 'Jensen Interceptor', 'Bionic Symphony'],
+        ['38:09', 'Avalon Emerson', 'Fluorescent Rush']
+      ];
+      document.getElementById('an-tl').innerHTML = AN_TRACKS.map((t, i) => xpRow(t, i + 1, false)).join('');
       const stages = an.querySelectorAll('.an-stage');
-      const dur = [2600, 3400, 3600];
+      const fill = document.getElementById('an-fill');
+      const pct = document.getElementById('an-pct');
+      const LOADING = 2;
+      const dur = [1800, 2600, 3600, 5000];
       let si = 0;
+      function load(ms) {
+        const t0 = performance.now();
+        (function step(now) {
+          const p = Math.min(1, (now - t0) / ms);
+          fill.style.width = (p * 100).toFixed(1) + '%';
+          pct.textContent = Math.round(p * 100) + '%';
+          if (p < 1 && si === LOADING) requestAnimationFrame(step);
+        })(t0);
+      }
       (function next() {
         setTimeout(() => {
           si = (si + 1) % stages.length;
           stages.forEach((st, i) => st.classList.toggle('on', i === si));
+          if (si === LOADING) load(dur[LOADING] - 400);
           next();
         }, dur[si]);
       })();
