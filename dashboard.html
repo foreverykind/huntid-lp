@@ -27,24 +27,24 @@
     }
   })()
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-:root{--bg:#0f0f0f;--surface:#1a1a1a;--surface-2:#1f1f1f;--surface-3:#252525;--accent:#ff5500;--accent-soft:rgba(255,85,0,0.10);--accent-strong:#ff6a1f;--text:#fff;--text-dim:#b3b3b3;--text-faint:#888;--border:#2a2a2a;--border-strong:#3a3a3a;--danger:#ef4444;--danger-soft:rgba(239,68,68,0.10);--success:#4ade80;--success-soft:rgba(74,222,128,0.10)}
+:root{/* Green v2, account surfaces (--app-*) */--bg:#0b0f0d;--surface:#121815;--surface-2:#161e1a;--surface-3:#161e1a;--accent:#4dff9e;--accent-soft:rgba(77,255,158,.1);--accent-strong:#9dffce;--on-accent:#04140b;--text:#f0f0f0;--text-dim:#9a9a9a;--text-faint:#666666;--border:rgba(255,255,255,.1);--border-strong:rgba(255,255,255,.2);--danger:#ff6b6b;--danger-soft:rgba(255,107,107,.12);--success:#4dff9e;--success-soft:rgba(77,255,158,.1)}
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0;height:100%}
-body{font-family:"Geist",system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5}
+body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5}
 a{color:var(--accent);text-decoration:none}
 a:hover{color:var(--accent-strong)}
 button{font-family:inherit;cursor:pointer}
-.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-feature-settings:"tnum" 1}
-.display{font-family:"Bricolage Grotesque","Geist",sans-serif;font-weight:600;letter-spacing:-0.025em}
+.mono{font-feature-settings:"tnum" 1;font-feature-settings:"tnum" 1}
+.display{font-family:inherit;font-weight:600;letter-spacing:-0.025em}
 
-.brand{display:inline-flex;align-items:center;gap:9px;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.02em}
-.brand-mark{width:24px;height:24px;border-radius:7px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand{display:inline-flex;align-items:center;gap:9px;font-family:inherit;font-weight:700;font-size:17px;letter-spacing:-0.02em}
+.brand-mark{width:24px;height:24px;border-radius:7px;background:var(--surface);border:1px solid #2c3a34;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .brand .id{color:var(--accent)}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border:0;border-radius:10px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:background 160ms,border-color 160ms,color 160ms,transform 200ms cubic-bezier(.2,.9,.3,1.4)}
-.btn-primary{background:var(--accent);color:#fff;box-shadow:0 1px 0 rgba(255,255,255,0.18) inset,0 8px 22px -8px rgba(255,85,0,0.5)}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
 .btn-primary:hover{background:var(--accent-strong);transform:translateY(-1px)}
 .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border-strong)}
 .btn-outline:hover{background:var(--surface-2);border-color:var(--text-dim)}
@@ -66,13 +66,13 @@ button{font-family:inherit;cursor:pointer}
 .dsb nav{display:flex;flex-direction:column;gap:2px;padding:0 12px}
 .dnav{display:flex;align-items:center;gap:11px;width:100%;padding:9px 12px;border:0;border-radius:9px;background:none;font-family:inherit;font-size:13.5px;color:var(--text-dim);cursor:pointer;text-align:left;transition:background 140ms,color 140ms}
 .dnav svg{flex-shrink:0;opacity:0.8}
-.dnav .cnt{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--text-faint)}
+.dnav .cnt{margin-left:auto;font-feature-settings:"tnum" 1;font-size:10.5px;color:var(--text-faint)}
 .dnav:hover{background:var(--surface-2);color:var(--text)}
 .dnav.on{background:var(--surface-3);color:var(--text);font-weight:500}
 .dnav.on svg{color:var(--accent);opacity:1}
 .dsb-out{padding:0 12px 14px;margin-bottom:14px;border-bottom:1px solid var(--border)}
 .dnav-out{color:var(--text-faint)}
-.dsb-foot{margin-top:auto;padding:18px 20px 0;font-family:"JetBrains Mono",monospace;font-size:9.5px;color:#5a5a5a;letter-spacing:0.06em;line-height:1.6}
+.dsb-foot{margin-top:auto;padding:18px 20px 0;font-feature-settings:"tnum" 1;font-size:9.5px;color:#5a5a5a;letter-spacing:0.06em;line-height:1.6}
 .dburger{display:none;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-9px;border:0;border-radius:9px;background:none;color:var(--text-dim);cursor:pointer;transition:background 140ms,color 140ms}
 .dburger:hover{background:var(--surface-2);color:var(--text)}
 .dscrim{position:fixed;inset:0;z-index:25;background:rgba(0,0,0,0.55);opacity:0;transition:opacity 200ms}
@@ -87,11 +87,11 @@ html.booting #app{visibility:hidden}
 .dtop{height:64px;flex-shrink:0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:0 28px}
 .dtop .crumb{font-size:14.5px;color:var(--text-dim)}
 .dtop .du{display:flex;align-items:center;gap:10px;margin-left:auto;font-size:13px;color:var(--text-dim)}
-.dtop .av{width:28px;height:28px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:12px;color:var(--text)}
+.dtop .av{width:28px;height:28px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-family:inherit;font-weight:700;font-size:12px;color:var(--text)}
 .dbody{flex:1;overflow-y:auto;padding:36px 28px 80px}
 .dcol{max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 .dhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:4px}
-.dhead h2{font-size:24px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600;letter-spacing:-0.02em;margin:0}
+.dhead h2{font-size:24px;font-family:inherit;font-weight:600;letter-spacing:-0.02em;margin:0}
 .dhead p{margin:5px 0 0;font-size:13.5px;color:var(--text-faint)}
 .dcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px}
 .dcard-lbl{font-size:11px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--text-faint);margin-bottom:18px}
@@ -99,8 +99,8 @@ html.booting #app{visibility:hidden}
 .kvr{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
 .kvr .k{font-size:13.5px;color:var(--text-dim)}
 .kvr .v{font-size:15px;font-weight:600;text-align:right}
-.plan{font-size:23px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600;letter-spacing:-0.015em;display:flex;align-items:center;gap:10px}
-.pro-badge{font-family:"JetBrains Mono",monospace;font-size:9.5px;font-weight:600;letter-spacing:0.08em;background:var(--accent);color:#fff;padding:3px 8px;border-radius:999px}
+.plan{font-size:23px;font-family:inherit;font-weight:600;letter-spacing:-0.015em;display:flex;align-items:center;gap:10px}
+.pro-badge{font-feature-settings:"tnum" 1;font-size:9.5px;font-weight:600;letter-spacing:0.08em;background:var(--accent);color:var(--on-accent);padding:3px 8px;border-radius:999px}
 .usage{margin-top:14px;font-size:13.5px;color:var(--text-dim)}
 .usage b{color:var(--text)}
 .reset{margin-top:10px;font-size:12.5px;color:var(--text-faint)}
@@ -122,22 +122,22 @@ html.booting #app{visibility:hidden}
 .ibtn:hover{color:var(--text);border-color:var(--text-dim);background:var(--surface-2)}
 .ibtn.dgr:hover{color:var(--danger);border-color:var(--danger);background:var(--danger-soft)}
 .buy{display:flex;gap:5px}
-.buy a{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-faint);border:1px solid var(--border);border-radius:6px;padding:5px 7px;transition:color 140ms,border-color 140ms}
+.buy a{font-feature-settings:"tnum" 1;font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-faint);border:1px solid var(--border);border-radius:6px;padding:5px 7px;transition:color 140ms,border-color 140ms}
 .buy a:hover{color:var(--accent);border-color:var(--accent)}
 
 .btbl{width:100%;border-collapse:collapse;font-size:13px}
-.btbl th{background:var(--surface-2);font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);font-weight:500;padding:11px 20px;text-align:left;border-bottom:1px solid var(--border)}
+.btbl th{background:var(--surface-2);font-feature-settings:"tnum" 1;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);font-weight:500;padding:11px 20px;text-align:left;border-bottom:1px solid var(--border)}
 .btbl td{padding:14px 20px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:middle}
 .btbl tbody tr:last-child td{border-bottom:0}
-.btbl td.amt{font-family:"JetBrains Mono",monospace;color:var(--text);text-align:right}
-.st{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;padding:4px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface-3);color:var(--text-dim)}
+.btbl td.amt{font-feature-settings:"tnum" 1;color:var(--text);text-align:right}
+.st{font-feature-settings:"tnum" 1;font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;padding:4px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface-3);color:var(--text-dim)}
 .st.ok{color:var(--success);border-color:rgba(74,222,128,0.3);background:var(--success-soft)}
 .st.no{color:var(--danger);border-color:rgba(239,68,68,0.3);background:var(--danger-soft)}
 
 .dempty{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:56px 32px;text-align:center}
-.dempty h3{margin:0 0 8px;font-size:16px;font-weight:600;font-family:"Bricolage Grotesque",sans-serif}
+.dempty h3{margin:0 0 8px;font-size:16px;font-weight:600;font-family:inherit}
 .dempty p{margin:0 auto;font-size:13.5px;color:var(--text-dim);max-width:400px}
-.dempty .hint{margin-top:16px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-faint)}
+.dempty .hint{margin-top:16px;font-feature-settings:"tnum" 1;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-faint)}
 .derror{border-color:rgba(239,68,68,0.35)}
 .derror h3{color:var(--danger)}
 .skel{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
@@ -149,8 +149,8 @@ html.booting #app{visibility:hidden}
 .dfull{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:28px;z-index:20}
 .dfull[hidden]{display:none}
 .fcard{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px 36px;text-align:center;box-shadow:0 30px 80px -30px rgba(0,0,0,0.6)}
-.fcard .m{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
-.fcard h3{margin:0 0 10px;font-size:20px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600}
+.fcard .m{width:44px;height:44px;border-radius:12px;background:var(--surface);border:1px solid #2c3a34;display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
+.fcard h3{margin:0 0 10px;font-size:20px;font-family:inherit;font-weight:600}
 .fcard p{margin:0 0 24px;font-size:14px;color:var(--text-dim)}
 .spin{width:26px;height:26px;border-radius:50%;border:2px solid var(--surface-3);border-top-color:var(--accent);margin:0 auto 20px;animation:sp 800ms linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -158,14 +158,14 @@ html.booting #app{visibility:hidden}
 .mask{position:fixed;inset:0;background:rgba(0,0,0,0.62);backdrop-filter:blur(2px);z-index:90;display:flex;align-items:center;justify-content:center;padding:24px}
 .mask[hidden]{display:none}
 .modal{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border-strong);border-radius:16px;padding:26px;box-shadow:0 40px 90px -30px rgba(0,0,0,0.8)}
-.modal h3{margin:0 0 9px;font-size:17px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600}
+.modal h3{margin:0 0 9px;font-size:17px;font-family:inherit;font-weight:600}
 .modal p{margin:0;font-size:13.5px;color:var(--text-dim)}
 .modal ul{margin:12px 0 0;padding-left:18px;font-size:13px;color:var(--text-dim);display:flex;flex-direction:column;gap:5px}
 .modal .macts{display:flex;gap:10px;margin-top:22px}
 .modal .macts .btn{flex:1}
 .tconf{margin-top:18px}
 .tconf label{display:block;font-size:12px;color:var(--text-faint);margin-bottom:7px}
-.tconf input{width:100%;height:42px;background:var(--bg);border:1px solid var(--border-strong);border-radius:9px;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;padding:0 13px;outline:none}
+.tconf input{width:100%;height:42px;background:var(--bg);border:1px solid var(--border-strong);border-radius:9px;color:var(--text);font-feature-settings:"tnum" 1;font-size:13px;padding:0 13px;outline:none}
 .tconf input:focus{border-color:var(--accent)}
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--surface-3);border:1px solid var(--border-strong);border-radius:9px;padding:10px 16px;font-size:12.5px;z-index:95;box-shadow:0 16px 40px -12px rgba(0,0,0,0.7);transition:opacity 200ms}
 .toast[hidden]{display:none}
@@ -213,7 +213,7 @@ html.booting #app{visibility:hidden}
 
 <div id="app">
   <aside class="dsb">
-    <div class="dsb-brand brand"><span class="brand-mark"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"></circle><path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"></path><circle cx="7" cy="7" r="1.2" fill="white"></circle></svg></span>Hunt<span class="id">ID</span></div>
+    <div class="dsb-brand brand"><span class="brand-mark"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#4dff9e" stroke-width="1.4"></circle><path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="#4dff9e" stroke-width="1.4" stroke-linecap="round"></path><circle cx="7" cy="7" r="1.2" fill="#4dff9e"></circle></svg></span>Hunt<span class="id">ID</span></div>
     <div class="dsb-out">
       <a href="/" class="dnav dnav-out"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.8 7.6 8 3.2l5.2 4.4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4.2 7.4v5.4h7.6V7.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>Homepage</a>
     </div>
@@ -250,7 +250,7 @@ html.booting #app{visibility:hidden}
 </div>
 <div class="dfull" id="full-noaccess" hidden>
   <div class="fcard">
-    <div class="m"><svg width="22" height="22" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.4"></circle><path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="white" stroke-width="1.4" stroke-linecap="round"></path><circle cx="7" cy="7" r="1.2" fill="white"></circle></svg></div>
+    <div class="m"><svg width="22" height="22" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#4dff9e" stroke-width="1.4"></circle><path d="M7 1.5V4 M7 10v2.5 M1.5 7H4 M10 7h2.5" stroke="#4dff9e" stroke-width="1.4" stroke-linecap="round"></path><circle cx="7" cy="7" r="1.2" fill="#4dff9e"></circle></svg></div>
     <h3 id="noaccess-title">Welcome back</h3>
     <p id="noaccess-sub">Sign in to reach your saved tracklists, favourites and billing.</p>
     <div id="noaccess-auth">
