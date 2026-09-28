@@ -730,8 +730,73 @@
   /* ============================== story blocks: no "track ID?", features, analyze
      From the design, on the system's tokens. */
   .grain{ position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.32;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44NScgbnVtT2N0YXZlcz0nMicgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbHRlcj0ndXJsKCNuKScvPjwvc3ZnPg==");background-size:180px 180px }
-  /* features, three columns, copy above an extension mock */
-  .feat-rows{ display:flex;flex-direction:column;gap:22px }
+  /* features: three cards, each running the extension popup at its production size */
+  .fcards{ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px }
+  .fcard{ display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--app-bg) }
+  .fcard-shot{ position:relative;height:400px;padding:28px 18px 0;display:flex;justify-content:center;overflow:hidden;background:radial-gradient(ellipse 70% 60% at 50% 30%,color-mix(in srgb, var(--accent) 13%, transparent),transparent 70%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 80%) }
+  .fcard-shot::before{ content:"";position:absolute;inset:0;background-image:linear-gradient(color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb, var(--accent) 9%, transparent) 1px,transparent 1px);background-size:30px 30px;mask-image:radial-gradient(ellipse at 50% 30%,#000,transparent 72%);-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000,transparent 72%) }
+  .fcard-copy{ flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:26px 26px 30px;border-top:1px solid var(--line) }
+  .fcard-copy h3{ font-size:22px;line-height:1.2;letter-spacing:-.015em;color:var(--text-strong) }
+  .fcard-copy p{ font-size:15px;line-height:1.6;color:var(--text-dim) }
+  @media (max-width:1024px){ .fcards{ grid-template-columns:minmax(0,1fr);max-width:560px;margin:0 auto } }
+
+  /* extension popup, sized like the production site's; runs off the card's bottom edge */
+  .xp{ position:relative;z-index:2;width:360px;max-width:100%;height:420px;flex-shrink:0;background:var(--ext-bg);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--sh-mock);color:var(--text-strong) }
+  .xp-h{ height:44px;display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--ext-head);border-bottom:1px solid var(--ext-line) }
+  .xp-h .mk{ width:22px;height:22px;flex-shrink:0 }
+  .xp-h .nm{ font-weight:700;font-size:14px;letter-spacing:-.01em;flex-shrink:0 }
+  .xp-h .nm em{ font-style:normal;color:var(--accent) }
+  .xp-h .sp{ width:1px;height:12px;background:var(--ext-line);flex-shrink:0 }
+  .xp-h .mx{ flex:1;min-width:0;font-size:11px;color:var(--ext-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+  .xp-bar{ display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;border-bottom:1px solid var(--ext-line);background:var(--ext-bar);font-size:9.5px;color:var(--ext-muted);text-transform:uppercase;letter-spacing:.1em }
+  .xp-bar b{ font-weight:500;font-size:9px;color:var(--accent);background:var(--accent-soft);padding:2px 6px;border-radius:4px;font-feature-settings:"tnum" 1 }
+  .xp-row{ display:grid;grid-template-columns:22px 50px 1fr auto;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--ext-row-line);font-size:12px;transition:background .35s ease }
+  .xp-row .n{ font-size:9.5px;color:var(--ext-faint);text-align:right;font-feature-settings:"tnum" 1 }
+  .xp-row .tc{ font-size:10.5px;color:var(--accent);font-feature-settings:"tnum" 1;border:0;background:none;padding:0;white-space:nowrap }
+  .xp-row .tc.e{ color:var(--ext-faint) }
+  .xp-row .mt{ min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ext-dim) }
+  .xp-row .mt i{ font-style:normal;color:var(--ext-faint);margin:0 6px }
+  .xp-row .mt b{ font-weight:400;color:var(--text-strong) }
+  .xp-row .eq{ visibility:hidden }
+  .xp-row.on{ background:var(--accent-soft) }
+  .xp-row.on .n{ color:var(--accent) }
+  .xp-row.on .mt,.xp-row.on .mt b{ color:var(--text-strong);font-weight:600 }
+  .xp-row.on .eq{ visibility:visible }
+  .xp-row.unknown{ opacity:.5 }
+  .xp-rows{ height:calc(100% - 44px - 32px);overflow:hidden }
+  .xp-rows-in{ animation:xpscroll 18s linear infinite }
+  @keyframes xpscroll{ 0%,8%{ transform:translateY(0) }100%{ transform:translateY(-50%) } }
+  /* now playing, the popup's collapsed state */
+  .xp-now{ height:140px;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:1px solid var(--ext-line) }
+  .xp-now-main{ flex:1;min-width:0;transition:opacity .25s ease }
+  .xp-now-main.swap{ opacity:0 }
+  .xp-now-eb{ display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent) }
+  .xp-now-t{ margin-top:6px;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+  .xp-now-t .ar{ color:var(--ext-dim);font-weight:500 }
+  .xp-now-t i{ font-style:normal;color:var(--ext-faint);margin:0 6px }
+  .xp-now-m{ margin-top:4px;font-size:10px;color:var(--accent);font-feature-settings:"tnum" 1 }
+  .xp-now-m .f{ color:var(--ext-faint) }
+  .xp-now-x{ width:36px;height:36px;flex-shrink:0;border-radius:8px;border:1px solid var(--ext-line);display:inline-flex;align-items:center;justify-content:center;color:var(--text-strong) }
+  /* library: saved tracklists and favourites, switching tabs */
+  .xp-tabs{ display:flex;gap:16px }
+  .xp-tabs span{ display:inline-flex;align-items:center;gap:6px;transition:color .3s ease }
+  .xp-tabs span.on{ color:var(--text-strong) }
+  .xp-tabs span b{ background:none;padding:0;color:var(--ext-muted);transition:color .3s ease }
+  .xp-tabs span.on b{ color:var(--accent) }
+  .xp-lib{ position:relative;height:calc(100% - 44px - 32px) }
+  .xp-list{ position:absolute;inset:0;opacity:0;transform:translateY(8px);transition:opacity .38s ease,transform .38s ease }
+  .xp-list.show{ opacity:1;transform:none }
+  .xp-it{ display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--ext-row-line) }
+  .xp-it-main{ flex:1;min-width:0 }
+  .xp-it-t{ font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+  .xp-it-s{ margin-top:3px;font-size:10.5px;color:var(--ext-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-feature-settings:"tnum" 1 }
+  .xp-it-s i{ font-style:normal;color:var(--ext-faint);margin:0 4px }
+  .xp-it-ic{ width:26px;height:26px;flex-shrink:0;border-radius:6px;border:1px solid var(--ext-line);display:inline-flex;align-items:center;justify-content:center;color:var(--ext-muted) }
+  .xp-it .hrt{ flex-shrink:0;color:var(--accent) }
+  .xp-list.show .xp-it:first-child .hrt{ animation:xpheart .6s ease .3s both }
+  @keyframes xpheart{ 0%{ transform:scale(.6) }60%{ transform:scale(1.25) }100%{ transform:scale(1) } }
+  .xp-buy{ display:flex;gap:4px;margin-top:6px }
+  .xp-buy span{ font-size:9.5px;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);border-radius:4px;padding:2px 6px }
   .feat-row{ position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;min-height:var(--h-lg);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--app-bg) }
   .feat-row::before{ content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 58% 74% at 78% 12%,color-mix(in srgb, var(--accent) 16%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 70%) }
   .feat-row:nth-child(even)::before{ background:radial-gradient(ellipse 58% 74% at 22% 12%,color-mix(in srgb, var(--accent) 16%, transparent),transparent 64%),linear-gradient(180deg,var(--app-panel-2) 0%,var(--app-bg) 70%) }
@@ -752,31 +817,6 @@
   .feat-pic .ext-h .x{ flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:9.5px;color:var(--ext-faint);white-space:nowrap;overflow:hidden }
   .feat-pic .ext-h .x span{ overflow:hidden;text-overflow:ellipsis }
   .feat-pic .ext-b{ padding:0 }
-  /* f1, scrolling tracklist */
-  .f1-bar{ display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--ext-line);font-size:9.5px;color:var(--ext-muted);text-transform:uppercase;letter-spacing:.07em;background:var(--ext-bar) }
-  .f1-bar b{ color:var(--accent);background:var(--accent-soft);padding:2px 7px;border-radius:5px;font-weight:500;font-size:9.5px;text-transform:none;letter-spacing:0 }
-  .f1-rows{ height:330px;overflow:hidden }
-  .f1-in{ animation:f1scroll 20s linear infinite }
-  @keyframes f1scroll{ 0%,6%{ transform:translateY(0) }100%{ transform:translateY(-50%) } }
-  .f1-row{ display:grid;grid-template-columns:16px 36px 1fr;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--ext-row-line);font-size:11.5px }
-  .f1-row .n{ font-size:8.5px;color:var(--ext-faint);text-align:right;font-feature-settings:"tnum" 1 }
-  .f1-row .tc{ font-size:10px;color:var(--accent);font-feature-settings:"tnum" 1 }
-  .f1-row .tc.e{ color:var(--ext-faint) }
-  .f1-row .mt{ min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ext-dim) }
-  .f1-row.on{ background:var(--accent-soft) }
-  .f1-row.on .mt{ color:var(--text-strong);font-weight:600 }
-  .f1-row.on .n{ color:var(--accent) }
-  /* f2, now playing */
-  .f2-wrap{ padding:20px 16px;display:flex;flex-direction:column;gap:16px;height:360px;justify-content:center;box-sizing:border-box }
-  .f2-eyebrow{ font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-weight:700;display:inline-flex;align-items:center;gap:6px }
-  .f2-title{ font-size:12.5px;font-weight:600;color:var(--text-strong);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
-  .f2-title span{ color:var(--ext-dim);font-weight:500 }
-  .f2-wave{ display:flex;align-items:flex-end;gap:2px;height:56px }
-  .f2-wave i{ flex:1;background:color-mix(in srgb, var(--accent) 22%, transparent);border-radius:1px;transition:background .3s }
-  .f2-wave i.p{ background:var(--accent) }
-  .f2-tcs{ display:flex;gap:5px;flex-wrap:wrap }
-  .f2-tc{ font-size:9.5px;color:var(--accent);border:1px solid color-mix(in srgb, var(--accent) 25%, transparent);background:var(--accent-soft);border-radius:5px;padding:3px 7px;font-feature-settings:"tnum" 1;transition:background .3s,color .3s }
-  .f2-tc.on{ background:var(--accent);color:var(--on-accent);font-weight:600 }
   /* f3, audio recognition */
   .f3-wrap{ padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:16px;height:360px;justify-content:center;box-sizing:border-box }
   .f3-mic{ width:52px;height:52px;border-radius:50%;background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);display:grid;place-items:center;color:var(--accent);position:relative;flex-shrink:0 }
@@ -796,14 +836,7 @@
   .feat-row.in h3{ opacity:1;transform:none;transition-delay:150ms }
   .feat-row.in p{ opacity:1;transform:none;transition-delay:240ms }
   .feat-row.in .feat-pic{ opacity:1;transform:none;transition-delay:320ms }
-  .feat-rows>.feat-row:nth-child(2) .feat-tag,.feat-rows>.feat-row:nth-child(2) h3,.feat-rows>.feat-row:nth-child(2) p,.feat-rows>.feat-row:nth-child(2) .feat-pic{ transition-duration:.66s }
   @media (max-width:960px){ .feat-row{ grid-template-columns:1fr;min-height:0 }.feat-row:nth-child(even) .feat-copy{ order:0 }.feat-copy{ padding:34px 26px;min-height:0 }.feat-pic{ min-height:0;padding:26px 22px } }
-  .f4-wrap{ padding:14px 12px;display:flex;flex-direction:column;gap:9px }
-  .f4-item{ display:grid;grid-template-columns:40px 1fr auto;gap:11px;align-items:center;padding:11px;border:1px solid var(--ext-line);border-radius:9px;background:var(--ext-item) }
-  .f4-art{ width:40px;height:40px;border-radius:6px;background:linear-gradient(140deg,var(--app-panel-2),var(--app-panel));border:1px solid var(--ext-line) }
-  .f4-t{ font-size:12.5px;color:var(--text-strong);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
-  .f4-s{ font-size:10px;color:var(--ext-muted);margin-top:3px;font-feature-settings:"tnum" 1 }
-  .f4-b{ font-size:9.5px;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 25%, transparent);border-radius:5px;padding:3px 8px;white-space:nowrap }
   .glass-band{ position:relative;overflow:hidden;border:1px solid var(--line);border-radius:var(--r-lg);min-height:var(--h-lg);padding:clamp(64px,8vw,112px) clamp(24px,5vw,72px);display:flex;align-items:center;justify-content:center;text-align:center;background:var(--app-bg) }
   .gb-photo{ position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:saturate(1.55) contrast(1.08);opacity:.92 }
   .gb-screen{ position:absolute;inset:0;z-index:1;backdrop-filter:blur(2.5px);background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 20%),color-mix(in srgb, var(--app-bg) 56%, transparent) }
@@ -844,24 +877,6 @@
   .an-stage .f3-out{ width:100% }
   .an-note{ font-size:10.5px;letter-spacing:.02em;color:var(--text-dim);text-align:center }
   .an-note b{ color:var(--text);font-weight:600 }
-  .f4-div{ display:flex;align-items:center;gap:9px;padding:8px 2px 2px;font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-faint);font-weight:700 }
-  .f4-div::after{ content:"";flex:1;height:1px;background:var(--ext-line) }
-  .f4-nav{ display:flex;gap:4px;padding:0 0 4px }
-  .f4-nv{ display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;color:var(--ext-muted);padding:5px 8px;border-radius:6px;border:1px solid transparent;white-space:nowrap }
-  .f4-nv em{ font-style:normal;font-size:9px;color:var(--ext-muted);font-feature-settings:"tnum" 1 }
-  .f4-nv.on{ color:var(--text-strong);background:var(--accent-soft);border-color:color-mix(in srgb, var(--accent) 24%, transparent) }
-  .f4-nv.on em{ color:var(--accent) }
-  .f4-rw{ display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 11px;border:1px solid var(--ext-line);border-radius:9px;background:var(--ext-item) }
-  .f4-main{ min-width:0 }
-  .f4-rw .f4-s span{ color:var(--ext-faint);margin:0 2px }
-  .f4-acts{ display:flex;gap:5px }
-  .f4-ib{ display:flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:5px;border:1px solid var(--ext-line);color:var(--ext-muted);background:var(--ext-bg) }
-  .f4-buy{ display:flex;gap:5px;flex-wrap:wrap;margin-top:7px }
-  .f4-buy span{ font-size:9px;color:var(--accent);border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);background:var(--accent-soft);border-radius:5px;padding:3px 6px }
-  .f4-l{ display:inline-flex;align-items:center;gap:5px;font-size:9.5px;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 7px;background:var(--ext-bg) }
-  .f4-l i{ width:6px;height:6px;border-radius:50%;flex-shrink:0 }
-  /* The mock's timecodes are plain text, not the system's .tc chip. */
-  .f1-row .tc { border: 0; background: none; padding: 0; white-space: nowrap; }
   .gb-center .tid-cta { display: flex; justify-content: center; margin-top: 30px; }
   .feat-tag .feat-beta { margin-left: 2px; }
 
@@ -894,7 +909,6 @@
   .pc-note { font-size: 12px; color: var(--text-faint); text-align: center; margin-top: 12px; }
 
   /* ============================== faq (.faq comes from huntid.css) */
-  #faq .faq { max-width: 860px; }
   /* Height is animated from script; clipping keeps the answer inside while it moves. */
   #faq .faq details { overflow: hidden; }
   #faq .faq summary::after { transition: transform var(--t-reveal) var(--ease); }
@@ -1285,72 +1299,75 @@
   <section id="features">
     <div class="wrap">
       <div class="sh rv"><span class="eyebrow">What's inside</span><h2>Everything you need, right when you need it.</h2></div>
-      <div class="feat-rows">
+      <div class="fcards">
 
-        <article class="feat-row">
-          <div class="feat-copy">
+        <article class="fcard rv" data-delay="1">
+          <div class="fcard-shot" aria-hidden="true">
+            <div class="xp">
+              <div class="xp-h"><svg class="mk" viewBox="0 0 64 64" width="22" height="22"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg><span class="nm">Hunt<em>ID</em></span><span class="sp"></span><span class="mx">Boiler Room · Palms Trax @ Hï Ibiza</span></div>
+              <div class="xp-bar"><span>Tracklist</span><b>15 tracks</b></div>
+              <div class="xp-rows"><div class="xp-rows-in" id="xp-tl"></div></div>
+            </div>
+          </div>
+          <div class="fcard-copy">
             <span class="feat-tag"><span class="dot"></span>Tracklist</span>
             <h3>Instant tracklist</h3>
             <p><span data-stat="tracklists">900K+</span> tracklists from Dekmantel, Awakenings, Time Warp, Sónar, Dimensions, Houghton and Tomorrowland, plus Boiler Room, HÖR, NTS and Rinse FM shows — the full set in seconds, numbered and ordered, right where you're listening.</p>
           </div>
-          <div class="feat-pic">
-            <div class="ext">
-              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Palms Trax, Boiler Room</span></span></div>
-              <div class="ext-b">
-                <div class="f1-bar"><span>Tracklist</span><b>15 tracks</b></div>
-                <div class="f1-rows"><div class="f1-in"><div class="f1-row"><span class="n">01</span><span class="tc">00:00</span><span class="mt">Roza Terenzi — Modem Tan</span></div><div class="f1-row"><span class="n">02</span><span class="tc">04:12</span><span class="mt">DJ Boring — Sunday Avenue</span></div><div class="f1-row on"><span class="n">03</span><span class="tc">09:48</span><span class="mt">Avalon Emerson — Fluorescent Rush</span></div><div class="f1-row"><span class="n">04</span><span class="tc">14:30</span><span class="mt">Skee Mask — VLI</span></div><div class="f1-row"><span class="n">05</span><span class="tc">19:55</span><span class="mt">Anz — Last Before Lights</span></div><div class="f1-row"><span class="n">06</span><span class="tc e">--:--</span><span class="mt">Unknown — ID</span></div><div class="f1-row"><span class="n">07</span><span class="tc">28:40</span><span class="mt">Nia Archives — Forbidden Feelingz</span></div><div class="f1-row"><span class="n">08</span><span class="tc">33:02</span><span class="mt">Overmono — So U Kno</span></div><div class="f1-row"><span class="n">01</span><span class="tc">00:00</span><span class="mt">Roza Terenzi — Modem Tan</span></div><div class="f1-row"><span class="n">02</span><span class="tc">04:12</span><span class="mt">DJ Boring — Sunday Avenue</span></div><div class="f1-row on"><span class="n">03</span><span class="tc">09:48</span><span class="mt">Avalon Emerson — Fluorescent Rush</span></div><div class="f1-row"><span class="n">04</span><span class="tc">14:30</span><span class="mt">Skee Mask — VLI</span></div><div class="f1-row"><span class="n">05</span><span class="tc">19:55</span><span class="mt">Anz — Last Before Lights</span></div><div class="f1-row"><span class="n">06</span><span class="tc e">--:--</span><span class="mt">Unknown — ID</span></div><div class="f1-row"><span class="n">07</span><span class="tc">28:40</span><span class="mt">Nia Archives — Forbidden Feelingz</span></div><div class="f1-row"><span class="n">08</span><span class="tc">33:02</span><span class="mt">Overmono — So U Kno</span></div></div></div>
-              </div>
-            </div>
-          </div>
         </article>
 
-        
-
-        <article class="feat-row">
-          <div class="feat-copy">
+        <article class="fcard rv" data-delay="2">
+          <div class="fcard-shot" aria-hidden="true">
+            <div class="xp">
+              <div class="xp-h"><svg class="mk" viewBox="0 0 64 64" width="22" height="22"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg><span class="nm">Hunt<em>ID</em></span><span class="sp"></span><span class="mx">Boiler Room · Palms Trax @ Hï Ibiza</span></div>
+              <div class="xp-now">
+                <div class="xp-now-main" id="xp-now">
+                  <div class="xp-now-eb"><span class="eq"><i></i><i></i><i></i></span>Now playing</div>
+                  <div class="xp-now-t"><span class="ar">Anz</span><i>—</i><span class="ti">Last Before Lights</span></div>
+                  <div class="xp-now-m"><span class="t">19:55</span> <span class="f">· track <span class="k">05</span>/15</span></div>
+                </div>
+                <span class="xp-now-x"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 5.5 3.5 3.5 3.5-3.5"/></svg></span>
+              </div>
+              <div id="xp-jump"></div>
+            </div>
+          </div>
+          <div class="fcard-copy">
             <span class="feat-tag"><span class="dot"></span>Now playing</span>
             <h3>Know what's playing right now</h3>
             <p>Catch a track the second it starts, or jump straight to any moment in the set, no scrubbing, no counting minutes.</p>
           </div>
-          <div class="feat-pic">
-            <div class="ext">
-              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>19:55 · 05/15</span></span></div>
-              <div class="ext-b"><div class="f2-wrap">
-                <div class="f2-now">
-                  <div style="flex:1;min-width:0">
-                    <div class="f2-eyebrow"><span class="eq"><i></i><i></i><i></i></span>Now playing</div>
-                    <div class="f2-title"><span>Anz —</span> Last Before Lights</div>
-                  </div>
-                </div>
-                <div class="f2-wave" id="f2-wave"><i class="p" style="height:18%"></i><i class="p" style="height:43%"></i><i class="p" style="height:64%"></i><i class="p" style="height:79%"></i><i class="p" style="height:84%"></i><i class="p" style="height:79%"></i><i class="p" style="height:66%"></i><i class="p" style="height:48%"></i><i class="p" style="height:50%"></i><i class="p" style="height:72%"></i><i class="p" style="height:88%"></i><i class="p" style="height:96%"></i><i class="p" style="height:93%"></i><i class="p" style="height:81%"></i><i class="p" style="height:62%"></i><i class="p" style="height:41%"></i><i class="p" style="height:62%"></i><i class="p" style="height:78%"></i><i class="p" style="height:87%"></i><i class="" style="height:87%"></i><i class="" style="height:77%"></i><i class="" style="height:58%"></i><i class="" style="height:35%"></i><i class="" style="height:34%"></i><i class="" style="height:51%"></i><i class="" style="height:68%"></i><i class="" style="height:78%"></i><i class="" style="height:77%"></i><i class="" style="height:68%"></i><i class="" style="height:52%"></i><i class="" style="height:36%"></i><i class="" style="height:60%"></i><i class="" style="height:80%"></i><i class="" style="height:92%"></i><i class="" style="height:94%"></i><i class="" style="height:87%"></i><i class="" style="height:72%"></i><i class="" style="height:51%"></i><i class="" style="height:55%"></i><i class="" style="height:74%"></i><i class="" style="height:87%"></i><i class="" style="height:91%"></i><i class="" style="height:86%"></i><i class="" style="height:72%"></i></div>
-                <div class="f2-tcs" id="f2-tcs"><span class="f2-tc">04:12</span><span class="f2-tc">09:48</span><span class="f2-tc">14:30</span><span class="f2-tc on">19:55</span><span class="f2-tc">24:18</span></div>
-              </div></div>
-            </div>
-          </div>
         </article>
 
-        <article class="feat-row">
-          <div class="feat-copy">
+        <article class="fcard rv" data-delay="3">
+          <div class="fcard-shot" aria-hidden="true">
+            <div class="xp">
+              <div class="xp-h"><svg class="mk" viewBox="0 0 64 64" width="22" height="22"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg><span class="nm">Hunt<em>ID</em></span><span class="sp"></span><span class="mx">Your library</span></div>
+              <div class="xp-bar"><div class="xp-tabs" id="xp-tabs"><span class="on">Saved <b>24</b></span><span>Favourites <b>57</b></span></div></div>
+              <div class="xp-lib">
+                <div class="xp-list show">
+                  <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Nachtbraker — Rush Hour Session 214</div><div class="xp-it-s">17 tracks<i>·</i>saved Jul 21</div></div><span class="xp-it-ic"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5.5 2.5H2.5v9h9v-3"/><path d="M8.5 2.5h3v3M11.5 2.5 7 7"/></svg></span></div>
+                  <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Palms Trax — Boiler Room Hï Ibiza</div><div class="xp-it-s">15 tracks<i>·</i>saved Jul 19</div></div><span class="xp-it-ic"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5.5 2.5H2.5v9h9v-3"/><path d="M8.5 2.5h3v3M11.5 2.5 7 7"/></svg></span></div>
+                  <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Late Bloom — Basement Tapes vol. 6</div><div class="xp-it-s">12 tracks<i>·</i>saved Jul 18</div></div><span class="xp-it-ic"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5.5 2.5H2.5v9h9v-3"/><path d="M8.5 2.5h3v3M11.5 2.5 7 7"/></svg></span></div>
+                  <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Sherelle — Dekmantel 2026</div><div class="xp-it-s">22 tracks<i>·</i>saved Jul 09</div></div><span class="xp-it-ic"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5.5 2.5H2.5v9h9v-3"/><path d="M8.5 2.5h3v3M11.5 2.5 7 7"/></svg></span></div>
+                  <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Anz — NTS Radio</div><div class="xp-it-s">19 tracks<i>·</i>saved Jul 02</div></div><span class="xp-it-ic"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5.5 2.5H2.5v9h9v-3"/><path d="M8.5 2.5h3v3M11.5 2.5 7 7"/></svg></span></div>
+                  <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Avalon Emerson — HÖR Berlin</div><div class="xp-it-s">14 tracks<i>·</i>saved Jun 27</div></div><span class="xp-it-ic"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5.5 2.5H2.5v9h9v-3"/><path d="M8.5 2.5h3v3M11.5 2.5 7 7"/></svg></span></div>
+                </div>
+                <div class="xp-list">
+                  <div class="xp-it"><svg class="hrt" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 2.9 4.5 6.7 4.5c2.2 0 3.9 1.3 5.3 3.1 1.4-1.8 3.1-3.1 5.3-3.1 3.8 0 5.8 4 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg><div class="xp-it-main"><div class="xp-it-t">Meridian — Slow Tide (Dub)</div><div class="xp-buy"><span>Beatport</span><span>Bandcamp</span><span>Discogs</span></div></div></div>
+                  <div class="xp-it"><svg class="hrt" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 2.9 4.5 6.7 4.5c2.2 0 3.9 1.3 5.3 3.1 1.4-1.8 3.1-3.1 5.3-3.1 3.8 0 5.8 4 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg><div class="xp-it-main"><div class="xp-it-t">Avalon Emerson — Fluorescent Rush</div><div class="xp-buy"><span>Beatport</span><span>Bandcamp</span></div></div></div>
+                  <div class="xp-it"><svg class="hrt" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 2.9 4.5 6.7 4.5c2.2 0 3.9 1.3 5.3 3.1 1.4-1.8 3.1-3.1 5.3-3.1 3.8 0 5.8 4 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg><div class="xp-it-main"><div class="xp-it-t">Orso — Halfway Lights</div><div class="xp-buy"><span>Bandcamp</span><span>Discogs</span></div></div></div>
+                  <div class="xp-it"><svg class="hrt" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 2.9 4.5 6.7 4.5c2.2 0 3.9 1.3 5.3 3.1 1.4-1.8 3.1-3.1 5.3-3.1 3.8 0 5.8 4 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg><div class="xp-it-main"><div class="xp-it-t">Skee Mask — VLI</div><div class="xp-buy"><span>Beatport</span><span>Discogs</span></div></div></div>
+                  <div class="xp-it"><svg class="hrt" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 2.9 4.5 6.7 4.5c2.2 0 3.9 1.3 5.3 3.1 1.4-1.8 3.1-3.1 5.3-3.1 3.8 0 5.8 4 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg><div class="xp-it-main"><div class="xp-it-t">DJ Boring — Sunday Avenue</div><div class="xp-buy"><span>Beatport</span><span>Bandcamp</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fcard-copy">
             <span class="feat-tag"><span class="dot"></span>Saved tracklists and favourites</span>
             <h3>Nothing you found gets lost</h3>
             <p>Save a tracklist from the extension and it lands in your account with the timecodes intact. Heart a single track and it goes to your favourites with the links you actually buy from.</p>
           </div>
-          <div class="feat-pic">
-            <div class="ext">
-              <div class="ext-h"><span class="m"><svg viewBox="0 0 64 64" width="17" height="17" style="display:block"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"></rect><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"></circle><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"></path></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"></circle></svg></span><span class="n">Hunt<em>ID</em></span><span class="x"><svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 229.209" width="28" height="13" style="flex-shrink:0;opacity:.5"><path fill="#fff" d="M511.962 161.134c-2.146 38.361-34.164 68.201-72.576 67.67H264.935c-7.99-.083-14.44-6.564-14.483-14.546V26.423a16.007 16.007 0 019.635-15.295S276.134 0 309.931 0a114.36 114.36 0 0158.657 16.117 116.064 116.064 0 0154.613 75.641 67.288 67.288 0 0118.504-2.52 69.843 69.843 0 0150.395 21.035 69.83 69.83 0 0119.87 50.864l-.008-.003zM228.68 38.299c5.261 63.709 9.084 121.814 0 185.315a5.662 5.662 0 01-5.627 5.044 5.668 5.668 0 01-5.635-5.044c-8.47-62.961-4.781-122.158 0-185.315a5.646 5.646 0 012.626-5.419 5.706 5.706 0 016.021 0 5.66 5.66 0 012.615 5.419zm-35.298 185.378a5.931 5.931 0 01-5.868 5.044 5.929 5.929 0 01-5.875-5.044 708.398 708.398 0 010-163.52 5.946 5.946 0 015.907-5.312 5.95 5.95 0 015.906 5.312 636.109 636.109 0 01-.074 163.52h.004zM158.009 54.625c5.729 58.377 8.336 110.678-.063 168.918a5.672 5.672 0 01-5.667 5.666 5.673 5.673 0 01-5.666-5.666c-8.128-57.491-5.399-111.293 0-168.918a5.713 5.713 0 015.698-5.104 5.716 5.716 0 015.698 5.104zm-35.425 169.127a5.817 5.817 0 01-5.78 5.166c-2.957 0-5.45-2.229-5.761-5.166a598.204 598.204 0 010-152.675 5.867 5.867 0 015.867-5.867c3.241 0 5.876 2.626 5.876 5.867a558.013 558.013 0 01-.209 152.675h.007z"/></svg><span>Your library · 128 sets</span></span></div>
-              <div class="ext-b"><div class="f4-wrap">
-                <div class="f4-nav"><span class="f4-nv on">Saved tracklists<em>4</em></span><span class="f4-nv">Favourites<em>5</em></span></div>
-                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Nachtbraker — Rush Hour Session 214</div><div class="f4-s">Rush Hour <span>·</span> 17 tracks <span>·</span> saved Jul 21, 2026</div></div><div class="f4-acts"><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5.5 2.5H2.5v9h9v-3" stroke-linecap="round"></path><path d="M8.5 2.5h3v3M11.5 2.5 7 7" stroke-linecap="round"></path></svg></span><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2.8 4.2h8.4M5.6 4.2V2.8h2.8v1.4M4.2 4.2l.5 7h4.6l.5-7"></path></svg></span></div></div>
-                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Late Bloom — Basement Tapes vol. 6</div><div class="f4-s">basementtapes <span>·</span> 12 tracks <span>·</span> saved Jul 18, 2026</div></div><div class="f4-acts"><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5.5 2.5H2.5v9h9v-3" stroke-linecap="round"></path><path d="M8.5 2.5h3v3M11.5 2.5 7 7" stroke-linecap="round"></path></svg></span><span class="f4-ib"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2.8 4.2h8.4M5.6 4.2V2.8h2.8v1.4M4.2 4.2l.5 7h4.6l.5-7"></path></svg></span></div></div>
-                <div class="f4-div"><span>Favourites</span></div>
-                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Meridian — Slow Tide (Dub)</div><div class="f4-s">from Dust Radio 088</div><div class="f4-buy"><span>Beatport</span><span>Bandcamp</span><span>Discogs</span></div></div></div>
-                <div class="f4-rw"><div class="f4-main"><div class="f4-t">Orso — Halfway Lights</div><div class="f4-s">from Solar Dock</div><div class="f4-buy"><span>Beatport</span><span>Bandcamp</span><span>Discogs</span></div></div></div>
-              </div></div>
-            </div>
-          </div>
         </article>
-
-        
 
       </div>
     </div>
@@ -1834,11 +1851,8 @@
     host.innerHTML = html;
   })();
 
-  /* ----------------------- hero tracklist (rows run twice for a seamless scroll) */
-  (function () {
-    const host = document.getElementById('tl2-rows');
-    if (!host) return;
-    const TRACKS = [
+  /* ----------------------- demo tracklist shared by the hero and the feature cards */
+  const DEMO_TRACKS = [
       ['00:00', 'Roza Terenzi', 'Modem Tan'],
       ['04:12', 'DJ Boring', 'Sunday Avenue'],
       ['09:48', 'Avalon Emerson', 'Fluorescent Rush', true],
@@ -1849,7 +1863,13 @@
       ['33:02', 'Jensen Interceptor', 'Bionic Symphony'],
       ['38:44', 'Sherelle', 'JUNGLE TEKNAH'],
       ['43:11', 'Overmono', 'So U Kno']
-    ];
+  ];
+
+  /* ----------------------- hero tracklist (rows run twice for a seamless scroll) */
+  (function () {
+    const host = document.getElementById('tl2-rows');
+    if (!host) return;
+    const TRACKS = DEMO_TRACKS;
     const row = (t, i) =>
       `<div class="tl-row${t[3] ? ' on' : ''}${t[0] ? '' : ' unknown'}">` +
         `<span class="n">${String(i % TRACKS.length + 1).padStart(2, '0')}</span>` +
@@ -1998,7 +2018,7 @@
     });
   })();
 
-  /* ----------------------- features: staged reveal, now-playing wave, analyze stages */
+  /* ----------------------- features: staged reveal, extension popups in the cards, analyze stages */
   (function () {
     const rows = document.querySelectorAll('.feat-row');
     if ('IntersectionObserver' in window) {
@@ -2010,16 +2030,52 @@
       rows.forEach(r => r.classList.add('in'));
     }
 
-    const tcs = document.querySelectorAll('#f2-tcs .f2-tc');
-    const wave = document.querySelectorAll('#f2-wave i');
-    if (tcs.length) {
+    const pad = n => String(n).padStart(2, '0');
+    const xpRow = (t, num, on) =>
+      `<div class="xp-row${on ? ' on' : ''}${t[0] ? '' : ' unknown'}">` +
+        `<span class="n">${pad(num)}</span>` +
+        `<span class="tc${t[0] ? '' : ' e'}">${t[0] || '--:--'}</span>` +
+        `<span class="mt">${t[1]}<i>—</i><b>${t[2]}</b></span>` +
+        `<span class="eq"><i></i><i></i><i></i></span>` +
+      `</div>`;
+
+    const tl = document.getElementById('xp-tl');
+    if (tl) tl.innerHTML = DEMO_TRACKS.concat(DEMO_TRACKS).map((t, i) => xpRow(t, i % DEMO_TRACKS.length + 1, t[3])).join('');
+
+    // Now playing follows the playhead down the set; the rows under it are the timecodes you can jump to.
+    const jump = document.getElementById('xp-jump');
+    const now = document.getElementById('xp-now');
+    if (jump && now) {
+      // Only as many rows as the card shows, so the highlighted one never sits below its edge.
+      const FIRST = 1;
+      const list = DEMO_TRACKS.slice(FIRST, FIRST + 4);
       let k = 3;
+      jump.innerHTML = list.map((t, i) => xpRow(t, FIRST + i + 1, i === k)).join('');
+      const rowsEl = jump.querySelectorAll('.xp-row');
+      const [ar, ti, tc, num] = ['.ar', '.ti', '.t', '.k'].map(s => now.querySelector(s));
       setInterval(() => {
-        k = (k + 1) % tcs.length;
-        tcs.forEach((t, i) => t.classList.toggle('on', i === k));
-        const cut = Math.round((k + 1) / tcs.length * wave.length);
-        wave.forEach((b, i) => b.classList.toggle('p', i < cut));
-      }, 2600);
+        k = (k + 1) % list.length;
+        rowsEl.forEach((r, i) => r.classList.toggle('on', i === k));
+        now.classList.add('swap');
+        setTimeout(() => {
+          ar.textContent = list[k][1];
+          ti.textContent = list[k][2];
+          tc.textContent = list[k][0];
+          num.textContent = pad(FIRST + k + 1);
+          now.classList.remove('swap');
+        }, 250);
+      }, 2800);
+    }
+
+    const tabs = document.querySelectorAll('#xp-tabs span');
+    const lists = document.querySelectorAll('.xp-lib .xp-list');
+    if (tabs.length && lists.length) {
+      let tab = 0;
+      setInterval(() => {
+        tab = 1 - tab;
+        tabs.forEach((t, i) => t.classList.toggle('on', i === tab));
+        lists.forEach((l, i) => l.classList.toggle('show', i === tab));
+      }, 3800);
     }
 
     const an = document.getElementById('an-wrap');
