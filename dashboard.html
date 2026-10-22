@@ -117,6 +117,11 @@ html.booting #app{visibility:hidden}
 .rw-t{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rw-s{font-size:12px;color:var(--text-faint);margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .rw-s .sep{color:var(--border-strong)}
+.rw-s .src{display:inline-flex;align-items:center;gap:7px;min-width:0;max-width:100%;color:var(--text-faint)}
+.rw-s .src:hover .mix{color:var(--text)}
+.rw-s .tc{font-feature-settings:"tnum" 1;color:var(--accent)}
+.rw-s .mix{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color 140ms}
+.buy a.on{color:var(--accent);border-color:var(--accent)}
 .rw-acts{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .ibtn{width:32px;height:32px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-faint);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color 140ms,border-color 140ms,background 140ms}
 .ibtn:hover{color:var(--text);border-color:var(--text-dim);background:var(--surface-2)}
@@ -296,6 +301,7 @@ let sec = "account", profile = null, authUser = null
 
 const T = { account: "Account", saved: "Saved tracklists", fav: "Favourites", analyzed: "Analyzed mixes", billing: "Billing history" }
 const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")
+const attr = (s) => esc(s).replace(/"/g, "&quot;")
 // Store search breaks on punctuation like the em dash: send bare words only, same as the extension's buyLinks.ts.
 const searchWords = (s) => String(s ?? "").replace(/[^\p{L}\p{N}\s]/gu, " ").split(/\s+/).filter(Boolean)
 const searchQuery = (artist, title) => encodeURIComponent([...searchWords(artist), ...searchWords(title)].join(" "))
@@ -710,8 +716,22 @@ async function viewFav() {
   data.forEach((x) => {
     const name = x.artist + " — " + x.title
     const q = searchQuery(x.artist, x.title)
-    h += '<div class="rw rw-stack"><div class="rw-main"><div class="rw-t">' + esc(name) + '</div><div class="rw-s"><span>saved ' + new Date(x.saved_at).toLocaleDateString() + '</span></div></div>' +
-      '<div class="buy"><a href="https://www.beatport.com/search?q=' + q + '" target="_blank" rel="noreferrer">Beatport</a><a href="https://bandcamp.com/search?q=' + q + '&amp;item_type=" target="_blank" rel="noreferrer">Bandcamp</a><a href="https://www.discogs.com/search/?q=' + q + '" target="_blank" rel="noreferrer">Discogs</a></div>' +
+    // Same line as the extension: timecode and the mix it came from, opening the mix at that moment.
+    const mixUrl = /^https:\/\/(www\.|m\.)?soundcloud\.com\//.test(x.sc_url || "") ? x.sc_url : ""
+    const at = mixUrl && /^\d{1,2}(:\d{2}){1,2}$/.test(x.timecode || "") ? mixUrl + "#t=" + x.timecode : mixUrl
+    const src = (x.timecode ? '<span class="tc">' + esc(x.timecode) + "</span>" : "") +
+      '<span class="mix">' + esc(x.mix_title || x.sc_url || "") + "</span>"
+    const from = at
+      ? '<a class="src" href="' + attr(at) + '" target="_blank" rel="noreferrer" title="Open the mix at this moment">' + src + "</a>"
+      : '<span class="src">' + src + "</span>"
+    // A confirmed store link (saved by the extension) beats a blind search.
+    const store = (label, direct, search) => direct && /^https:\/\//.test(direct)
+      ? '<a class="on" href="' + attr(direct) + '" target="_blank" rel="noreferrer" title="Open on ' + label + '">' + label + "</a>"
+      : '<a href="' + search + '" target="_blank" rel="noreferrer" title="Search on ' + label + '">' + label + "</a>"
+    h += '<div class="rw rw-stack"><div class="rw-main"><div class="rw-t">' + esc(name) + '</div><div class="rw-s">' + from + '<span class="sep">·</span><span>saved ' + new Date(x.saved_at).toLocaleDateString() + '</span></div></div>' +
+      '<div class="buy">' + store("Beatport", x.beatport_url, "https://www.beatport.com/search?q=" + q) +
+      store("Bandcamp", x.bandcamp_url, "https://bandcamp.com/search?q=" + q + "&amp;item_type=") +
+      store("Discogs", null, "https://www.discogs.com/search/?q=" + q) + '</div>' +
       '<div class="rw-acts"><button type="button" class="ibtn" title="Copy track name" data-copy="' + esc(name) + '">' + icoCopy + '</button>' +
       '<button type="button" class="ibtn dgr" title="Delete" data-del="' + x.id + '" data-name="' + esc(name) + '">' + icoTrash + '</button></div></div>'
   })
