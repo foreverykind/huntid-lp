@@ -106,6 +106,9 @@ html.booting #app{visibility:hidden}
 .reset{margin-top:10px;font-size:12.5px;color:var(--text-faint)}
 .ptrack{margin-top:12px;height:8px;border-radius:999px;background:var(--surface-3);overflow:hidden}
 .pfill{height:100%;background:var(--accent);border-radius:999px}
+.perks{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:9px}
+.perks li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--text-dim)}
+.perks li::before{content:"";flex-shrink:0;width:14px;height:14px;margin-top:2px;background:var(--accent);-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M4 12.5l5.2 5.2L20 6.9'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M4 12.5l5.2 5.2L20 6.9'/></svg>") center/contain no-repeat}
 .dnote{margin-top:13px;font-size:12.5px;color:var(--text-faint);line-height:1.5}
 
 .rows{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
@@ -556,6 +559,15 @@ async function fetchSearchCount(userId) {
   return new Set((data ?? []).map((r) => r.sc_url)).size
 }
 
+// Same list as the Pro card on the landing's pricing.
+const PRO_PERKS = [
+  "Unlimited searches across 900K+ tracklists",
+  "Clickable timecodes and Now Playing",
+  "Saved tracklists and favourites",
+  "Buy links: Beatport, Bandcamp, Traxsource",
+]
+const perksList = '<ul class="perks">' + PRO_PERKS.map((p) => "<li>" + esc(p) + "</li>").join("") + "</ul>"
+
 function subscriptionCard() {
   if (profile.plan === "pro") {
     const sub = profile.subscription
@@ -568,14 +580,14 @@ function subscriptionCard() {
         ? new Date(sub.scheduledChangeEffectiveAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
         : renews
       return '<div class="dcard"><div class="dcard-lbl">Subscription</div><div class="plan">Pro<span class="pro-badge">PRO</span></div>' +
-        '<div class="usage">Unlimited searches until ' + esc(endsOn ?? "the end of this period") + '</div>' +
-        '<div class="reset">Moving to the Free plan on ' + esc(endsOn ?? "period end") + '</div>' +
+        perksList +
+        '<div class="reset">Pro until ' + esc(endsOn ?? "the end of this period") + ', then the Free plan</div>' +
         '<div style="margin-top:20px"><button type="button" class="btn btn-primary" id="resume-btn">Keep Pro</button></div>' +
         '<div class="dnote">Changed your mind? Keep Pro to cancel the downgrade — this only works before ' + esc(endsOn ?? "the period ends") + '.</div></div>'
     }
 
     return '<div class="dcard"><div class="dcard-lbl">Subscription</div><div class="plan">Pro<span class="pro-badge">PRO</span></div>' +
-      '<div class="usage">Unlimited searches</div>' +
+      perksList +
       (renews ? '<div class="reset">Renews on ' + esc(renews) + '</div>' : "") +
       '<div style="margin-top:20px"><button type="button" class="btn btn-outline" id="downgrade-btn">Downgrade to Free</button></div>' +
       '<div class="dnote">Billed through Paddle. You keep Pro until the current period ends, then move to Free automatically.</div></div>'
