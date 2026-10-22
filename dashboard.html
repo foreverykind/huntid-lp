@@ -72,7 +72,9 @@ button{font-family:inherit;cursor:pointer}
 .dnav.on svg{color:var(--accent);opacity:1}
 .dsb-out{padding:0 12px 14px;margin-bottom:14px;border-bottom:1px solid var(--border)}
 .dnav-out{color:var(--text-faint)}
-.dsb-foot{margin-top:auto;padding:18px 20px 0;font-feature-settings:"tnum" 1;font-size:9.5px;color:#5a5a5a;letter-spacing:0.06em;line-height:1.6}
+.dsb-signout{margin-top:auto;padding:14px 12px 0;border-top:1px solid var(--border)}
+.dsb-signout .dnav:disabled{opacity:.5;cursor:default}
+.dsb-foot{padding:18px 20px 0;font-feature-settings:"tnum" 1;font-size:9.5px;color:#5a5a5a;letter-spacing:0.06em;line-height:1.6}
 .dburger{display:none;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-9px;border:0;border-radius:9px;background:none;color:var(--text-dim);cursor:pointer;transition:background 140ms,color 140ms}
 .dburger:hover{background:var(--surface-2);color:var(--text)}
 .dscrim{position:fixed;inset:0;z-index:25;background:rgba(0,0,0,0.55);opacity:0;transition:opacity 200ms}
@@ -235,6 +237,9 @@ html.booting #app{visibility:hidden}
       <button type="button" class="dnav" data-sec="analyzed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 6.5c1.3-1.6 2.7-1.6 4 0s2.7 1.6 4 0 2.7-1.6 4 0M2 10.5c1.3-1.6 2.7-1.6 4 0s2.7 1.6 4 0 2.7-1.6 4 0" stroke-linecap="round"></path></svg>Analyzed mixes<span class="cnt" data-cnt="analyzed"></span></button>
       <button type="button" class="dnav" data-sec="billing"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="2.4" width="10" height="11.2" rx="1.6"></rect><path d="M5.6 5.6h4.8M5.6 8h4.8M5.6 10.4h2.8" stroke-linecap="round"></path></svg>Billing history<span class="cnt" data-cnt="billing"></span></button>
     </nav>
+    <div class="dsb-signout">
+      <button type="button" class="dnav dnav-out" id="signout-btn" title="Signs you out on this device. Your data stays as it is."><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 2.8H3.6a.8.8 0 0 0-.8.8v8.8a.8.8 0 0 0 .8.8h2.8"></path><path d="M10.4 5.2 13.2 8l-2.8 2.8M13.2 8H6.4"></path></svg>Sign out</button>
+    </div>
     <div class="dsb-foot">huntid.app/dashboard</div>
   </aside>
 
@@ -460,6 +465,14 @@ async function loadDashboard() {
     if (b) { go(b.dataset.sec); setMenu(false) }
   })
   document.getElementById("retry-btn").onclick = () => { showFull("handoff"); loadDashboard() }
+  document.getElementById("signout-btn").onclick = async (e) => {
+    e.currentTarget.disabled = true
+    // Local scope: a global sign-out also ends the extension's session and any other open dashboard.
+    await supabase.auth.signOut({ scope: "local" })
+    // The dashboard belongs to a signed-in visitor, so there is nothing to
+    // sit on once the session is gone.
+    window.location.href = "/"
+  }
 
   render()
 
@@ -505,21 +518,11 @@ function viewAccount() {
     '<div class="kvr"><span class="k">Member since</span><span class="v">' + esc(memberSince) + '</span></div>' +
     '</div></div>' +
     subscriptionCard() +
-    '<div class="dcard"><div class="dcard-lbl">Account actions</div>' +
-    '<button type="button" class="btn btn-outline btn-block" id="signout-btn">Sign out</button>' +
-    '<div class="dnote">Signs you out on this device. Your data stays as it is.</div>' +
-    '<div style="height:1px;background:var(--border);margin:22px 0"></div>' +
+    '<div class="dcard"><div class="dcard-lbl">Delete account</div>' +
     '<button type="button" class="btn btn-danger btn-block" id="delete-account-btn">Delete my account</button>' +
     '<div class="dnote">This permanently deletes your account, saved tracklists, favourite tracks and search history. It cannot be undone.</div></div>'
   col.innerHTML = html
   document.getElementById("delete-account-btn").onclick = confirmDeleteAccount
-  document.getElementById("signout-btn").onclick = async (e) => {
-    e.currentTarget.disabled = true
-    await supabase.auth.signOut()
-    // The dashboard belongs to a signed-in visitor, so there is nothing to
-    // sit on once the session is gone.
-    window.location.href = "/"
-  }
   const upgradeBtn = document.getElementById("upgrade-btn")
   if (upgradeBtn) upgradeBtn.onclick = () => {
     const url = new URL("https://huntid.app/checkout.html")
