@@ -49,7 +49,7 @@
 <script type="application/ld+json" id="ld-app">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"HuntID","applicationCategory":"BrowserApplication","operatingSystem":"Chrome","description":"Chrome extension that finds the tracklist of any DJ mix on SoundCloud.","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Pro monthly","price":"4.99","priceCurrency":"USD"},{"@type":"Offer","name":"Pro yearly","price":"39.99","priceCurrency":"USD"}]}
 </script>
-<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="icon" type="image/png" href="favicon.png?v=2" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <meta name="color-scheme" content="dark" />
@@ -849,7 +849,7 @@
   .amt { color: var(--text); }
   .amt-compare { display: flex; align-items: baseline; gap: 10px; margin: 2px 0 4px; }
   .amt-was { font-size: 14px; color: var(--text-faint); text-decoration: line-through; }
-  .pc .sub { font-size: 13px; color: var(--text-dim); min-height: 34px; }
+  .pc .sub { font-size: 13px; line-height: 1.55; color: var(--text-dim); min-height: 3.1em; }
   .plist li { color: var(--text); }
   .pc .btn { width: 100%; }
   .pc-note { font-size: 12px; color: var(--text-faint); text-align: center; margin-top: 12px; }
@@ -2193,7 +2193,11 @@
       set('pc-note', yearly ? 'Billed yearly, ' + P.annualMonthly + ' a month. Cancel any time.'
                             : 'Billed monthly. Cancel any time.');
       var cmp = document.getElementById('pc-cmp');
-      if (cmp) cmp.style.display = yearly && saving ? '' : 'none';
+      // Monthly keeps the compare row's space, so the card doesn't change height on toggle.
+      if (cmp) {
+        cmp.style.display = saving ? '' : 'none';
+        cmp.style.visibility = yearly ? '' : 'hidden';
+      }
       // On a phone the CTA has become "Sign up" and dropped its CWS slot; leave it be.
       var cta = document.getElementById('pc-cta');
       if (cta && cta.hasAttribute('data-track-cws')) {
