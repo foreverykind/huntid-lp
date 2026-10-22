@@ -114,6 +114,7 @@ html.booting #app{visibility:hidden}
 .rw.clickable{cursor:pointer}
 .rw.clickable:hover{background:var(--surface-2)}
 .rw-main{min-width:0;flex:1}
+.rw-art{width:44px;height:44px;flex-shrink:0;border-radius:8px;border:1px solid var(--border);background:var(--surface-2,rgba(255,255,255,.04)) center/cover no-repeat}
 .rw-t{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rw-s{font-size:12px;color:var(--text-faint);margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .rw-s .sep{color:var(--border-strong)}
@@ -686,7 +687,7 @@ async function viewSaved() {
   let h = head("Saved tracklists", data.length + " tracklist" + (data.length === 1 ? "" : "s")) + '<div class="rows">'
   data.forEach((x) => {
     const title = x.mix_title || x.sc_url
-    h += '<div class="rw clickable" data-open="' + esc(x.sc_url) + '"><div class="rw-main"><div class="rw-t">' + esc(title) + '</div>' +
+    h += '<div class="rw clickable" data-open="' + esc(x.sc_url) + '"><div class="rw-art" data-art="' + attr(x.sc_url) + '"></div><div class="rw-main"><div class="rw-t">' + esc(title) + '</div>' +
       '<div class="rw-s"><span>saved ' + new Date(x.saved_at).toLocaleDateString() + '</span></div></div>' +
       '<div class="rw-acts"><a class="ibtn" href="' + esc(x.sc_url) + '" target="_blank" rel="noreferrer" title="Open mix on SoundCloud" onclick="event.stopPropagation()">' + icoExt + '</a>' +
       '<button type="button" class="ibtn dgr" title="Delete" data-del="' + x.id + '" data-name="' + esc(title) + '">' + icoTrash + '</button></div></div>'
@@ -697,6 +698,40 @@ async function viewSaved() {
     e.stopPropagation()
     confirmDelete("saved_tracklists", el.dataset.del, "tracklist", el.dataset.name, viewSaved)
   }))
+  loadArtwork([...col.querySelectorAll("[data-art]")])
+}
+
+// Mix artwork from SoundCloud's public oEmbed. SoundCloud rate-limits it per IP
+// (an empty 202 once tripped), so ask two at a time and remember what we got.
+const ART_KEY = "huntid_art_v1"
+function loadArtwork(els) {
+  let cache = {}
+  try { cache = JSON.parse(localStorage.getItem(ART_KEY) || "{}") } catch {}
+  const paint = (el, url) => { if (url) el.style.backgroundImage = 'url("' + url.replace(/["\\]/g, "") + '")' }
+  const queue = []
+  els.forEach((el) => {
+    const u = el.dataset.art
+    if (!/^https:\/\/(www\.|m\.)?soundcloud\.com\//.test(u)) return
+    if (u in cache) paint(el, cache[u]); else queue.push(el)
+  })
+  const save = () => { try { localStorage.setItem(ART_KEY, JSON.stringify(cache)) } catch {} }
+  const next = async () => {
+    const el = queue.shift()
+    if (!el) return
+    const u = el.dataset.art
+    try {
+      const res = await fetch("https://soundcloud.com/oembed?format=json&url=" + encodeURIComponent(u))
+      if (res.status === 200) {
+        const o = await res.json()
+        const thumb = (o.thumbnail_url || "").replace(/-(t500x500|t300x300)(\.\w+)$/, "-large$2")
+        cache[u] = /^https:\/\//.test(thumb) ? thumb : ""
+        save()
+        paint(el, cache[u])
+      }
+    } catch {}
+    return next()
+  }
+  next(); next()
 }
 
 // ---------- Favourite tracks ----------
