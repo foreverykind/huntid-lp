@@ -428,6 +428,91 @@
   }
   .modal-success p { font-size: 14px; color: var(--text-dim); margin: 0; }
 
+  /* ============================== install modal: the extension at work on the
+     left, what it gives on the right — the item lit is the one playing */
+  .im-card { max-width: 880px; }
+  .im-split { display: grid; grid-template-columns: 1fr 1fr; }
+  .im-show {
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; gap: 22px;
+    padding: 30px 26px 0;
+    border-right: 1px solid var(--border);
+    background: radial-gradient(ellipse 70% 60% at 50% 30%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%),
+                linear-gradient(180deg, var(--app-panel-2) 0%, var(--app-bg) 80%);
+  }
+  .im-show::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(color-mix(in srgb, var(--accent) 9%, transparent) 1px, transparent 1px),
+                      linear-gradient(90deg, color-mix(in srgb, var(--accent) 9%, transparent) 1px, transparent 1px);
+    background-size: 30px 30px;
+    mask-image: radial-gradient(ellipse at 50% 30%, #000, transparent 72%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000, transparent 72%);
+  }
+  .im-stat { position: relative; z-index: 2; font-size: 13.5px; color: var(--text-dim); text-align: center; }
+  .im-stat b { color: var(--text); font-weight: 700; }
+  /* runs off the card's bottom edge, like the popups in the feature cards */
+  .im-show .xp { flex: 1; height: auto; min-height: 380px; border-bottom: 0; border-radius: 14px 14px 0 0; }
+  .im-body { position: relative; height: calc(100% - 44px); }
+  .im-st { position: absolute; inset: 0; opacity: 0; transform: translateY(8px); transition: opacity .38s ease, transform .38s ease; }
+  .im-st.on { opacity: 1; transform: none; }
+  .im-st.an-center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding-bottom: 40px; }
+  .im-st.on .im-rows .xp-row { animation: im-row .34s ease both; }
+  .im-st.on .im-rows .xp-row:nth-child(2) { animation-delay: .08s; }
+  .im-st.on .im-rows .xp-row:nth-child(3) { animation-delay: .16s; }
+  .im-st.on .im-rows .xp-row:nth-child(4) { animation-delay: .24s; }
+  .im-st.on .im-rows .xp-row:nth-child(5) { animation-delay: .32s; }
+  .im-st.on .im-rows .xp-row:nth-child(6) { animation-delay: .40s; }
+  .im-st.on .im-rows .xp-row:nth-child(7) { animation-delay: .48s; }
+  @keyframes im-row { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .xp-row .tc.hit { animation: im-hit .5s ease; }
+  @keyframes im-hit { 0% { transform: none; } 40% { transform: scale(1.35); } 100% { transform: none; } }
+  .im-st.on .xp-it.im-new { animation: im-new 1.6s ease both; }
+  @keyframes im-new {
+    0% { opacity: 0; transform: translateY(-10px); background: var(--accent-soft); }
+    25% { opacity: 1; transform: none; background: var(--accent-soft); }
+    100% { background: transparent; }
+  }
+  .im-copy { padding: 48px 38px 34px; display: flex; flex-direction: column; justify-content: center; }
+  .im-copy .modal-title { font-size: 26px; line-height: 1.15; margin-bottom: 8px; }
+  .im-perks { list-style: none; margin: 22px 0 26px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .im-perks li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 12px; border-radius: 12px; border: 1px solid transparent;
+    font-size: 14.5px; font-weight: 500; line-height: 1.35; color: var(--text-dim);
+    transition: background .35s ease, border-color .35s ease, color .35s ease;
+  }
+  .im-perks li small { display: block; margin-top: 2px; font-size: 12.5px; font-weight: 400; color: var(--text-faint); }
+  .im-perks li.on { background: var(--surface-2); border-color: var(--border); color: var(--text); }
+  .im-perks .ck {
+    flex-shrink: 0; margin-top: 1px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .im-copy .btn { width: 100%; justify-content: center; }
+  .im-later {
+    margin-top: 12px; align-self: center;
+    background: none; border: 0; cursor: pointer;
+    font-family: inherit; font-size: 13px; color: var(--text-faint);
+  }
+  .im-later:hover { color: var(--text-dim); }
+  @media (max-width: 760px) {
+    .im-split { grid-template-columns: 1fr; }
+    .im-show { display: none; }
+    .im-copy { padding: 44px 24px 24px; }
+  }
+
+  /* the quiet version under a tracklist, for whoever the modal is done with */
+  .install-banner {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    margin: 4px 16px 16px; padding: 14px 16px;
+    border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2);
+    font-size: 13.5px; color: var(--text-dim); line-height: 1.45;
+  }
+  .install-banner b { color: var(--text); font-weight: 600; }
+  .install-banner a { flex-shrink: 0; color: var(--accent); font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .install-banner a:hover { color: var(--accent-2); }
+
   /* ============================== search result block */
   .result-block {
     margin-top: 20px;
@@ -2124,6 +2209,64 @@
   </div>
 </div>
 
+<!-- ============================================================ INSTALL MODAL
+     For a signed-in visitor whose account has never been through the
+     extension (users.extension = false). Opened by the search flow only. -->
+<div class="modal-overlay" id="install-modal" role="dialog" aria-modal="true" aria-labelledby="im-title">
+  <div class="modal-card im-card">
+    <button class="modal-close" id="im-close" aria-label="Close">×</button>
+    <div class="im-split">
+      <div class="im-show" aria-hidden="true">
+        <div class="im-stat"><b><span data-stat="tracklists">900K+</span> tracklists</b>, one click away on SoundCloud</div>
+        <div class="xp">
+          <div class="xp-h"><svg class="mk" viewBox="0 0 64 64" width="22" height="22"><rect x="1.2" y="1.2" width="61.6" height="61.6" rx="15.4" fill="#121815" stroke="#2c3a34" stroke-width="2.4"/><g stroke="#4dff9e" stroke-width="3.2" stroke-linecap="round" fill="none"><circle cx="32" cy="32" r="13.6"/><path d="M32 9.6v7.8M32 46.6v7.8M9.6 32h7.8M46.6 32h7.8"/></g><circle cx="32" cy="32" r="3.9" fill="#4dff9e"/></svg><span class="nm">Hunt<em>ID</em></span><span class="sp"></span><span class="mx">Boiler Room · Palms Trax @ Hï Ibiza</span></div>
+          <div class="im-body" id="im-stages">
+            <div class="im-st an-center on">
+              <div class="flow-eyes"><span class="flow-eye"></span><span class="flow-eye"></span></div>
+              <div class="flow-looking">Looking for the tracklist<span class="flow-dots"><span>.</span><span>.</span><span>.</span></span></div>
+            </div>
+            <div class="im-st">
+              <div class="xp-bar"><span>Tracklist</span><b>10 tracks</b></div>
+              <div class="im-rows" id="im-tl"></div>
+            </div>
+            <div class="im-st">
+              <div class="xp-now">
+                <div class="xp-now-main" id="im-now">
+                  <div class="xp-now-eb"><span class="eq"><i></i><i></i><i></i></span>Now playing</div>
+                  <div class="xp-now-t"><span class="ar"></span><i>—</i><span class="ti"></span></div>
+                  <div class="xp-now-m"><span class="t"></span> <span class="f">· track <span class="k"></span>/10</span></div>
+                </div>
+              </div>
+              <div id="im-jump"></div>
+            </div>
+            <div class="im-st">
+              <div class="xp-bar"><div class="xp-tabs"><span class="on">Saved <b>25</b></span><span>Favourites <b>57</b></span></div></div>
+              <div class="xp-it im-new"><div class="xp-it-main"><div class="xp-it-t">Palms Trax — Boiler Room Hï Ibiza</div><div class="xp-it-s">10 tracks<i>·</i>saved just now</div></div><svg class="hrt" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 2.9 4.5 6.7 4.5c2.2 0 3.9 1.3 5.3 3.1 1.4-1.8 3.1-3.1 5.3-3.1 3.8 0 5.8 4 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg></div>
+              <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Nachtbraker — Rush Hour Session 214</div><div class="xp-it-s">17 tracks<i>·</i>saved Jul 21</div></div></div>
+              <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Late Bloom — Basement Tapes vol. 6</div><div class="xp-it-s">12 tracks<i>·</i>saved Jul 18</div></div></div>
+              <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Sherelle — Dekmantel 2026</div><div class="xp-it-s">22 tracks<i>·</i>saved Jul 09</div></div></div>
+              <div class="xp-it"><div class="xp-it-main"><div class="xp-it-t">Anz — NTS Radio</div><div class="xp-it-s">19 tracks<i>·</i>saved Jul 02</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="im-copy">
+        <div class="modal-title" id="im-title">Your tracklist, right inside SoundCloud</div>
+        <div class="modal-sub">The free HuntID extension for Chrome, on the account you already have.</div>
+        <ul class="im-perks" id="im-perks">
+          <li class="on"><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Opens on any mix by itself<small>No copy-paste, the tracklist is waiting when the set starts</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Jump to any track in one click<small>Every timecode seeks the player</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>See what's playing right now<small>The current track lights up as the set plays</small></span></li>
+          <li><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Save tracklists and favourite tracks<small>Straight from the player, synced to your account</small></span></li>
+        </ul>
+        <a href="https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff" target="_blank" rel="noopener" class="btn btn-p btn-lg" id="im-cta">Add to Chrome, it's free <span class="arr">→</span></a>
+        <button type="button" class="im-later" id="im-later">Maybe later</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============================================================ COOKIE CONSENT -->
 <div id="cookie-banner" class="cookie-banner" style="display: none;" role="dialog" aria-live="polite" aria-label="Cookie consent">
   <p>We use cookies for analytics (Google Analytics, PostHog) to understand how huntid.app is used. See our <a href="#privacy">Privacy Policy</a>.</p>
@@ -2333,6 +2476,7 @@
       authResolved = true;
       updateHeaderAuth();
       syncExtensionCtas();
+      syncInstallBanner();
       if (!e.detail.session) return;
 
       var pending = null;
@@ -2409,6 +2553,187 @@
       titleEl.textContent       = 'Get your tracklist';
       mixPreview.style.display  = 'none';
       if (googleBtn) googleBtn.disabled = false;
+    }
+
+    /* ---- install modal -------------------------------------------------
+       Offered to a signed-in visitor whose account has never been through
+       the extension, once they have had the whole tracklist: at the end of
+       the list, or after a few seconds on it. At most three times, three days
+       apart, and never again once they head to the store. The banner under
+       the tracklist stays until the extension signs in; a phone, which can't
+       install it, gets only the banner. ?install_modal=1 skips the limits. */
+    var INSTALL_KEY   = 'huntid_install_prompt';
+    var INSTALL_MAX   = 3;
+    var INSTALL_GAP   = 3 * 24 * 3600 * 1000;
+    var INSTALL_DELAY = 5000;
+    var CWS_URL       = 'https://chromewebstore.google.com/detail/llnpaccndddjjoaekmkafojlckcpmgff';
+    var FORCE_INSTALL = /[?&]install_modal=1(&|$)/.test(location.search);
+
+    var imOverlay  = document.getElementById('install-modal');
+    var imStages   = document.getElementById('im-stages');
+    var imPerks    = document.querySelectorAll('#im-perks li');
+    var installArm = [];   /* the timer and observer waiting to open it */
+    var imTimers   = [];   /* the running animation */
+
+    function track(name, props) {
+      if (window.posthog) posthog.capture(name, props);
+      if (window.gtag) gtag('event', name, props);
+    }
+
+    /* false only once the account row has been read — unknown is not a yes. */
+    function needsExtension() {
+      return isAuthed() && !!window.huntidAuth && window.huntidAuth.extension === false;
+    }
+
+    function installState() {
+      try { return JSON.parse(localStorage.getItem(INSTALL_KEY)) || {}; }
+      catch (e) { return {}; }
+    }
+    function saveInstallState(st) {
+      try { localStorage.setItem(INSTALL_KEY, JSON.stringify(st)); } catch (e) {}
+    }
+    function installDue() {
+      if (FORCE_INSTALL) return true;
+      var st = installState();
+      return !st.clicked && (st.n || 0) < INSTALL_MAX && Date.now() - (st.last || 0) >= INSTALL_GAP;
+    }
+
+    function disarmInstall() {
+      installArm.forEach(function (a) { if (a.disconnect) a.disconnect(); else clearTimeout(a); });
+      installArm = [];
+    }
+
+    function armInstall() {
+      disarmInstall();
+      if (NO_EXT || !imOverlay || !needsExtension() || !installDue()) return;
+      installArm.push(setTimeout(function () { showInstall('timer'); }, INSTALL_DELAY));
+      var list = resultBlock.querySelector('.result-tracks-visible');
+      var end  = list && list.lastElementChild;
+      if (!end || !window.IntersectionObserver) return;
+      /* A beat first, like the gate: a short list already on screen is not
+         someone who scrolled to the end of it. */
+      installArm.push(setTimeout(function () {
+        var io = new IntersectionObserver(function (entries) {
+          if (entries[0].isIntersecting) showInstall('scroll');
+        });
+        io.observe(end);
+        installArm.push(io);
+      }, 1500));
+    }
+
+    function showInstall(trigger) {
+      disarmInstall();
+      if (!needsExtension() || !installDue()) return;
+      /* Still on the sign-up modal's "You're in!" — wait for it to go. */
+      if (overlay.classList.contains('open')) {
+        installArm.push(setTimeout(function () { showInstall(trigger); }, 1500));
+        return;
+      }
+      var st = installState();
+      st.n = (st.n || 0) + 1;
+      st.last = Date.now();
+      saveInstallState(st);
+      imOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      runInstallShow();
+      track('install_modal_shown', { n: st.n, trigger: trigger });
+    }
+
+    function closeInstall(dismissed) {
+      if (!imOverlay || !imOverlay.classList.contains('open')) return;
+      imOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+      imTimers.forEach(clearTimeout);
+      imTimers = [];
+      if (dismissed) track('install_modal_dismissed', {});
+    }
+
+    function onInstallClick(location) {
+      track('cws_click', { location: location });
+      var st = installState();
+      st.clicked = true;
+      saveInstallState(st);
+      closeInstall(false);
+    }
+
+    function syncInstallBanner() {
+      var slot = document.getElementById('install-banner-slot');
+      if (!slot) return;
+      if (!needsExtension()) { slot.innerHTML = ''; return; }
+      slot.innerHTML = NO_EXT
+        ? '<div class="install-banner"><span><b>HuntID works inside SoundCloud.</b> ' +
+            'Get it in Chrome on your computer.</span></div>'
+        : '<div class="install-banner"><span><b>Next time, skip the copy-paste.</b> ' +
+            'The tracklist opens right inside SoundCloud.</span>' +
+            '<a href="' + CWS_URL + '" target="_blank" rel="noopener" id="install-banner-cta">Add to Chrome →</a></div>';
+      var cta = document.getElementById('install-banner-cta');
+      if (cta) cta.addEventListener('click', function () { onInstallClick('install_banner'); });
+    }
+
+    /* Four states of the panel on one mix, each lighting its perk on the
+       right: looking → the tracklist (a timecode gets clicked) → now playing
+       → saved. */
+    var IM_DUR = [2200, 3400, 3400, 2800];
+    var imPad  = function (n) { return (n < 10 ? '0' : '') + n; };
+    function imRow(t, num) {
+      return '<div class="xp-row' + (t[0] ? '' : ' unknown') + '">' +
+        '<span class="n">' + imPad(num) + '</span>' +
+        '<span class="tc' + (t[0] ? '' : ' e') + '">' + (t[0] || '--:--') + '</span>' +
+        '<span class="mt">' + t[1] + '<i>—</i><b>' + t[2] + '</b></span>' +
+        '<span class="eq"><i></i><i></i><i></i></span>' +
+      '</div>';
+    }
+    var imTl   = document.getElementById('im-tl');
+    var imJump = document.getElementById('im-jump');
+    var imNow  = document.getElementById('im-now');
+    var IM_JUMP_FROM = 3;   /* now playing shows tracks 4–7 */
+    if (imTl)   imTl.innerHTML   = DEMO_TRACKS.slice(0, 7).map(function (t, i) { return imRow(t, i + 1); }).join('');
+    if (imJump) imJump.innerHTML = DEMO_TRACKS.slice(IM_JUMP_FROM, IM_JUMP_FROM + 4)
+      .map(function (t, i) { return imRow(t, IM_JUMP_FROM + i + 1); }).join('');
+
+    function imPlaying(k) {   /* k: index into DEMO_TRACKS */
+      var t = DEMO_TRACKS[k];
+      imNow.querySelector('.ar').textContent = t[1];
+      imNow.querySelector('.ti').textContent = t[2];
+      imNow.querySelector('.t').textContent  = t[0];
+      imNow.querySelector('.k').textContent  = imPad(k + 1);
+      imJump.querySelectorAll('.xp-row').forEach(function (r, i) {
+        r.classList.toggle('on', i === k - IM_JUMP_FROM);
+      });
+    }
+
+    function runInstallShow() {
+      imTimers.forEach(clearTimeout);
+      imTimers = [];
+      var stages = imStages.children;
+      function go(s) {
+        for (var i = 0; i < stages.length; i++) stages[i].classList.toggle('on', i === s);
+        imPerks.forEach(function (li, i) { li.classList.toggle('on', i === s); });
+        if (s === 1) {
+          var rows = imTl.querySelectorAll('.xp-row');
+          rows.forEach(function (r) { r.classList.remove('on'); r.querySelector('.tc').classList.remove('hit'); });
+          imTimers.push(setTimeout(function () {
+            rows[4].querySelector('.tc').classList.add('hit');
+            rows[4].classList.add('on');
+          }, 1700));
+        }
+        if (s === 2) {
+          imPlaying(4);
+          imTimers.push(setTimeout(function () {
+            imNow.classList.add('swap');
+            imTimers.push(setTimeout(function () { imPlaying(5); imNow.classList.remove('swap'); }, 250));
+          }, 1900));
+        }
+        imTimers.push(setTimeout(function () { go((s + 1) % stages.length); }, IM_DUR[s]));
+      }
+      go(0);
+    }
+
+    if (imOverlay) {
+      document.getElementById('im-close').addEventListener('click', function () { closeInstall(true); });
+      document.getElementById('im-later').addEventListener('click', function () { closeInstall(true); });
+      document.getElementById('im-cta').addEventListener('click', function () { onInstallClick('install_modal'); });
+      imOverlay.addEventListener('click', function (e) { if (e.target === imOverlay) closeInstall(true); });
     }
 
     /* ---- fetch helpers -------------------------------------------------- */
@@ -2588,6 +2913,10 @@
               pendingRest + ' more tracks — sign in again to see them</button>';
       }
 
+      /* The whole list is in: room for the extension under it. */
+      var complete = authed && pendingRest <= 0;
+      if (complete) html += '<div id="install-banner-slot"></div>';
+
       if (gated > 0) {
         var blurredRows = '';
         BLUR_FILLER.slice(0, Math.min(3, gated)).forEach(function (t, i) {
@@ -2637,6 +2966,10 @@
          if the gate element is already visible right after render */
       if (gated > 0) {
         setTimeout(function () { setupGateObserver(scUrl, artist, title); }, 1200);
+      }
+      if (complete) {
+        syncInstallBanner();
+        armInstall();
       }
     }
 
@@ -2694,6 +3027,7 @@
     /* ---- main fetch flow ------------------------------------------------ */
     function fetchAndRender(url) {
       if (gateObserver) { gateObserver.disconnect(); gateObserver = null; }
+      disarmInstall();
       var seq = ++searchSeq;
       function current() { return seq === searchSeq; }
       showSearching(url);
@@ -2905,7 +3239,9 @@
     if (closeBtn)  closeBtn.addEventListener('click', closeModal);
     if (overlay)   overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
     if (googleBtn) googleBtn.addEventListener('click', startGoogleAuth);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { closeModal(); closeInstall(true); }
+    });
 
     /* Same modal as the tracklist gate — one way to make an account. */
     var navSignin = document.getElementById('nav-signin-btn');
@@ -2957,11 +3293,17 @@ if (session && window.location.search.includes("code=")) {
 // The row is written client-side on first login — there is no trigger on
 // auth.users — so a brand new account gets it here, at the moment it is made.
 if (session?.user) {
-  const { data: row } = await supabase
-    .from("users").select("id").eq("id", session.user.id).maybeSingle()
+  const { data: row, error } = await supabase
+    .from("users").select("id, extension").eq("id", session.user.id).maybeSingle()
   if (!row) {
     await supabase.from("users").insert({ id: session.user.id, email: session.user.email })
   }
+  // Set by the extension when it signs in, so false means this account has
+  // never used it. Left unknown if the read failed — the site then doesn't ask.
+  if (!error) window.huntidAuth.extension = !!row?.extension
+  // Ties the site's events to the account, so an install prompt can be
+  // followed through to users.extension.
+  if (window.posthog) posthog.identify(session.user.id)
 }
 
 window.dispatchEvent(new CustomEvent("huntid:auth", { detail: { session } }))
