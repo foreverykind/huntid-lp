@@ -435,7 +435,8 @@
   .im-show {
     position: relative; overflow: hidden;
     display: flex; flex-direction: column; align-items: center; gap: 22px;
-    padding: 30px 26px 0;
+    justify-content: center;
+    padding: 30px 26px;
     border-right: 1px solid var(--border);
     background: radial-gradient(ellipse 70% 60% at 50% 30%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%),
                 linear-gradient(180deg, var(--app-panel-2) 0%, var(--app-bg) 80%);
@@ -450,8 +451,8 @@
   }
   .im-stat { position: relative; z-index: 2; font-size: 13.5px; color: var(--text-dim); text-align: center; }
   .im-stat b { color: var(--text); font-weight: 700; }
-  /* runs off the card's bottom edge, like the popups in the feature cards */
-  .im-show .xp { flex: 1; height: auto; min-height: 380px; border-bottom: 0; border-radius: 14px 14px 0 0; }
+  /* the whole popup at its real size, every state filling it */
+  .im-show .xp { height: 420px; }
   .im-body { position: relative; height: calc(100% - 44px); }
   .im-st { position: absolute; inset: 0; opacity: 0; transform: translateY(8px); transition: opacity .38s ease, transform .38s ease; }
   .im-st.on { opacity: 1; transform: none; }
@@ -463,6 +464,7 @@
   .im-st.on .im-rows .xp-row:nth-child(5) { animation-delay: .32s; }
   .im-st.on .im-rows .xp-row:nth-child(6) { animation-delay: .40s; }
   .im-st.on .im-rows .xp-row:nth-child(7) { animation-delay: .48s; }
+  .im-st.on .im-rows .xp-row:nth-child(8) { animation-delay: .56s; }
   @keyframes im-row { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .xp-row .tc.hit { animation: im-hit .5s ease; }
   @keyframes im-hit { 0% { transform: none; } 40% { transform: scale(1.35); } 100% { transform: none; } }
@@ -2686,9 +2688,9 @@
     var imTl   = document.getElementById('im-tl');
     var imJump = document.getElementById('im-jump');
     var imNow  = document.getElementById('im-now');
-    var IM_JUMP_FROM = 3;   /* now playing shows tracks 4–7 */
-    if (imTl)   imTl.innerHTML   = DEMO_TRACKS.slice(0, 7).map(function (t, i) { return imRow(t, i + 1); }).join('');
-    if (imJump) imJump.innerHTML = DEMO_TRACKS.slice(IM_JUMP_FROM, IM_JUMP_FROM + 4)
+    var IM_JUMP_FROM = 3;   /* now playing shows tracks 4–8 */
+    if (imTl)   imTl.innerHTML   = DEMO_TRACKS.slice(0, 8).map(function (t, i) { return imRow(t, i + 1); }).join('');
+    if (imJump) imJump.innerHTML = DEMO_TRACKS.slice(IM_JUMP_FROM, IM_JUMP_FROM + 5)
       .map(function (t, i) { return imRow(t, IM_JUMP_FROM + i + 1); }).join('');
 
     function imPlaying(k) {   /* k: index into DEMO_TRACKS */
